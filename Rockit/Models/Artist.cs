@@ -4,6 +4,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Collections.Generic;
 
 namespace Rockit.Models
 {
@@ -17,8 +18,10 @@ namespace Rockit.Models
         public int Rp { get; set; }
 
         [Required]
-        public string Picture { get; set; }
-
-        public virtual ICollection<Song> Songs { get; set; } = new List<Song>();
+        public string Picture { get; set; } 
+    }
+    public static class ArtistStore
+    {
+        public static List<Artist> ListOfArtist { get; set; } = new List<Artist>();
     }
 }

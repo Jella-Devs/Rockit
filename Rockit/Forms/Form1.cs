@@ -1,4 +1,5 @@
 using Rockit.Forms;
+using Rockit.Models;
 
 namespace Rockit
 {
@@ -7,6 +8,7 @@ namespace Rockit
         public Form1()
         {
             InitializeComponent();
+            this.KeyPreview = true;
         }
         public void FeederMenu()
         {
@@ -37,6 +39,19 @@ namespace Rockit
                 MessageBox.Show("Search");
                 FeederMenu();
             }
+        }
+
+        private void rshButton_Click(object sender, EventArgs e)
+        {
+            if (ArtistStore.ListOfArtist != null)
+            {
+
+            }
+        }
+
+        private void Form1_Load(object sender, EventArgs e)
+        {
+
         }
     }
 }

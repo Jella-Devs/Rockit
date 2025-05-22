@@ -14,86 +14,85 @@ namespace Rockit.Forms
 {
     public partial class Feeder : Form
     {
-        List<Song> ListOfSongs;
-        List<Artist> ListOfArtist;
+        //List<Song> ListOfSongs;
+
         public Feeder()
         {
             InitializeComponent();
+            this.KeyPreview = true;
         }
         private void btnCargar_Click(object sender, EventArgs e)
         {
-            String pathFiles = "D:\\Music\\Testing Music";
+            SelectSongsFolder();
+            string pathFiles = Properties.Settings.Default.SongsFolderPath;
             try
             {
                 var directories = Directory.GetDirectories(pathFiles);
                 getRawSongs(directories);
             }
             catch (Exception ex) { MessageBox.Show("Ocurrió algo inesperado: " + ex); }
+            this.Close();
         }
         private void getRawSongs(String[] directories)
         {
-            if (ListOfArtist == null && ListOfSongs == null)
-            {
-                ListOfSongs = new List<Song>();
-                ListOfArtist = new List<Artist>();
-            }
+            // Inicializar listas si son nulas
+            ArtistStore.ListOfArtist ??= new List<Artist>();
+            SongStore.ListOfSongs ??= new List<Song>();
 
-            String songsFolder = "D:\\Music\\Testing Music";
-            string pathFinderResultSong = Path.Combine(songsFolder, "FinderResultSongs.txt");
-            string pathFinderResultArtist = Path.Combine(songsFolder, "FinderResultArtist.txt");
+            // Crear índices para búsqueda rápida
+            var existingArtistNames = new HashSet<string>(
+                ArtistStore.ListOfArtist.Select(a => a.Name)
+            );
+
+            var existingSongKeys = new HashSet<string>(
+                SongStore.ListOfSongs.Select(s => $"{s.ArtistName}|{s.Name}")
+            );
+
+            // Preparar rutas de salida
+            string finderFolder = Properties.Settings.Default.FindFolderPath;
+            string pathFinderResultSong = Path.Combine(finderFolder, "FinderResultSongs.txt");
+            string pathFinderResultArtist = Path.Combine(finderFolder, "FinderResultArtist.txt");
 
             using FileStream fs = File.Create(pathFinderResultSong);
             using FileStream fa = File.Create(pathFinderResultArtist);
-            using var sr = new StreamWriter(fs);
-            using var sa = new StreamWriter(fa);
-            bool artistnew, songnew;
-            string dataasstring, artiststring;
-            for (int i = 0; i < directories.Length; i++)
+            using var songWriter = new StreamWriter(fs);
+            using var artistWriter = new StreamWriter(fa);
+
+            // Procesar directorios
+            foreach (var dir in directories)
             {
-                artistnew = true;
-                songnew = true;
+                DirectoryInfo dirInfo = new DirectoryInfo(dir);
+                string artistName = dirInfo.Name;
 
-                DirectoryInfo dirfile = new DirectoryInfo(directories[i]);
-                artiststring = dirfile.Name;
-                if (artiststring.Contains(" - "))
+                if (artistName.Contains(" - "))
+                    artistName = artistName.Split(" -")[0];
+
+                // Verificar si es un artista nuevo
+                if (!existingArtistNames.Contains(artistName))
                 {
-                    artiststring = artiststring.Split(" -")[0];
+                    string picturePath = Path.Combine(dir, "portada.jpg");
+                    Artist newArtist = AddArtist(artistName, picturePath);
+                    ArtistStore.ListOfArtist.Add(newArtist);
+                    artistWriter.WriteLine(newArtist.Name);
+                    existingArtistNames.Add(artistName); // actualizar índice
                 }
-                foreach (Artist querya in ListOfArtist)
+
+                // Procesar canciones dentro del directorio
+                foreach (var file in dirInfo.GetFiles("*.mp3"))
                 {
-                    if (querya.Name == artiststring)
+                    string songKey = $"{artistName}|{file.Name}";
+
+                    if (!existingSongKeys.Contains(songKey))
                     {
-                        artistnew = false;
+                        Song newSong = AddSong(file.Name, dir, artistName);
+                        SongStore.ListOfSongs.Add(newSong);
+
+                        songWriter.WriteLine(file.Name);
+                        existingSongKeys.Add(songKey); // actualizar índice
                     }
                 }
-                if (artistnew)
-                {
-                    Artist artist = AddArtist(artiststring, directories[i] + "\\portada.jpg");
-                    ListOfArtist.Add(artist);
 
-                    artiststring = artist.ToString();
-                    sa.WriteLine(artist.Name);
-                }
-                foreach (var file in dirfile.GetFiles("*.mp3"))
-                {
-                    foreach (Song queryb in ListOfSongs)
-                    {
-                        if (queryb.Name == file.Name && queryb.ArtistName.Equals(artiststring))
-                        {
-                            songnew = false;
-                        }
-                    }
-                    if (songnew)
-                    {
-                        Song song = AddSong(file.Name, directories[i], artiststring);
-
-                        ListOfSongs.Add(song);
-                        dataasstring = file.ToString();
-                        sr.WriteLine(dataasstring);
-                    }
-                }
             }
-
             CounterShow("artist");
             CounterShow("songs");
             MessageBox.Show("Carga completa");
@@ -120,11 +119,32 @@ namespace Rockit.Forms
             switch (n)
             {
                 case "artist":
-                    MessageBox.Show(ListOfArtist != null ? ListOfArtist.Count.ToString() : "No hay artistas aun");
+                    MessageBox.Show(ArtistStore.ListOfArtist != null ? ArtistStore.ListOfArtist.Count.ToString() : "No hay artistas aun");
                     break;
                 case "songs":
-                    MessageBox.Show(ListOfSongs != null ? ListOfSongs.Count.ToString() : "No hay artistas aun");
+                    MessageBox.Show(SongStore.ListOfSongs != null ? SongStore.ListOfSongs.Count.ToString() : "No hay artistas aun");
                     break;
+            }
+        }
+        private void SelectSongsFolder()
+        {
+            string folderPath = Properties.Settings.Default.SongsFolderPath;
+            using (var dialog = new FolderBrowserDialog())
+            {
+                dialog.Description = "Selecciona la carpeta de donde cargar musica";
+                dialog.SelectedPath = folderPath;
+                if (dialog.ShowDialog() == DialogResult.OK)
+                {
+                    Properties.Settings.Default.SongsFolderPath = dialog.SelectedPath;
+                    Properties.Settings.Default.Save();
+                }
+            }
+        }
+        private void Feeder_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Escape)
+            {
+                this.Close();
             }
         }
     }

@@ -49,6 +49,7 @@
             Controls.Add(btnCargar);
             Name = "Feeder";
             Text = "Feeder";
+            KeyDown += Feeder_KeyDown;
             ResumeLayout(false);
         }
 

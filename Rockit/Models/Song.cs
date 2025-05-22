@@ -19,10 +19,10 @@ namespace Rockit.Models
 
         public int Rp { get; set; }
 
-        public int Players { get; set; }
-
         public string ArtistName { get; set; }
-
-        public virtual Artist Artist { get; set; }
+    }
+    public static class SongStore
+    {
+        public static List<Song> ListOfSongs { get; set; } = new List<Song>();
     }
 }
