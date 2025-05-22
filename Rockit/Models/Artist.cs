@@ -14,10 +14,10 @@ namespace Rockit.Models
         [Required]
         public string Name { get; set; }
 
-        public int Players { get; set; }
+        public int Rp { get; set; }
 
         [Required]
-        public string Front { get; set; }
+        public string Picture { get; set; }
 
         public virtual ICollection<Song> Songs { get; set; } = new List<Song>();
     }

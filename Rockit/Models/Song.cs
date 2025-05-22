@@ -15,11 +15,13 @@ namespace Rockit.Models
         public string Name { get; set; }
 
         [Required]
-        public string Route { get; set; }
+        public string Path { get; set; }
+
+        public int Rp { get; set; }
 
         public int Players { get; set; }
 
-        public int ArtistId { get; set; }
+        public string ArtistName { get; set; }
 
         public virtual Artist Artist { get; set; }
     }
