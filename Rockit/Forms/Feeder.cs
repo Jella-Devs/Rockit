@@ -14,8 +14,6 @@ namespace Rockit.Forms
 {
     public partial class Feeder : Form
     {
-        //List<Song> ListOfSongs;
-
         public Feeder()
         {
             InitializeComponent();
@@ -91,7 +89,6 @@ namespace Rockit.Forms
                         existingSongKeys.Add(songKey); // actualizar índice
                     }
                 }
-
             }
             CounterShow("artist");
             CounterShow("songs");

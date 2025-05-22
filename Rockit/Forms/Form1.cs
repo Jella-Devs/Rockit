@@ -43,9 +43,19 @@ namespace Rockit
 
         private void rshButton_Click(object sender, EventArgs e)
         {
-            if (ArtistStore.ListOfArtist != null)
+            if (ArtistStore.ListOfArtist.Count > 0)
             {
+                MessageBox.Show("Hay carga " + ArtistStore.ListOfArtist.Count);
+                // Obtener los primeros 8 artistas (o menos si hay menos de 8)
+                var topArtists = ArtistStore.ListOfArtist
+                    .Take(8)
+                    .Select(a => a.Name);
 
+                // Unirlos en un solo string con saltos de línea
+                string message = string.Join(Environment.NewLine, topArtists);
+
+                // Mostrar en un MessageBox
+                MessageBox.Show(message, "Primeros 8 Artistas");
             }
         }
 
