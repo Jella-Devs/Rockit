@@ -14,7 +14,6 @@ namespace Rockit
         {
             InitializeComponent();
             Loader();
-            RefreshMenu();
             this.KeyPreview = true;
         }
         public void FeederMenu()
@@ -105,6 +104,7 @@ namespace Rockit
             }
             CounterShow("artist");
             MessageBox.Show("Carga completa");
+            RefreshMenu();
         }
         private void CounterShow(string n)
         {
