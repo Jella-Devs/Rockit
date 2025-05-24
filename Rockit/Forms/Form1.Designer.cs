@@ -28,7 +28,6 @@
         /// </summary>
         private void InitializeComponent()
         {
-            rshButton = new Button();
             picArtist1 = new PictureBox();
             picArtist2 = new PictureBox();
             picArtist3 = new PictureBox();
@@ -45,6 +44,14 @@
             label6 = new Label();
             label7 = new Label();
             label8 = new Label();
+            idlabel1 = new Label();
+            idlabel2 = new Label();
+            idlabel3 = new Label();
+            idlabel4 = new Label();
+            idlabel5 = new Label();
+            idlabel6 = new Label();
+            idlabel7 = new Label();
+            idlabel8 = new Label();
             ((System.ComponentModel.ISupportInitialize)picArtist1).BeginInit();
             ((System.ComponentModel.ISupportInitialize)picArtist2).BeginInit();
             ((System.ComponentModel.ISupportInitialize)picArtist3).BeginInit();
@@ -54,16 +61,6 @@
             ((System.ComponentModel.ISupportInitialize)picArtist6).BeginInit();
             ((System.ComponentModel.ISupportInitialize)picArtist5).BeginInit();
             SuspendLayout();
-            // 
-            // rshButton
-            // 
-            rshButton.Location = new Point(707, 12);
-            rshButton.Name = "rshButton";
-            rshButton.Size = new Size(81, 42);
-            rshButton.TabIndex = 0;
-            rshButton.Text = "Refresh";
-            rshButton.UseVisualStyleBackColor = true;
-            rshButton.Click += rshButton_Click;
             // 
             // picArtist1
             // 
@@ -201,11 +198,91 @@
             label8.TabIndex = 16;
             label8.Text = "label8";
             // 
+            // idlabel1
+            // 
+            idlabel1.AutoSize = true;
+            idlabel1.Location = new Point(123, 114);
+            idlabel1.Name = "idlabel1";
+            idlabel1.Size = new Size(38, 15);
+            idlabel1.TabIndex = 17;
+            idlabel1.Text = "label9";
+            // 
+            // idlabel2
+            // 
+            idlabel2.AutoSize = true;
+            idlabel2.Location = new Point(295, 114);
+            idlabel2.Name = "idlabel2";
+            idlabel2.Size = new Size(38, 15);
+            idlabel2.TabIndex = 18;
+            idlabel2.Text = "label9";
+            // 
+            // idlabel3
+            // 
+            idlabel3.AutoSize = true;
+            idlabel3.Location = new Point(453, 114);
+            idlabel3.Name = "idlabel3";
+            idlabel3.Size = new Size(44, 15);
+            idlabel3.TabIndex = 19;
+            idlabel3.Text = "label10";
+            // 
+            // idlabel4
+            // 
+            idlabel4.AutoSize = true;
+            idlabel4.Location = new Point(635, 114);
+            idlabel4.Name = "idlabel4";
+            idlabel4.Size = new Size(44, 15);
+            idlabel4.TabIndex = 20;
+            idlabel4.Text = "label11";
+            // 
+            // idlabel5
+            // 
+            idlabel5.AutoSize = true;
+            idlabel5.Location = new Point(117, 260);
+            idlabel5.Name = "idlabel5";
+            idlabel5.Size = new Size(44, 15);
+            idlabel5.TabIndex = 21;
+            idlabel5.Text = "label12";
+            // 
+            // idlabel6
+            // 
+            idlabel6.AutoSize = true;
+            idlabel6.Location = new Point(295, 260);
+            idlabel6.Name = "idlabel6";
+            idlabel6.Size = new Size(44, 15);
+            idlabel6.TabIndex = 22;
+            idlabel6.Text = "label13";
+            // 
+            // idlabel7
+            // 
+            idlabel7.AutoSize = true;
+            idlabel7.Location = new Point(453, 260);
+            idlabel7.Name = "idlabel7";
+            idlabel7.Size = new Size(44, 15);
+            idlabel7.TabIndex = 23;
+            idlabel7.Text = "label14";
+            // 
+            // idlabel8
+            // 
+            idlabel8.AutoSize = true;
+            idlabel8.Location = new Point(629, 260);
+            idlabel8.Name = "idlabel8";
+            idlabel8.Size = new Size(44, 15);
+            idlabel8.TabIndex = 24;
+            idlabel8.Text = "label15";
+            // 
             // Form1
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(800, 450);
+            Controls.Add(idlabel8);
+            Controls.Add(idlabel7);
+            Controls.Add(idlabel6);
+            Controls.Add(idlabel5);
+            Controls.Add(idlabel4);
+            Controls.Add(idlabel3);
+            Controls.Add(idlabel2);
+            Controls.Add(idlabel1);
             Controls.Add(label8);
             Controls.Add(label7);
             Controls.Add(label6);
@@ -222,7 +299,6 @@
             Controls.Add(picArtist3);
             Controls.Add(picArtist2);
             Controls.Add(picArtist1);
-            Controls.Add(rshButton);
             FormBorderStyle = FormBorderStyle.None;
             Name = "Form1";
             StartPosition = FormStartPosition.CenterScreen;
@@ -242,8 +318,6 @@
         }
 
         #endregion
-
-        private Button rshButton;
         private PictureBox picArtist1;
         private PictureBox picArtist2;
         private PictureBox picArtist3;
@@ -260,5 +334,13 @@
         private Label label6;
         private Label label7;
         private Label label8;
+        private Label idlabel1;
+        private Label idlabel2;
+        private Label idlabel3;
+        private Label idlabel4;
+        private Label idlabel5;
+        private Label idlabel6;
+        private Label idlabel7;
+        private Label idlabel8;
     }
 }

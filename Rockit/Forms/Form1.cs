@@ -13,6 +13,8 @@ namespace Rockit
         public Form1()
         {
             InitializeComponent();
+            Loader();
+            RefreshMenu();
             this.KeyPreview = true;
         }
         public void FeederMenu()
@@ -33,13 +35,18 @@ namespace Rockit
             }
             else if (e.KeyCode == Keys.Subtract)
             {
-                MessageBox.Show("Prev");
+                if ((int)Math.Ceiling((double)cursor / 8) > 0)
+                {
+                    cursor = cursor - 8;
+                    ClearMenu();
+                }
+                RefreshMenu();
             }
             else if (e.KeyCode == Keys.Add)
             {   
                 if ((int)Math.Ceiling((double)cursor / 8) != pages - 1)
                 {
-                    cursor = cursor != 0 ? cursor + 8 : (cursor + 1) * 8;
+                    cursor = cursor + 8;
                     ClearMenu();
                 }
                 RefreshMenu();
@@ -49,13 +56,69 @@ namespace Rockit
                 MessageBox.Show("Search");
                 FeederMenu();
             }
+            else if (e.KeyCode == Keys.F5)
+            {
+                RefreshMenu();
+            }
+            else if (e.KeyCode == Keys.F6)
+            {
+                Loader();
+            }
         }
-
-        private void rshButton_Click(object sender, EventArgs e)
+        public void Loader()
         {
-           RefreshMenu();
+            string finderFolder = Properties.Settings.Default.FindFolderPath;
+            string pathFinderResultArtist = Path.Combine(finderFolder, "FinderResultArtist.txt");
+
+            if (!File.Exists(pathFinderResultArtist))
+                return;
+
+            var lines = File.ReadAllLines(pathFinderResultArtist);
+
+            foreach (var line in lines)
+            {
+                if (string.IsNullOrWhiteSpace(line)) continue;
+
+                // Separar ID de nombre+imagen
+                var parts = line.Split('|');
+                if (parts.Length != 2) continue;
+
+                // Separar nombre de imagen
+                var subParts = parts[1].Split('$');
+                if (subParts.Length != 2) continue;
+
+                // Parsear datos
+                //if (!int.TryParse(parts[0], out string artistId)) continue;
+
+                string name = subParts[0];
+                string picture = subParts[1];
+
+                // Crear el artista y agregarlo a la lista
+                var artist = new Artist
+                {
+                    ArtistId = parts[0],
+                    Name = name,
+                    Picture = picture
+                };
+
+                ArtistStore.ListOfArtist.Add(artist);
+            }
+            CounterShow("artist");
+            MessageBox.Show("Carga completa");
         }
-        private void RefreshMenu()
+        private void CounterShow(string n)
+        {
+            switch (n)
+            {
+                case "artist":
+                    MessageBox.Show(ArtistStore.ListOfArtist != null ? ArtistStore.ListOfArtist.Count.ToString() : "No hay artistas aun");
+                    break;
+                case "songs":
+                    MessageBox.Show(SongStore.ListOfSongs != null ? SongStore.ListOfSongs.Count.ToString() : "No hay artistas aun");
+                    break;
+            }
+        }
+        public void RefreshMenu()
         {
             if (ArtistStore.ListOfArtist.Count > 0)
             {
@@ -71,6 +134,10 @@ namespace Rockit
                 {
                     label1,label2,label3,label4,label5, label6, label7, label8
                 };
+                var idlabels = new List<Label>
+                {
+                    idlabel1,idlabel2,idlabel3,idlabel4,idlabel5, idlabel6, idlabel7, idlabel8
+                };
 
                 // Tomar datos de la lista dependiendo la posicion del cursor
                 var topArtists = ArtistStore.ListOfArtist.Skip(cursor).Take(8).ToList();
@@ -80,19 +147,24 @@ namespace Rockit
                 {
                     string path = topArtists[i].Picture;
                     string name = topArtists[i].Name;
+                    string id = topArtists[i].ArtistId;
 
                     try
                     {
+                        labels[i].Text = name;
+                        idlabels[i].Text = id.ToString();
                         if (System.IO.File.Exists(path))
                         {
-                            labels[i].Text = name;
                             pictureBoxes[i].Image = Image.FromFile(path);
                             pictureBoxes[i].SizeMode = PictureBoxSizeMode.StretchImage; // Ajuste al tamaño del PictureBox
                         }
                         else
                         {
-                            labels[i].Text = null;
-                            pictureBoxes[i].Image = null;
+                            string projectPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "..", "..", "..");
+                            path = Path.Combine(projectPath,"Resources", "portadadefault.png");
+                            string fullpath = Path.GetFullPath(path);
+                            pictureBoxes[i].Image = Image.FromFile(fullpath);
+                            pictureBoxes[i].SizeMode = PictureBoxSizeMode.StretchImage; // Ajuste al tamaño del PictureBox
                         }
                     }
                     catch
@@ -115,7 +187,10 @@ namespace Rockit
             var labels = new List<Label>
             {
                 label1, label2, label3, label4,
-                label5, label6, label7, label8
+                label5, label6, label7, label8,
+                idlabel1, idlabel2, idlabel3, idlabel4,
+                idlabel5, idlabel6, idlabel7, idlabel8,
+
             };
 
             foreach (var pic in pictureBoxes)
@@ -125,7 +200,6 @@ namespace Rockit
                 lbl.Text = string.Empty;
 
         }
-
         private void Form1_Load(object sender, EventArgs e)
         {
 

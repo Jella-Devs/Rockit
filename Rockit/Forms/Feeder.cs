@@ -33,6 +33,7 @@ namespace Rockit.Forms
         }
         private void getRawSongs(String[] directories)
         {
+            int TempArtistId = ArtistStore.ListOfArtist.Count;
             // Inicializar listas si son nulas
             ArtistStore.ListOfArtist ??= new List<Artist>();
             SongStore.ListOfSongs ??= new List<Song>();
@@ -69,10 +70,12 @@ namespace Rockit.Forms
                 if (!existingArtistNames.Contains(artistName))
                 {
                     string picturePath = Path.Combine(dir, "portada.jpg");
-                    Artist newArtist = AddArtist(artistName, picturePath);
+                    Artist newArtist = AddArtist(artistName, TempArtistId.ToString("D4"), picturePath);
                     ArtistStore.ListOfArtist.Add(newArtist);
-                    artistWriter.WriteLine(newArtist.Name);
+                    artistWriter.WriteLine(newArtist.ArtistId + "|" +  newArtist.Name + "$" + picturePath);
                     existingArtistNames.Add(artistName); // actualizar índice
+
+                    TempArtistId++; // Avanza el ID 
                 }
 
                 // Procesar canciones dentro del directorio
@@ -103,9 +106,10 @@ namespace Rockit.Forms
 
             return song;
         }
-        private Artist AddArtist(string name, string picture)
+        private Artist AddArtist(string name,string id, string picture)
         {
             Artist artist = new Artist();
+            artist.ArtistId = id;
             artist.Name = name;
             artist.Picture = picture;
 
