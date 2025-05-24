@@ -9,7 +9,7 @@ namespace Rockit.Models
 {
     public class Song
     {
-        public int SongId { get; set; }
+        public string SongId { get; set; }
 
         [Required]
         public string Name { get; set; }

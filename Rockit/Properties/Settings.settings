@@ -8,5 +8,8 @@
     <Setting Name="FindFolderPath" Type="System.String" Scope="Application">
       <Value Profile="(Default)">C:\Rockit</Value>
     </Setting>
+    <Setting Name="ArtistCount" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">0</Value>
+    </Setting>
   </Settings>
 </SettingsFile>

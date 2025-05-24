@@ -43,5 +43,17 @@ namespace Rockit.Properties {
                 return ((string)(this["FindFolderPath"]));
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("0")]
+        public int ArtistCount {
+            get {
+                return ((int)(this["ArtistCount"]));
+            }
+            set {
+                this["ArtistCount"] = value;
+            }
+        }
     }
 }

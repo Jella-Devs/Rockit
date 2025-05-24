@@ -33,7 +33,13 @@ namespace Rockit.Forms
         }
         private void getRawSongs(String[] directories)
         {
-            int TempArtistId = ArtistStore.ListOfArtist.Count;
+            //Inicializar variables temporales
+            int TempArtistId = ArtistStore.ListOfArtist.Count() + 1;
+            int TempSongsId = SongStore.ListOfSongs.Count() + 1;
+            var newArtists = new List<Artist>();
+            var newSongs = new List<Song>();
+            
+
             // Inicializar listas si son nulas
             ArtistStore.ListOfArtist ??= new List<Artist>();
             SongStore.ListOfSongs ??= new List<Song>();
@@ -49,13 +55,20 @@ namespace Rockit.Forms
 
             // Preparar rutas de salida
             string finderFolder = Properties.Settings.Default.FindFolderPath;
-            string pathFinderResultSong = Path.Combine(finderFolder, "FinderResultSongs.txt");
+            string pathFinderResultSongs = Path.Combine(finderFolder, "FinderResultSongs.txt");
             string pathFinderResultArtist = Path.Combine(finderFolder, "FinderResultArtist.txt");
 
-            using FileStream fs = File.Create(pathFinderResultSong);
-            using FileStream fa = File.Create(pathFinderResultArtist);
-            using var songWriter = new StreamWriter(fs);
-            using var artistWriter = new StreamWriter(fa);
+            if (!File.Exists(pathFinderResultSongs))
+            {
+                using FileStream fs = File.Create(pathFinderResultSongs);
+                MessageBox.Show("pathFinderResultSong Creado");
+            }
+
+            if (!File.Exists(pathFinderResultArtist))
+            {
+                using FileStream fa = File.Create(pathFinderResultArtist);
+                MessageBox.Show("pathFinderResultSong Creado");
+            }
 
             // Procesar directorios
             foreach (var dir in directories)
@@ -72,12 +85,11 @@ namespace Rockit.Forms
                     string picturePath = Path.Combine(dir, "portada.jpg");
                     Artist newArtist = AddArtist(artistName, TempArtistId.ToString("D4"), picturePath);
                     ArtistStore.ListOfArtist.Add(newArtist);
-                    artistWriter.WriteLine(newArtist.ArtistId + "|" +  newArtist.Name + "$" + picturePath);
-                    existingArtistNames.Add(artistName); // actualizar índice
+                    newArtists.Add(newArtist);
 
+                    existingArtistNames.Add(artistName); // actualizar índice
                     TempArtistId++; // Avanza el ID 
                 }
-
                 // Procesar canciones dentro del directorio
                 foreach (var file in dirInfo.GetFiles("*.mp3"))
                 {
@@ -85,22 +97,45 @@ namespace Rockit.Forms
 
                     if (!existingSongKeys.Contains(songKey))
                     {
-                        Song newSong = AddSong(file.Name, dir, artistName);
+                        Song newSong = AddSong(file.Name, TempSongsId.ToString("D4"), dir, artistName);
                         SongStore.ListOfSongs.Add(newSong);
-
-                        songWriter.WriteLine(file.Name);
+                        newSongs.Add(newSong);
+                       
                         existingSongKeys.Add(songKey); // actualizar índice
+                        TempSongsId++;
                     }
                 }
             }
+            if (newArtists.Any())
+            {
+                using var artistAdd = new StreamWriter(pathFinderResultArtist, append: true);
+                foreach (var artist in newArtists)
+                {
+                    artistAdd.WriteLine(artist.ArtistId + "|" + artist.Name + "$" + artist.Picture);
+                }
+            }
+            if (newSongs.Any())
+            {
+                using var songsWriter = new StreamWriter(pathFinderResultSongs, append: true);
+                foreach (var song in newSongs)
+                {
+                    songsWriter.WriteLine(song.SongId + "|" + song.Path);
+                }
+            }
+
+            Cleaner(directories, pathFinderResultArtist, pathFinderResultSongs);
+
+            Properties.Settings.Default.ArtistCount = ArtistStore.ListOfArtist.Count();
+            Properties.Settings.Default.Save();
             CounterShow("artist");
             CounterShow("songs");
             MessageBox.Show("Carga completa");
         }
-        private Song AddSong(string name, string path, string artist)
+        private Song AddSong(string name, string id, string path, string artist)
         {
             Song song = new Song();
             song.Name = name;
+            song.SongId = id;
             song.Path = path;
             song.ArtistName = artist;
 
@@ -125,6 +160,31 @@ namespace Rockit.Forms
                 case "songs":
                     MessageBox.Show(SongStore.ListOfSongs != null ? SongStore.ListOfSongs.Count.ToString() : "No hay artistas aun");
                     break;
+            }
+        }
+        private void Cleaner(string[] directories, string pathFinderResultArtist, string pathFinderResultSongs)
+        {
+            var currentArtistNames = new HashSet<string>(
+                directories.Select(dir =>
+                {
+                    var name = new DirectoryInfo(dir.ToString()).Name;
+                    return name.Contains(" - ") ? name.Split(" -")[0] : name;
+                })
+            );
+            ArtistStore.ListOfArtist.RemoveAll(a => !currentArtistNames.Contains(a.Name));
+
+            using var artistWriter = new StreamWriter(pathFinderResultArtist, append: false);
+            foreach (var artist in ArtistStore.ListOfArtist)
+            {
+                artistWriter.WriteLine($"{artist.ArtistId}|{artist.Name}${artist.Picture}");
+            }
+            var validArtistNames = ArtistStore.ListOfArtist.Select(a => a.Name).ToHashSet();
+            SongStore.ListOfSongs.RemoveAll(s => !validArtistNames.Contains(s.ArtistName));
+
+            using var songsWriter = new StreamWriter(pathFinderResultSongs, append: true);
+            foreach (var song in SongStore.ListOfSongs)
+            {
+                songsWriter.WriteLine(song.SongId + "|" + song.Path);
             }
         }
         private void SelectSongsFolder()

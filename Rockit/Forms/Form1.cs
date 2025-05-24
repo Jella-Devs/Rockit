@@ -102,7 +102,7 @@ namespace Rockit
 
                 ArtistStore.ListOfArtist.Add(artist);
             }
-            CounterShow("artist");
+            MessageBox.Show(Properties.Settings.Default.ArtistCount.ToString());
             MessageBox.Show("Carga completa");
             RefreshMenu();
         }
