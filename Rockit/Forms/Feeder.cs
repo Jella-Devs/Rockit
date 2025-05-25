@@ -1,4 +1,5 @@
 ﻿using Rockit.Models;
+using Rockit.Repositories;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -82,7 +83,7 @@ namespace Rockit.Forms
                 if (!existingArtistNames.Contains(artistName))
                 {
                     string picturePath = Path.Combine(dir, "portada.jpg");
-                    Artist newArtist = AddArtist(artistName, TempArtistId.ToString("D4"), picturePath);
+                    Artist newArtist = AddArtist(artistName, TempArtistId, picturePath);
                     ArtistStore.ListOfArtist.Add(newArtist);
                     newArtists.Add(newArtist);
 
@@ -96,7 +97,7 @@ namespace Rockit.Forms
 
                     if (!existingSongKeys.Contains(songKey))
                     {
-                        Song newSong = AddSong(file.Name, TempSongsId.ToString("D4"), dir, artistName);
+                        Song newSong = AddSong(file.Name, TempSongsId, dir, artistName);
                         SongStore.ListOfSongs.Add(newSong);
                         newSongs.Add(newSong);
                        
@@ -130,8 +131,10 @@ namespace Rockit.Forms
             CounterShow("artist");
             CounterShow("songs");
             MessageBox.Show("Carga completa");
+            var repo = new MusicRepository();
+            repo.SaveDataToDatabase();
         }
-        private Song AddSong(string name, string id, string path, string artist)
+        private Song AddSong(string name, int id, string path, string artist)
         {
             Song song = new Song();
             song.Name = name;
@@ -141,7 +144,7 @@ namespace Rockit.Forms
 
             return song;
         }
-        private Artist AddArtist(string name,string id, string picture)
+        private Artist AddArtist(string name,int id, string picture)
         {
             Artist artist = new Artist();
             artist.ArtistId = id;

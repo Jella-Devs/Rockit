@@ -11,8 +11,8 @@ using Rockit.Data;
 namespace Rockit.Migrations
 {
     [DbContext(typeof(RockolaDbContext))]
-    [Migration("20250522041352_SecondVersion")]
-    partial class SecondVersion
+    [Migration("20250525071739_InitialCreate")]
+    partial class InitialCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -59,9 +59,6 @@ namespace Rockit.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("SongId"));
 
-                    b.Property<int>("ArtistId")
-                        .HasColumnType("integer");
-
                     b.Property<string>("ArtistName")
                         .IsRequired()
                         .HasColumnType("text");
@@ -74,33 +71,12 @@ namespace Rockit.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<int>("Players")
-                        .HasColumnType("integer");
-
                     b.Property<int>("Rp")
                         .HasColumnType("integer");
 
                     b.HasKey("SongId");
 
-                    b.HasIndex("ArtistId");
-
                     b.ToTable("Songs");
-                });
-
-            modelBuilder.Entity("Rockit.Models.Song", b =>
-                {
-                    b.HasOne("Rockit.Models.Artist", "Artist")
-                        .WithMany("Songs")
-                        .HasForeignKey("ArtistId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Artist");
-                });
-
-            modelBuilder.Entity("Rockit.Models.Artist", b =>
-                {
-                    b.Navigation("Songs");
                 });
 #pragma warning restore 612, 618
         }

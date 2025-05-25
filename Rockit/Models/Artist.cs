@@ -10,7 +10,8 @@ namespace Rockit.Models
 {
     public class Artist
     {
-        public string ArtistId { get; set; }
+        [Key]
+        public int ArtistId { get; set; }
 
         [Required]
         public string Name { get; set; }
@@ -18,8 +19,10 @@ namespace Rockit.Models
         public int Rp { get; set; }
 
         [Required]
-        public string Picture { get; set; } 
+        public string Picture { get; set; }
+
     }
+
     public static class ArtistStore
     {
         public static List<Artist> ListOfArtist { get; set; } = new List<Artist>();

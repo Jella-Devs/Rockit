@@ -18,8 +18,8 @@ namespace Rockit.Migrations
                     ArtistId = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     Name = table.Column<string>(type: "text", nullable: false),
-                    Players = table.Column<int>(type: "integer", nullable: false),
-                    Front = table.Column<string>(type: "text", nullable: false)
+                    Rp = table.Column<int>(type: "integer", nullable: false),
+                    Picture = table.Column<string>(type: "text", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -33,35 +33,24 @@ namespace Rockit.Migrations
                     SongId = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     Name = table.Column<string>(type: "text", nullable: false),
-                    Route = table.Column<string>(type: "text", nullable: false),
-                    Players = table.Column<int>(type: "integer", nullable: false),
-                    ArtistId = table.Column<int>(type: "integer", nullable: false)
+                    Path = table.Column<string>(type: "text", nullable: false),
+                    Rp = table.Column<int>(type: "integer", nullable: false),
+                    ArtistName = table.Column<string>(type: "text", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Songs", x => x.SongId);
-                    table.ForeignKey(
-                        name: "FK_Songs_Artists_ArtistId",
-                        column: x => x.ArtistId,
-                        principalTable: "Artists",
-                        principalColumn: "ArtistId",
-                        onDelete: ReferentialAction.Cascade);
                 });
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Songs_ArtistId",
-                table: "Songs",
-                column: "ArtistId");
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "Songs");
+                name: "Artists");
 
             migrationBuilder.DropTable(
-                name: "Artists");
+                name: "Songs");
         }
     }
 }

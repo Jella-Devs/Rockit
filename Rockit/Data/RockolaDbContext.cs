@@ -20,6 +20,11 @@ namespace Rockit.Data
      .UseNpgsql("Host=localhost;Port=5432;Database=rockola_db;Username=rockola_user;Password=rockola_pass");
 
         }
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<Artist>().HasKey(a => a.ArtistId);
+            modelBuilder.Entity<Song>().HasKey(s => s.SongId);
+        }
     }
 }
 

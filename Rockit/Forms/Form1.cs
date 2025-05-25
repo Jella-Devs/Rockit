@@ -1,5 +1,6 @@
 using Rockit.Forms;
 using Rockit.Models;
+using Rockit.Repositories;
 using System.Windows.Forms;
 
 namespace Rockit
@@ -14,6 +15,7 @@ namespace Rockit
         {
             InitializeComponent();
             Loader();
+            //LoadData();
             this.KeyPreview = true;
         }
         public void FeederMenu()
@@ -62,48 +64,73 @@ namespace Rockit
             else if (e.KeyCode == Keys.F6)
             {
                 Loader();
+                //LoadData();
             }
         }
+       
+        /// <summary>
+        /// ////////////////////////////////////////////
+        /// </summary>
         // QUERY
         public void Loader()
         {
-            string finderFolder = Properties.Settings.Default.FindFolderPath;
-            string pathFinderResultArtist = Path.Combine(finderFolder, "FinderResultArtist.txt");
+            var repo = new MusicRepository();
 
-            if (!File.Exists(pathFinderResultArtist))
-                return;
-
-            var lines = File.ReadAllLines(pathFinderResultArtist);
-
-            foreach (var line in lines)
+            if (repo.HasArtists() && repo.HasSongs())
             {
-                if (string.IsNullOrWhiteSpace(line)) continue;
-
-                // Separar ID de nombre+imagen
-                var parts = line.Split('|');
-                if (parts.Length != 2) continue;
-
-                // Separar nombre de imagen
-                var subParts = parts[1].Split('$');
-                if (subParts.Length != 2) continue;
-
-                // Parsear datos
-                //if (!int.TryParse(parts[0], out string artistId)) continue;
-
-                string name = subParts[0];
-                string picture = subParts[1];
-
-                // Crear el artista y agregarlo a la lista
-                var artist = new Artist
-                {
-                    ArtistId = parts[0],
-                    Name = name,
-                    Picture = picture
-                };
-
-                ArtistStore.ListOfArtist.Add(artist);
+                // Si hay datos en la base, simplemente carga a memoria
+                repo.LoadDataToMemory();
+                MessageBox.Show("Datos cargados desde la base de datos");
             }
-            MessageBox.Show(Properties.Settings.Default.ArtistCount.ToString());
+            else
+            {
+                string finderFolder = Properties.Settings.Default.FindFolderPath;
+                string pathFinderResultArtist = Path.Combine(finderFolder, "FinderResultArtist.txt");
+
+                if (!File.Exists(pathFinderResultArtist))
+                    return;
+
+                var lines = File.ReadAllLines(pathFinderResultArtist);
+
+                foreach (var line in lines)
+                {
+                    if (string.IsNullOrWhiteSpace(line)) continue;
+
+                    // Separar ID de nombre+imagen
+                    var parts = line.Split('|');
+                    if (parts.Length != 2) continue;
+
+                    // Separar nombre de imagen
+                    var subParts = parts[1].Split('$');
+                    if (subParts.Length != 2) continue;
+
+                    int artistId = Int32.Parse(parts[0]);
+                    string name = subParts[0];
+                    string picture = subParts[1];
+
+                    // Verifica si ya está en memoria
+                    if (ArtistStore.ListOfArtist.Any(a => a.ArtistId == artistId))
+                        continue;
+
+                    // Crear el artista y agregarlo a la lista
+                    var artist = new Artist
+                    {
+                        ArtistId = artistId,
+                        Name = name,
+                        Picture = picture
+                    };
+
+                    ArtistStore.ListOfArtist.Add(artist);
+
+                    // Guardar en la BD si no existe
+                    if (!repo.ExistsArtist(artistId))
+                    {
+                        repo.AddArtist(artist);
+                    }
+                }
+            }
+
+                MessageBox.Show(Properties.Settings.Default.ArtistCount.ToString());
             MessageBox.Show("Carga completa");
             RefreshMenu();
         }
@@ -148,7 +175,7 @@ namespace Rockit
                 {
                     string path = topArtists[i].Picture;
                     string name = topArtists[i].Name;
-                    string id = topArtists[i].ArtistId;
+                    int id = topArtists[i].ArtistId;
 
                     try
                     {
