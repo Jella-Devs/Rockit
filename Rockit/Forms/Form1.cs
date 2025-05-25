@@ -64,6 +64,7 @@ namespace Rockit
                 Loader();
             }
         }
+        // QUERY
         public void Loader()
         {
             string finderFolder = Properties.Settings.Default.FindFolderPath;

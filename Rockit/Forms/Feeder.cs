@@ -39,7 +39,6 @@ namespace Rockit.Forms
             var newArtists = new List<Artist>();
             var newSongs = new List<Song>();
             
-
             // Inicializar listas si son nulas
             ArtistStore.ListOfArtist ??= new List<Artist>();
             SongStore.ListOfSongs ??= new List<Song>();
@@ -106,6 +105,7 @@ namespace Rockit.Forms
                     }
                 }
             }
+            // UPDATE
             if (newArtists.Any())
             {
                 using var artistAdd = new StreamWriter(pathFinderResultArtist, append: true);
@@ -119,7 +119,7 @@ namespace Rockit.Forms
                 using var songsWriter = new StreamWriter(pathFinderResultSongs, append: true);
                 foreach (var song in newSongs)
                 {
-                    songsWriter.WriteLine(song.SongId + "|" + song.Path);
+                    songsWriter.WriteLine(song.SongId + "|" + song.Path+ "$" + song.Name + "%" + song.ArtistName);
                 }
             }
 
@@ -162,6 +162,7 @@ namespace Rockit.Forms
                     break;
             }
         }
+        // DELETE
         private void Cleaner(string[] directories, string pathFinderResultArtist, string pathFinderResultSongs)
         {
             var currentArtistNames = new HashSet<string>(
@@ -180,11 +181,12 @@ namespace Rockit.Forms
             }
             var validArtistNames = ArtistStore.ListOfArtist.Select(a => a.Name).ToHashSet();
             SongStore.ListOfSongs.RemoveAll(s => !validArtistNames.Contains(s.ArtistName));
-
+            
+            // INSERT
             using var songsWriter = new StreamWriter(pathFinderResultSongs, append: true);
             foreach (var song in SongStore.ListOfSongs)
             {
-                songsWriter.WriteLine(song.SongId + "|" + song.Path);
+                songsWriter.WriteLine(song.SongId + "|" + song.Path + "$" + song.Name + "%" + song.ArtistName);
             }
         }
         private void SelectSongsFolder()
