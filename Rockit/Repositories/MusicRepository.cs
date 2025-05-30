@@ -84,8 +84,24 @@ namespace Rockit.Repositories
             _context.Songs.Add(song);
             _context.SaveChanges();
         }
+
+        public List<Song> GetSongsByArtistName(string artistName)
+        {
+            return _context.Songs
+                .Where(s => s.ArtistName == artistName)
+                .ToList();
+        }
+
+        public List<Artist> GetAllArtists() => _context.Artists.ToList();
+        public List<Song> GetAllSongs() => _context.Songs.ToList();
+
+        public void DeleteArtist(Artist artist) => _context.Artists.Remove(artist);
+        public void DeleteSong(Song song) => _context.Songs.Remove(song);
+
         public bool HasArtists() => _context.Artists.Any();
         public bool HasSongs() => _context.Songs.Any();
+
+        public void SaveChanges() => _context.SaveChanges();
     }
 
 }

@@ -166,32 +166,121 @@ namespace Rockit.Forms
             }
         }
         // DELETE
+        //   private void Cleaner(string[] directories, string pathFinderResultArtist, string pathFinderResultSongs)
+        //   {
+        //       var currentArtistNames = new HashSet<string>(
+        //           directories.Select(dir =>
+        //           {
+        //               var name = new DirectoryInfo(dir.ToString()).Name;
+        //               return name.Contains(" - ") ? name.Split(" -")[0] : name;
+        //           })
+        //       );
+        //       //ArtistStore.ListOfArtist.RemoveAll(a => !currentArtistNames.Contains(a.Name));
+
+
+        //       //var validArtistNames = ArtistStore.ListOfArtist.Select(a => a.Name).ToHashSet();
+        //       //SongStore.ListOfSongs.RemoveAll(s => !validArtistNames.Contains(s.ArtistName));
+
+        //       //// INSERT
+
+
+
+        //       // --- Limpieza en base de datos ---
+        //       var repo = new MusicRepository(); // Asegúrate de que _context esté bien configurado
+
+        //       // Artistas en base de datos
+        //       var dbArtists = repo.GetAllArtists();
+        //       var artistsToDelete = dbArtists
+        //           .Where(a => !currentArtistNames.Contains(a.Name))
+        //           .ToList();
+
+        //       foreach (var artist in artistsToDelete)
+        //       {
+        //           repo.DeleteArtist(artist);
+        //       }
+
+        //       // Canciones en base de datos
+        //       var removedArtistNames = artistsToDelete.Select(a => a.Name).ToHashSet();
+
+        //       using var artistWriter = new StreamWriter(pathFinderResultArtist, append: false);
+
+        //       foreach (var artist in ArtistStore.ListOfArtist)
+        //       {
+        //           artistWriter.WriteLine($"{artist.ArtistId}|{artist.Name}${artist.Picture}");
+        //       }
+
+
+        //       var songsToRemove = repo.GetAllSongs()
+        //.Where(s => removedArtistNames.Contains(s.ArtistName))
+        //.ToList();
+
+
+        //       foreach (var song in songsToRemove)
+        //       {
+        //           repo.DeleteSong(song);
+        //       }
+
+        //       using var songsWriter = new StreamWriter(pathFinderResultSongs, append: false);
+
+        //       foreach (var song in SongStore.ListOfSongs)
+        //       {
+        //           songsWriter.WriteLine(song.SongId + "|" + song.Path + "$" + song.Name + "%" + song.ArtistName);
+        //       }
+        //       repo.SaveChanges();
+        //   }
         private void Cleaner(string[] directories, string pathFinderResultArtist, string pathFinderResultSongs)
         {
+            var repo = new MusicRepository();
+
+            // 1. Obtener nombres de artistas desde carpetas actuales
             var currentArtistNames = new HashSet<string>(
                 directories.Select(dir =>
                 {
-                    var name = new DirectoryInfo(dir.ToString()).Name;
+                    var name = new DirectoryInfo(dir).Name;
                     return name.Contains(" - ") ? name.Split(" -")[0] : name;
                 })
             );
+
+            // 2. Eliminar artistas obsoletos de la memoria (ArtistStore)
+            var removedArtists = ArtistStore.ListOfArtist
+                .Where(a => !currentArtistNames.Contains(a.Name))
+                .ToList();
+
             ArtistStore.ListOfArtist.RemoveAll(a => !currentArtistNames.Contains(a.Name));
 
+            // 3. Eliminar canciones de artistas obsoletos de la memoria (SongStore)
+            var removedArtistNames = removedArtists.Select(a => a.Name).ToHashSet();
+            SongStore.ListOfSongs.RemoveAll(s => removedArtistNames.Contains(s.ArtistName));
+
+            // 4. Eliminar de base de datos (Artistas y Canciones)
+            var dbArtists = repo.GetAllArtists();
+            var dbSongs = repo.GetAllSongs();
+
+            var artistsToDelete = dbArtists.Where(a => removedArtistNames.Contains(a.Name)).ToList();
+            var songsToDelete = dbSongs.Where(s => removedArtistNames.Contains(s.ArtistName)).ToList();
+
+            foreach (var artist in artistsToDelete)
+                repo.DeleteArtist(artist);
+
+            foreach (var song in songsToDelete)
+                repo.DeleteSong(song);
+
+            repo.SaveChanges();
+
+            // 5. Reescribir archivos de texto limpios
             using var artistWriter = new StreamWriter(pathFinderResultArtist, append: false);
             foreach (var artist in ArtistStore.ListOfArtist)
             {
                 artistWriter.WriteLine($"{artist.ArtistId}|{artist.Name}${artist.Picture}");
             }
-            var validArtistNames = ArtistStore.ListOfArtist.Select(a => a.Name).ToHashSet();
-            SongStore.ListOfSongs.RemoveAll(s => !validArtistNames.Contains(s.ArtistName));
-            
-            // INSERT
-            using var songsWriter = new StreamWriter(pathFinderResultSongs, append: true);
+
+            using var songWriter = new StreamWriter(pathFinderResultSongs, append: false);
             foreach (var song in SongStore.ListOfSongs)
             {
-                songsWriter.WriteLine(song.SongId + "|" + song.Path + "$" + song.Name + "%" + song.ArtistName);
+                songWriter.WriteLine($"{song.SongId}|{song.Path}${song.Name}%{song.ArtistName}");
             }
         }
+
         private void SelectSongsFolder()
         {
             string folderPath = Properties.Settings.Default.SongsFolderPath;
