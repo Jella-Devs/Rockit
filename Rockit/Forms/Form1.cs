@@ -8,6 +8,7 @@ using System.Windows.Forms;
 using System.IO;
 using System.Drawing.Drawing2D;
 using SkiaSharp;
+using SkiaSharp.Views.Desktop;
 
 namespace Rockit
 {
@@ -296,14 +297,13 @@ namespace Rockit
 
             public static FontFamily LoadFont()
             {
-                string projectPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "..", "..", "..");
-                var path = Path.Combine(projectPath, "Resources/Fonts", "LeagueSpartan-SemiBold.ttf");
-                string fullpath = Path.GetFullPath(path);
-                FontCollection.AddFontFile(fullpath);
+                string leaguespartan = Path.GetFullPath(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"..\..\..\Resources\Fonts\LeagueSpartan-SemiBold.ttf"));
+
+                FontCollection.AddFontFile(leaguespartan);
 
                 if (FontCollection.Families.Length > 0)
                 {
-                    byte[] fontData = File.ReadAllBytes(fullpath);
+                    byte[] fontData = File.ReadAllBytes(leaguespartan);
                     IntPtr fontPtr = Marshal.AllocCoTaskMem(fontData.Length);
                     Marshal.Copy(fontData, 0, fontPtr, fontData.Length);
                     FontCollection.AddMemoryFont(fontPtr, fontData.Length);
