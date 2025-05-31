@@ -1,7 +1,13 @@
 using Rockit.Forms;
 using Rockit.Models;
 using Rockit.Repositories;
+using System.ComponentModel.DataAnnotations;
+using System.Drawing.Text;
+using System.Runtime.InteropServices;
 using System.Windows.Forms;
+using System.IO;
+using System.Drawing.Drawing2D;
+using SkiaSharp;
 
 namespace Rockit
 {
@@ -14,16 +20,77 @@ namespace Rockit
         public Form1()
         {
             InitializeComponent();
+            UIMenuDrawer();
             Loader();
-            //LoadData();
+        }
+        private void UIMenuDrawer()
+        {
             this.KeyPreview = true;
+            this.DoubleBuffered = true; // Para evitar parpadeo
+            this.ResizeRedraw = true;   // Redibuja al cambiar tamaño
+        }
+        protected override void OnPaintBackground(PaintEventArgs e)
+        {
+            base.OnPaintBackground(e);
+
+            // Definir colores del gradiente
+            Color[] colors = new Color[]
+            {
+                ColorTranslator.FromHtml("#405f8f"),
+                ColorTranslator.FromHtml("#69607d"),
+                ColorTranslator.FromHtml("#f19e72"),
+                ColorTranslator.FromHtml("#cd856e"),
+                ColorTranslator.FromHtml("#9d7577")
+            };
+
+            // Crear rectángulo para cubrir todo el formulario
+            Rectangle rect = this.ClientRectangle;
+
+            // Crear gradiente lineal diagonal
+            using (LinearGradientBrush brush = new LinearGradientBrush(
+                rect,
+                colors[0],
+                colors[^1],
+                90f)) // 90 grados: superior derecha a inferior izquierda
+            {
+                // Configurar mezcla de colores personalizada
+                ColorBlend blend = new ColorBlend
+                {
+                    Colors = colors,
+                    Positions = new float[]
+                    {
+                    0.0f, 0.2f, 0.5f, 0.7f, 1.0f
+                    }
+                };
+
+                brush.InterpolationColors = blend;
+                e.Graphics.FillRectangle(brush, rect);
+            }
+        }
+        private void titlePanel_Paint(object sender, PaintEventArgs e)
+        {
+            FontFamily leagueSpartan = FontLoader.LoadFont();
+            string[] lines = { "Billares", "La Quinta" };
+            Font font = new Font(leagueSpartan, 56f);
+            float lineHeight = font.GetHeight(e.Graphics) - 2; // reduce espacio
+
+            // Activar anti-aliasing para texto
+            e.Graphics.TextRenderingHint = System.Drawing.Text.TextRenderingHint.AntiAlias;
+
+            float paddingX = 12f; // Padding izquierdo
+            float paddingY = 26f; // Padding superior
+            float y = paddingY;
+            foreach (var line in lines)
+            {
+                e.Graphics.DrawString(line, font, Brushes.AntiqueWhite, new PointF(paddingX, y));
+                y += lineHeight;
+            }
         }
         public void FeederMenu()
         {
             Feeder feeder = new Feeder();
             feeder.Show();
         }
-
         private void Form1_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.KeyCode == Keys.F1 && (e.Alt || e.Control || e.Shift))
@@ -44,7 +111,7 @@ namespace Rockit
                 RefreshMenu();
             }
             else if (e.KeyCode == Keys.Add)
-            {   
+            {
                 if ((int)Math.Ceiling((double)cursor / 8) != pages - 1)
                 {
                     cursor = cursor + 8;
@@ -67,11 +134,6 @@ namespace Rockit
                 //LoadData();
             }
         }
-       
-        /// <summary>
-        /// ////////////////////////////////////////////
-        /// </summary>
-        // QUERY
         public void Loader()
         {
             var repo = new MusicRepository();
@@ -130,7 +192,7 @@ namespace Rockit
                 }
             }
 
-                MessageBox.Show(Properties.Settings.Default.ArtistCount.ToString());
+            MessageBox.Show(Properties.Settings.Default.ArtistCount.ToString());
             MessageBox.Show("Carga completa");
             RefreshMenu();
         }
@@ -189,7 +251,7 @@ namespace Rockit
                         else
                         {
                             string projectPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "..", "..", "..");
-                            path = Path.Combine(projectPath,"Resources", "portadadefault.png");
+                            path = Path.Combine(projectPath, "Resources", "portadadefault.png");
                             string fullpath = Path.GetFullPath(path);
                             pictureBoxes[i].Image = Image.FromFile(fullpath);
                             pictureBoxes[i].SizeMode = PictureBoxSizeMode.StretchImage; // Ajuste al tamaño del PictureBox
@@ -227,6 +289,33 @@ namespace Rockit
             foreach (var lbl in labels)
                 lbl.Text = string.Empty;
 
+        }
+        public static class FontLoader
+        {
+            public static PrivateFontCollection FontCollection = new PrivateFontCollection();
+
+            public static FontFamily LoadFont()
+            {
+                string projectPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "..", "..", "..");
+                var path = Path.Combine(projectPath, "Resources/Fonts", "LeagueSpartan-SemiBold.ttf");
+                string fullpath = Path.GetFullPath(path);
+                FontCollection.AddFontFile(fullpath);
+
+                if (FontCollection.Families.Length > 0)
+                {
+                    byte[] fontData = File.ReadAllBytes(fullpath);
+                    IntPtr fontPtr = Marshal.AllocCoTaskMem(fontData.Length);
+                    Marshal.Copy(fontData, 0, fontPtr, fontData.Length);
+                    FontCollection.AddMemoryFont(fontPtr, fontData.Length);
+                    Marshal.FreeCoTaskMem(fontPtr);
+                }
+                else
+                {
+                    MessageBox.Show("Algo inesperado ocurrio, error en FONT");
+                }
+
+                return FontCollection.Families[0];
+            }
         }
         private void Form1_Load(object sender, EventArgs e)
         {
