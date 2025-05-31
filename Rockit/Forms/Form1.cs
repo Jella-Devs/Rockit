@@ -7,6 +7,7 @@ using System.Runtime.InteropServices;
 using System.Windows.Forms;
 using System.IO;
 using System.Drawing.Drawing2D;
+using System.Drawing.Imaging;
 
 namespace Rockit
 {
@@ -27,6 +28,27 @@ namespace Rockit
             this.KeyPreview = true;
             this.DoubleBuffered = true; // Para evitar parpadeo
             this.ResizeRedraw = true;   // Redibuja al cambiar tamaño
+            FontFamily leagueSpartan = FontLoader.LoadFont();
+            var pictureBoxes = new List<PictureBox> 
+            {
+                picArtist1, picArtist2, picArtist3, picArtist4,
+                picArtist5, picArtist6, picArtist7, picArtist8
+            };
+            foreach (var pb in pictureBoxes)
+            {
+                SetRoundedPictureBox(pb, 20);
+            }
+            var labels = new List<Label>
+                {
+                    label1,label2,label3,label4,label5, label6, label7, label8
+                };
+            foreach (var lbl in labels)
+            {
+                lbl.Font = new Font(leagueSpartan, 20f);
+            }
+            typeof(TableLayoutPanel)
+            .GetProperty("DoubleBuffered", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic)
+            ?.SetValue(tableLayoutPanel1, true, null);
         }
         protected override void OnPaintBackground(PaintEventArgs e)
         {
@@ -84,6 +106,20 @@ namespace Rockit
                 e.Graphics.DrawString(line, font, Brushes.AntiqueWhite, new PointF(paddingX, y));
                 y += lineHeight;
             }
+        }
+        private void SetRoundedPictureBox(PictureBox pb, int radius)
+        {
+            var rect = new Rectangle(0, 0, pb.Width, pb.Height);
+            var path = new System.Drawing.Drawing2D.GraphicsPath();
+
+            int diameter = radius * 2;
+            path.AddArc(rect.X, rect.Y, diameter, diameter, 180, 90);                          // esquina superior izquierda
+            path.AddArc(rect.Right - diameter, rect.Y, diameter, diameter, 270, 90);          // esquina superior derecha
+            path.AddArc(rect.Right - diameter, rect.Bottom - diameter, diameter, diameter, 0, 90);  // esquina inferior derecha
+            path.AddArc(rect.X, rect.Bottom - diameter, diameter, diameter, 90, 90);           // esquina inferior izquierda
+            path.CloseAllFigures();
+
+            pb.Region = new Region(path);
         }
         public void FeederMenu()
         {
@@ -244,21 +280,18 @@ namespace Rockit
                         idlabels[i].Text = id.ToString();
                         if (System.IO.File.Exists(path))
                         {
-                            pictureBoxes[i].Image = Image.FromFile(path);
-                            pictureBoxes[i].SizeMode = PictureBoxSizeMode.StretchImage; // Ajuste al tamaño del PictureBox
+                            LoadPictureBox(pictureBoxes[i],path);
                         }
                         else
                         {
                             string projectPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "..", "..", "..");
                             path = Path.Combine(projectPath, "Resources", "portadadefault.png");
                             string fullpath = Path.GetFullPath(path);
-                            pictureBoxes[i].Image = Image.FromFile(fullpath);
-                            pictureBoxes[i].SizeMode = PictureBoxSizeMode.StretchImage; // Ajuste al tamaño del PictureBox
+                            LoadPictureBox(pictureBoxes[i], fullpath);
                         }
                     }
                     catch
                     {
-                        // Puedes dejarlo en blanco o poner una imagen por defecto
                         labels[i].Text = null;
                         pictureBoxes[i].Image = null;
                     }
@@ -314,6 +347,25 @@ namespace Rockit
 
                 return FontCollection.Families[0];
             }
+        }
+        private async Task<Image> LoadImageAsync(string path)
+        {
+            return await Task.Run(() =>
+            {
+                using (var fs = new FileStream(path, FileMode.Open, FileAccess.Read))
+                using (var ms = new MemoryStream())
+                {
+                    fs.CopyTo(ms);
+                    ms.Position = 0;
+                    return Image.FromStream(ms);
+                }
+            });
+        }
+        private async void LoadPictureBox(PictureBox pic, string path)
+        {
+            Image img = await LoadImageAsync(path);
+            pic.Image = img;
+            pic.SizeMode = PictureBoxSizeMode.StretchImage;
         }
         private void Form1_Load(object sender, EventArgs e)
         {
