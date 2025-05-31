@@ -7,8 +7,6 @@ using System.Runtime.InteropServices;
 using System.Windows.Forms;
 using System.IO;
 using System.Drawing.Drawing2D;
-using SkiaSharp;
-using SkiaSharp.Views.Desktop;
 
 namespace Rockit
 {
