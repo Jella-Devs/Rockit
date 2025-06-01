@@ -12,6 +12,8 @@ namespace Rockit.Data
     {
         public DbSet<Artist> Artists { get; set; }
         public DbSet<Song> Songs { get; set; }
+        public DbSet<PlayListItem> PlaylistItems { get; set; }
+
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {

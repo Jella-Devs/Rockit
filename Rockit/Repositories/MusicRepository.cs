@@ -78,7 +78,7 @@ namespace Rockit.Repositories
         {
             return _context.Songs.Any(s => s.SongId == songId);
         }
-
+         
         public void AddSong(Song song)
         {
             _context.Songs.Add(song);
@@ -102,6 +102,31 @@ namespace Rockit.Repositories
         public bool HasSongs() => _context.Songs.Any();
 
         public void SaveChanges() => _context.SaveChanges();
+
+        public void AddToPlaylist(string name, string path)
+        {
+            var item = new PlayListItem
+            {
+                SongName = name,
+                SongPath = path
+            };
+            _context.PlaylistItems.Add(item);
+            _context.SaveChanges();
+        }
+
+        public List<PlayListItem> GetPlaylist()
+        {
+            return _context.PlaylistItems
+                .OrderBy(p => p.AddedAt)
+                .ToList();
+        }
+
+        public void ClearPlaylist()
+        {
+            _context.PlaylistItems.RemoveRange(_context.PlaylistItems);
+            _context.SaveChanges();
+        }
+
     }
 
 }
