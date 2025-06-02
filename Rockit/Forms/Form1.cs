@@ -8,14 +8,20 @@ using System.Windows.Forms;
 using System.IO;
 using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
+using System.Security.Cryptography;
+using Timer = System.Windows.Forms.Timer;
 
 namespace Rockit
 {
     public partial class Form1 : Form
     {
-        //Index para movimiento de paginas del menu
+        // Index para movimiento de paginas del menu
         int pages;
         int cursor = 0;
+
+        // Clave para seleccionar artista
+        string key = string.Empty;
+        private Timer keyresponse;
 
         public Form1()
         {
@@ -25,26 +31,43 @@ namespace Rockit
         }
         private void UIMenuDrawer()
         {
+            keyresponse = new Timer();
+            keyresponse.Interval = 2000;
+            keyresponse.Tick += keyresponse_Tick;
             this.KeyPreview = true;
             this.DoubleBuffered = true; // Para evitar parpadeo
             this.ResizeRedraw = true;   // Redibuja al cambiar tamaño
             FontFamily leagueSpartan = FontLoader.LoadFont();
-            var pictureBoxes = new List<PictureBox> 
+            var pictureBoxes = new List<PictureBox>
             {
                 picArtist1, picArtist2, picArtist3, picArtist4,
                 picArtist5, picArtist6, picArtist7, picArtist8
             };
-            foreach (var pb in pictureBoxes)
-            {
-                SetRoundedPictureBox(pb, 20);
-            }
             var labels = new List<Label>
                 {
                     label1,label2,label3,label4,label5, label6, label7, label8
                 };
+            var idlabels = new List<Label>
+                {
+                    idlabel1,idlabel2,idlabel3,idlabel4,idlabel5, idlabel6, idlabel7, idlabel8
+                };
+            keylabel.Font = new Font(leagueSpartan, 38f);
+            pagelabel.Font = new Font(leagueSpartan, 12f);
+            foreach (var pb in pictureBoxes)
+            {
+                SetRoundedPictureBox(pb, 20);
+            }
             foreach (var lbl in labels)
             {
-                lbl.Font = new Font(leagueSpartan, 20f);
+                lbl.Font = new Font(leagueSpartan, 18f);
+                SetRoundedLabel(lbl, 20);
+            }
+            foreach (var lbl in idlabels)
+            {
+                lbl.Font = new Font(leagueSpartan, 16f);
+                SetRoundedLabel(lbl, 10);
+                lbl.ForeColor = Color.White;
+                lbl.TextAlign = ContentAlignment.MiddleCenter;
             }
             typeof(TableLayoutPanel)
             .GetProperty("DoubleBuffered", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic)
@@ -110,16 +133,30 @@ namespace Rockit
         private void SetRoundedPictureBox(PictureBox pb, int radius)
         {
             var rect = new Rectangle(0, 0, pb.Width, pb.Height);
-            var path = new System.Drawing.Drawing2D.GraphicsPath();
+            var draw = new System.Drawing.Drawing2D.GraphicsPath();
 
             int diameter = radius * 2;
-            path.AddArc(rect.X, rect.Y, diameter, diameter, 180, 90);                          // esquina superior izquierda
-            path.AddArc(rect.Right - diameter, rect.Y, diameter, diameter, 270, 90);          // esquina superior derecha
-            path.AddArc(rect.Right - diameter, rect.Bottom - diameter, diameter, diameter, 0, 90);  // esquina inferior derecha
-            path.AddArc(rect.X, rect.Bottom - diameter, diameter, diameter, 90, 90);           // esquina inferior izquierda
-            path.CloseAllFigures();
+            draw.AddArc(rect.X, rect.Y, diameter, diameter, 180, 90);                          // esquina superior izquierda
+            draw.AddArc(rect.Right - diameter, rect.Y, diameter, diameter, 270, 90);          // esquina superior derecha
+            draw.AddArc(rect.Right - diameter, rect.Bottom - diameter, diameter, diameter, 0, 90);  // esquina inferior derecha
+            draw.AddArc(rect.X, rect.Bottom - diameter, diameter, diameter, 90, 90);           // esquina inferior izquierda
+            draw.CloseAllFigures();
 
-            pb.Region = new Region(path);
+            pb.Region = new Region(draw);
+        }
+        private void SetRoundedLabel(Label lbl, int radius)
+        {
+            var rect = new Rectangle(0, 0, lbl.Width, lbl.Height);
+            var draw = new System.Drawing.Drawing2D.GraphicsPath();
+
+            int diameter = radius * 2;
+            draw.AddArc(rect.X, rect.Y, diameter, diameter, 180, 90);                          // esquina superior izquierda
+            draw.AddArc(rect.Right - diameter, rect.Y, diameter, diameter, 270, 90);          // esquina superior derecha
+            draw.AddArc(rect.Right - diameter, rect.Bottom - diameter, diameter, diameter, 0, 90);  // esquina inferior derecha
+            draw.AddArc(rect.X, rect.Bottom - diameter, diameter, diameter, 90, 90);           // esquina inferior izquierda
+            draw.CloseAllFigures();
+
+            lbl.Region = new Region(draw);
         }
         public void FeederMenu()
         {
@@ -143,6 +180,15 @@ namespace Rockit
                     cursor = cursor - 8;
                     ClearMenu();
                 }
+                if (((int)Math.Ceiling((double)cursor / 8) < 1))
+                {
+                    picturePrev.Visible = false;
+                }
+                if (((int)Math.Ceiling((double)cursor / 8) == pages - 2))
+                {
+                    pictureNext.Visible = true;
+                }
+
                 RefreshMenu();
             }
             else if (e.KeyCode == Keys.Add)
@@ -150,14 +196,23 @@ namespace Rockit
                 if ((int)Math.Ceiling((double)cursor / 8) != pages - 1)
                 {
                     cursor = cursor + 8;
+                    pictureNext.Visible = true;
                     ClearMenu();
+                }
+
+                if (((int)Math.Ceiling((double)cursor / 8) == 1))
+                {
+                    picturePrev.Visible = true;
+                }
+                if (((int)Math.Ceiling((double)cursor / 8) == pages - 1))
+                {
+                    pictureNext.Visible = false;
                 }
                 RefreshMenu();
             }
             else if (e.KeyCode == Keys.Multiply)
             {
                 MessageBox.Show("Search");
-                FeederMenu();
             }
             else if (e.KeyCode == Keys.F5)
             {
@@ -166,7 +221,30 @@ namespace Rockit
             else if (e.KeyCode == Keys.F6)
             {
                 Loader();
-                //LoadData();
+            }
+            else if (e.KeyCode == Keys.Back)
+            {
+                if (key.Length > 0)
+                {
+                    key = key.Substring(0, key.Length - 1);
+                    keylabel.Text = key;
+                    startkeyresponse();
+                }
+                else
+                {
+                    keyresponse.Stop();
+                }
+                
+            }
+            else if (e.KeyCode >= Keys.NumPad0 && e.KeyCode <= Keys.NumPad9)
+            {
+                int numPressed = e.KeyCode - Keys.NumPad0;
+                if(key.Length<4) //Parametro
+                {
+                    key = key + (int)numPressed;
+                    keylabel.Text = key;
+                    startkeyresponse();
+                }
             }
         }
         public void Loader()
@@ -231,23 +309,16 @@ namespace Rockit
             MessageBox.Show("Carga completa");
             RefreshMenu();
         }
-        private void CounterShow(string n)
+        private void SelectArtist()
         {
-            switch (n)
-            {
-                case "artist":
-                    MessageBox.Show(ArtistStore.ListOfArtist != null ? ArtistStore.ListOfArtist.Count.ToString() : "No hay artistas aun");
-                    break;
-                case "songs":
-                    MessageBox.Show(SongStore.ListOfSongs != null ? SongStore.ListOfSongs.Count.ToString() : "No hay artistas aun");
-                    break;
-            }
+
         }
         public void RefreshMenu()
         {
             if (ArtistStore.ListOfArtist.Count > 0)
             {
                 pages = (int)Math.Ceiling((double)ArtistStore.ListOfArtist.Count / 8);
+                pagelabel.Text = "Pag: " + ((int)Math.Ceiling((double)cursor / 8)+1) + "/" + pages;
 
                 // Declarar elementos dinamicos
                 var pictureBoxes = new List<PictureBox>
@@ -277,17 +348,17 @@ namespace Rockit
                     try
                     {
                         labels[i].Text = name;
+                        labels[i].BackColor = Color.FromArgb(26, 0, 0, 0);
+                        idlabels[i].BackColor = Color.FromArgb(46, 0, 0, 0);
                         idlabels[i].Text = id.ToString();
                         if (System.IO.File.Exists(path))
                         {
-                            LoadPictureBox(pictureBoxes[i],path);
+                            LoadPictureBox(pictureBoxes[i], path);
                         }
                         else
                         {
-                            string projectPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "..", "..", "..");
-                            path = Path.Combine(projectPath, "Resources", "portadadefault.png");
-                            string fullpath = Path.GetFullPath(path);
-                            LoadPictureBox(pictureBoxes[i], fullpath);
+                            string imagepath = Path.GetFullPath(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"..\..\..\Resources\Images\portadadefault.png"));
+                            LoadPictureBox(pictureBoxes[i], imagepath);
                         }
                     }
                     catch
@@ -319,8 +390,28 @@ namespace Rockit
                 pic.Image = null;
 
             foreach (var lbl in labels)
+            {
                 lbl.Text = string.Empty;
-
+                lbl.BackColor = Color.FromArgb(0, 0, 0, 0); 
+            }
+        }
+        private void keyresponse_Tick(object sender, EventArgs e)
+        {
+            keylabel.Text = "";
+            keyresponse.Stop();
+            MessageBox.Show(key);
+        }
+        private void startkeyresponse()
+        {
+            if (keyresponse.Enabled)
+            {
+                keyresponse.Stop();
+                keyresponse.Start();
+            }
+            else
+            {
+                keyresponse.Start();
+            }
         }
         public static class FontLoader
         {
@@ -328,7 +419,8 @@ namespace Rockit
 
             public static FontFamily LoadFont()
             {
-                string leaguespartan = Path.GetFullPath(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"..\..\..\Resources\Fonts\LeagueSpartan-SemiBold.ttf"));
+                string leaguespartan = Path.GetFullPath(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"..\..\..\Resources\Fonts\LeagueSpartan-Bold.ttf"));
+                string bungee = Path.GetFullPath(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"..\..\..\Resources\Fonts\Bungee-Regular.ttf"));
 
                 FontCollection.AddFontFile(leaguespartan);
 
@@ -366,10 +458,6 @@ namespace Rockit
             Image img = await LoadImageAsync(path);
             pic.Image = img;
             pic.SizeMode = PictureBoxSizeMode.StretchImage;
-        }
-        private void Form1_Load(object sender, EventArgs e)
-        {
-
         }
     }
 }

@@ -10,10 +10,22 @@
 
   <ItemGroup>
     <None Remove="Resources\Fonts\LeagueSpartan-SemiBold.ttf" />
+    <None Remove="Resources\images\finder.png" />
+    <None Remove="Resources\images\lblback.png" />
+    <None Remove="Resources\Images\lblbacktransp.png" />
+    <None Remove="Resources\images\next.png" />
+    <None Remove="Resources\images\prev.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="Resources\images\lblback.png" />
   </ItemGroup>
 
   <ItemGroup>
     <EmbeddedResource Include="Resources\Fonts\LeagueSpartan-SemiBold.ttf" />
+    <EmbeddedResource Include="Resources\Images\lblbacktransp.png" />
+    <EmbeddedResource Include="Resources\images\next.png" />
+    <EmbeddedResource Include="Resources\images\prev.png" />
   </ItemGroup>
 
   <ItemGroup>
@@ -25,6 +37,10 @@
     <PackageReference Include="Microsoft.EntityFrameworkCore.Proxies" Version="9.0.5" />
     <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="9.0.4" />
     <PackageReference Include="ReaLTaiizor" Version="3.8.1.2" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="Resources\images\finder.png" />
   </ItemGroup>
 
   <ItemGroup>

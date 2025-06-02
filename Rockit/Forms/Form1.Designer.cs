@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
             picArtist1 = new PictureBox();
             picArtist2 = new PictureBox();
             picArtist3 = new PictureBox();
@@ -54,6 +55,10 @@
             idlabel8 = new Label();
             titlePanel = new Panel();
             tableLayoutPanel1 = new TableLayoutPanel();
+            keylabel = new Label();
+            pictureNext = new PictureBox();
+            picturePrev = new PictureBox();
+            pagelabel = new Label();
             ((System.ComponentModel.ISupportInitialize)picArtist1).BeginInit();
             ((System.ComponentModel.ISupportInitialize)picArtist2).BeginInit();
             ((System.ComponentModel.ISupportInitialize)picArtist3).BeginInit();
@@ -63,85 +68,87 @@
             ((System.ComponentModel.ISupportInitialize)picArtist6).BeginInit();
             ((System.ComponentModel.ISupportInitialize)picArtist5).BeginInit();
             tableLayoutPanel1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)pictureNext).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)picturePrev).BeginInit();
             SuspendLayout();
             // 
             // picArtist1
             // 
             picArtist1.Dock = DockStyle.Fill;
-            picArtist1.Location = new Point(95, 56);
-            picArtist1.Margin = new Padding(95, 20, 95, 20);
+            picArtist1.Location = new Point(85, 34);
+            picArtist1.Margin = new Padding(85, 0, 85, 0);
             picArtist1.Name = "picArtist1";
-            picArtist1.Size = new Size(247, 248);
+            picArtist1.Size = new Size(267, 274);
             picArtist1.TabIndex = 1;
             picArtist1.TabStop = false;
             // 
             // picArtist2
             // 
             picArtist2.Dock = DockStyle.Fill;
-            picArtist2.Location = new Point(532, 56);
-            picArtist2.Margin = new Padding(95, 20, 95, 20);
+            picArtist2.Location = new Point(522, 34);
+            picArtist2.Margin = new Padding(85, 0, 85, 0);
             picArtist2.Name = "picArtist2";
-            picArtist2.Size = new Size(247, 248);
+            picArtist2.Size = new Size(267, 274);
             picArtist2.TabIndex = 2;
             picArtist2.TabStop = false;
             // 
             // picArtist3
             // 
             picArtist3.Dock = DockStyle.Fill;
-            picArtist3.Location = new Point(969, 56);
-            picArtist3.Margin = new Padding(95, 20, 95, 20);
+            picArtist3.Location = new Point(959, 34);
+            picArtist3.Margin = new Padding(85, 0, 85, 0);
             picArtist3.Name = "picArtist3";
-            picArtist3.Size = new Size(247, 248);
+            picArtist3.Size = new Size(267, 274);
             picArtist3.TabIndex = 3;
             picArtist3.TabStop = false;
             // 
             // picArtist4
             // 
             picArtist4.Dock = DockStyle.Fill;
-            picArtist4.Location = new Point(1406, 56);
-            picArtist4.Margin = new Padding(95, 20, 95, 20);
+            picArtist4.Location = new Point(1396, 34);
+            picArtist4.Margin = new Padding(85, 0, 85, 0);
             picArtist4.Name = "picArtist4";
-            picArtist4.Size = new Size(248, 248);
+            picArtist4.Size = new Size(268, 274);
             picArtist4.TabIndex = 4;
             picArtist4.TabStop = false;
             // 
             // picArtist8
             // 
             picArtist8.Dock = DockStyle.Fill;
-            picArtist8.Location = new Point(1406, 416);
-            picArtist8.Margin = new Padding(95, 20, 95, 20);
+            picArtist8.Location = new Point(1396, 410);
+            picArtist8.Margin = new Padding(85, 0, 85, 0);
             picArtist8.Name = "picArtist8";
-            picArtist8.Size = new Size(248, 248);
+            picArtist8.Size = new Size(268, 274);
             picArtist8.TabIndex = 8;
             picArtist8.TabStop = false;
             // 
             // picArtist7
             // 
             picArtist7.Dock = DockStyle.Fill;
-            picArtist7.Location = new Point(969, 416);
-            picArtist7.Margin = new Padding(95, 20, 95, 20);
+            picArtist7.Location = new Point(959, 410);
+            picArtist7.Margin = new Padding(85, 0, 85, 0);
             picArtist7.Name = "picArtist7";
-            picArtist7.Size = new Size(247, 248);
+            picArtist7.Size = new Size(267, 274);
             picArtist7.TabIndex = 7;
             picArtist7.TabStop = false;
             // 
             // picArtist6
             // 
             picArtist6.Dock = DockStyle.Fill;
-            picArtist6.Location = new Point(532, 416);
-            picArtist6.Margin = new Padding(95, 20, 95, 20);
+            picArtist6.Location = new Point(522, 410);
+            picArtist6.Margin = new Padding(85, 0, 85, 0);
             picArtist6.Name = "picArtist6";
-            picArtist6.Size = new Size(247, 248);
+            picArtist6.Size = new Size(267, 274);
             picArtist6.TabIndex = 6;
             picArtist6.TabStop = false;
             // 
             // picArtist5
             // 
             picArtist5.Dock = DockStyle.Fill;
-            picArtist5.Location = new Point(95, 416);
-            picArtist5.Margin = new Padding(95, 20, 95, 20);
+            picArtist5.Location = new Point(85, 410);
+            picArtist5.Margin = new Padding(85, 0, 85, 0);
             picArtist5.Name = "picArtist5";
-            picArtist5.Size = new Size(247, 248);
+            picArtist5.Size = new Size(267, 274);
             picArtist5.TabIndex = 5;
             picArtist5.TabStop = false;
             // 
@@ -150,10 +157,10 @@
             label1.AutoSize = true;
             label1.Dock = DockStyle.Fill;
             label1.ForeColor = Color.White;
-            label1.Location = new Point(95, 324);
+            label1.Location = new Point(95, 308);
             label1.Margin = new Padding(95, 0, 95, 0);
             label1.Name = "label1";
-            label1.Size = new Size(247, 36);
+            label1.Size = new Size(247, 34);
             label1.TabIndex = 9;
             label1.Text = "label1";
             label1.TextAlign = ContentAlignment.TopCenter;
@@ -163,10 +170,10 @@
             label2.AutoSize = true;
             label2.Dock = DockStyle.Fill;
             label2.ForeColor = Color.White;
-            label2.Location = new Point(532, 324);
+            label2.Location = new Point(532, 308);
             label2.Margin = new Padding(95, 0, 95, 0);
             label2.Name = "label2";
-            label2.Size = new Size(247, 36);
+            label2.Size = new Size(247, 34);
             label2.TabIndex = 10;
             label2.Text = "label2";
             label2.TextAlign = ContentAlignment.TopCenter;
@@ -176,10 +183,10 @@
             label3.AutoSize = true;
             label3.Dock = DockStyle.Fill;
             label3.ForeColor = Color.White;
-            label3.Location = new Point(969, 324);
+            label3.Location = new Point(969, 308);
             label3.Margin = new Padding(95, 0, 95, 0);
             label3.Name = "label3";
-            label3.Size = new Size(247, 36);
+            label3.Size = new Size(247, 34);
             label3.TabIndex = 11;
             label3.Text = "label3";
             label3.TextAlign = ContentAlignment.TopCenter;
@@ -189,10 +196,10 @@
             label4.AutoSize = true;
             label4.Dock = DockStyle.Fill;
             label4.ForeColor = Color.White;
-            label4.Location = new Point(1406, 324);
+            label4.Location = new Point(1406, 308);
             label4.Margin = new Padding(95, 0, 95, 0);
             label4.Name = "label4";
-            label4.Size = new Size(248, 36);
+            label4.Size = new Size(248, 34);
             label4.TabIndex = 12;
             label4.Text = "label4";
             label4.TextAlign = ContentAlignment.TopCenter;
@@ -251,24 +258,28 @@
             // 
             // idlabel1
             // 
+            idlabel1.AutoEllipsis = true;
             idlabel1.AutoSize = true;
+            idlabel1.BackColor = Color.Transparent;
             idlabel1.Dock = DockStyle.Fill;
-            idlabel1.Location = new Point(95, 0);
-            idlabel1.Margin = new Padding(95, 0, 95, 0);
+            idlabel1.FlatStyle = FlatStyle.Flat;
+            idlabel1.ForeColor = Color.White;
+            idlabel1.Location = new Point(160, 0);
+            idlabel1.Margin = new Padding(160, 0, 160, 0);
             idlabel1.Name = "idlabel1";
-            idlabel1.Size = new Size(247, 36);
+            idlabel1.Size = new Size(117, 34);
             idlabel1.TabIndex = 17;
             idlabel1.Text = "label9";
-            idlabel1.TextAlign = ContentAlignment.BottomLeft;
+            idlabel1.TextAlign = ContentAlignment.MiddleCenter;
             // 
             // idlabel2
             // 
             idlabel2.AutoSize = true;
             idlabel2.Dock = DockStyle.Fill;
-            idlabel2.Location = new Point(532, 0);
-            idlabel2.Margin = new Padding(95, 0, 95, 0);
+            idlabel2.Location = new Point(597, 0);
+            idlabel2.Margin = new Padding(160, 0, 160, 0);
             idlabel2.Name = "idlabel2";
-            idlabel2.Size = new Size(247, 36);
+            idlabel2.Size = new Size(117, 34);
             idlabel2.TabIndex = 18;
             idlabel2.Text = "label9";
             idlabel2.TextAlign = ContentAlignment.BottomLeft;
@@ -277,10 +288,10 @@
             // 
             idlabel3.AutoSize = true;
             idlabel3.Dock = DockStyle.Fill;
-            idlabel3.Location = new Point(969, 0);
-            idlabel3.Margin = new Padding(95, 0, 95, 0);
+            idlabel3.Location = new Point(1034, 0);
+            idlabel3.Margin = new Padding(160, 0, 160, 0);
             idlabel3.Name = "idlabel3";
-            idlabel3.Size = new Size(247, 36);
+            idlabel3.Size = new Size(117, 34);
             idlabel3.TabIndex = 19;
             idlabel3.Text = "label10";
             idlabel3.TextAlign = ContentAlignment.BottomLeft;
@@ -289,10 +300,10 @@
             // 
             idlabel4.AutoSize = true;
             idlabel4.Dock = DockStyle.Fill;
-            idlabel4.Location = new Point(1406, 0);
-            idlabel4.Margin = new Padding(95, 0, 95, 0);
+            idlabel4.Location = new Point(1471, 0);
+            idlabel4.Margin = new Padding(160, 0, 160, 0);
             idlabel4.Name = "idlabel4";
-            idlabel4.Size = new Size(248, 36);
+            idlabel4.Size = new Size(118, 34);
             idlabel4.TabIndex = 20;
             idlabel4.Text = "label11";
             idlabel4.TextAlign = ContentAlignment.BottomLeft;
@@ -301,10 +312,10 @@
             // 
             idlabel5.AutoSize = true;
             idlabel5.Dock = DockStyle.Fill;
-            idlabel5.Location = new Point(95, 360);
-            idlabel5.Margin = new Padding(95, 0, 95, 0);
+            idlabel5.Location = new Point(160, 376);
+            idlabel5.Margin = new Padding(160, 0, 160, 0);
             idlabel5.Name = "idlabel5";
-            idlabel5.Size = new Size(247, 36);
+            idlabel5.Size = new Size(117, 34);
             idlabel5.TabIndex = 21;
             idlabel5.Text = "label12";
             idlabel5.TextAlign = ContentAlignment.BottomLeft;
@@ -313,10 +324,10 @@
             // 
             idlabel6.AutoSize = true;
             idlabel6.Dock = DockStyle.Fill;
-            idlabel6.Location = new Point(532, 360);
-            idlabel6.Margin = new Padding(95, 0, 95, 0);
+            idlabel6.Location = new Point(597, 376);
+            idlabel6.Margin = new Padding(160, 0, 160, 0);
             idlabel6.Name = "idlabel6";
-            idlabel6.Size = new Size(247, 36);
+            idlabel6.Size = new Size(117, 34);
             idlabel6.TabIndex = 22;
             idlabel6.Text = "label13";
             idlabel6.TextAlign = ContentAlignment.BottomLeft;
@@ -325,10 +336,10 @@
             // 
             idlabel7.AutoSize = true;
             idlabel7.Dock = DockStyle.Fill;
-            idlabel7.Location = new Point(969, 360);
-            idlabel7.Margin = new Padding(95, 0, 95, 0);
+            idlabel7.Location = new Point(1034, 376);
+            idlabel7.Margin = new Padding(160, 0, 160, 0);
             idlabel7.Name = "idlabel7";
-            idlabel7.Size = new Size(247, 36);
+            idlabel7.Size = new Size(117, 34);
             idlabel7.TabIndex = 23;
             idlabel7.Text = "label14";
             idlabel7.TextAlign = ContentAlignment.BottomLeft;
@@ -337,10 +348,10 @@
             // 
             idlabel8.AutoSize = true;
             idlabel8.Dock = DockStyle.Fill;
-            idlabel8.Location = new Point(1406, 360);
-            idlabel8.Margin = new Padding(95, 0, 95, 0);
+            idlabel8.Location = new Point(1471, 376);
+            idlabel8.Margin = new Padding(160, 0, 160, 0);
             idlabel8.Name = "idlabel8";
-            idlabel8.Size = new Size(248, 36);
+            idlabel8.Size = new Size(118, 34);
             idlabel8.TabIndex = 24;
             idlabel8.Text = "label15";
             idlabel8.TextAlign = ContentAlignment.BottomLeft;
@@ -365,53 +376,102 @@
             tableLayoutPanel1.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 25F));
             tableLayoutPanel1.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 25F));
             tableLayoutPanel1.Controls.Add(idlabel1, 0, 0);
-            tableLayoutPanel1.Controls.Add(idlabel2, 1, 0);
-            tableLayoutPanel1.Controls.Add(picArtist8, 3, 4);
-            tableLayoutPanel1.Controls.Add(label8, 3, 5);
-            tableLayoutPanel1.Controls.Add(picArtist7, 2, 4);
-            tableLayoutPanel1.Controls.Add(idlabel8, 3, 3);
-            tableLayoutPanel1.Controls.Add(picArtist6, 1, 4);
-            tableLayoutPanel1.Controls.Add(label7, 2, 5);
-            tableLayoutPanel1.Controls.Add(picArtist5, 0, 4);
-            tableLayoutPanel1.Controls.Add(idlabel3, 2, 0);
-            tableLayoutPanel1.Controls.Add(label6, 1, 5);
-            tableLayoutPanel1.Controls.Add(idlabel7, 2, 3);
-            tableLayoutPanel1.Controls.Add(label5, 0, 5);
-            tableLayoutPanel1.Controls.Add(idlabel4, 3, 0);
-            tableLayoutPanel1.Controls.Add(idlabel6, 1, 3);
-            tableLayoutPanel1.Controls.Add(picArtist2, 1, 1);
-            tableLayoutPanel1.Controls.Add(idlabel5, 0, 3);
-            tableLayoutPanel1.Controls.Add(picArtist3, 2, 1);
-            tableLayoutPanel1.Controls.Add(picArtist4, 3, 1);
-            tableLayoutPanel1.Controls.Add(label1, 0, 2);
-            tableLayoutPanel1.Controls.Add(label2, 1, 2);
-            tableLayoutPanel1.Controls.Add(label4, 3, 2);
-            tableLayoutPanel1.Controls.Add(label3, 2, 2);
             tableLayoutPanel1.Controls.Add(picArtist1, 0, 1);
+            tableLayoutPanel1.Controls.Add(label1, 0, 2);
+            tableLayoutPanel1.Controls.Add(idlabel2, 1, 0);
+            tableLayoutPanel1.Controls.Add(picArtist2, 1, 1);
+            tableLayoutPanel1.Controls.Add(label2, 1, 2);
+            tableLayoutPanel1.Controls.Add(idlabel3, 2, 0);
+            tableLayoutPanel1.Controls.Add(picArtist3, 2, 1);
+            tableLayoutPanel1.Controls.Add(label3, 2, 2);
+            tableLayoutPanel1.Controls.Add(idlabel4, 3, 0);
+            tableLayoutPanel1.Controls.Add(picArtist4, 3, 1);
+            tableLayoutPanel1.Controls.Add(label4, 3, 2);
+            tableLayoutPanel1.Controls.Add(idlabel5, 0, 4);
+            tableLayoutPanel1.Controls.Add(picArtist5, 0, 5);
+            tableLayoutPanel1.Controls.Add(label5, 0, 6);
+            tableLayoutPanel1.Controls.Add(idlabel6, 1, 4);
+            tableLayoutPanel1.Controls.Add(picArtist6, 1, 5);
+            tableLayoutPanel1.Controls.Add(label6, 1, 6);
+            tableLayoutPanel1.Controls.Add(idlabel7, 2, 4);
+            tableLayoutPanel1.Controls.Add(picArtist7, 2, 5);
+            tableLayoutPanel1.Controls.Add(label7, 2, 6);
+            tableLayoutPanel1.Controls.Add(idlabel8, 3, 4);
+            tableLayoutPanel1.Controls.Add(picArtist8, 3, 5);
+            tableLayoutPanel1.Controls.Add(label8, 3, 6);
             tableLayoutPanel1.Location = new Point(90, 200);
             tableLayoutPanel1.Name = "tableLayoutPanel1";
             tableLayoutPanel1.RowCount = 6;
-            tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Percent, 5F));
-            tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Percent, 40F));
-            tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Percent, 5F));
-            tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Percent, 5F));
-            tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Percent, 40F));
-            tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Percent, 5F));
+            tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Percent, 4.76190472F));
+            tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Percent, 38.0952377F));
+            tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Percent, 4.76190472F));
+            tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Percent, 4.76190472F));
+            tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Percent, 4.76190472F));
+            tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Percent, 38.0952377F));
+            tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Percent, 4.76190472F));
+            tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Absolute, 20F));
             tableLayoutPanel1.Size = new Size(1749, 720);
             tableLayoutPanel1.TabIndex = 28;
+            // 
+            // keylabel
+            // 
+            keylabel.AutoSize = true;
+            keylabel.BackColor = Color.Transparent;
+            keylabel.ForeColor = Color.White;
+            keylabel.Location = new Point(885, 60);
+            keylabel.Name = "keylabel";
+            keylabel.Size = new Size(0, 15);
+            keylabel.TabIndex = 29;
+            // 
+            // pictureNext
+            // 
+            pictureNext.BackColor = Color.Transparent;
+            pictureNext.BackgroundImage = (Image)resources.GetObject("pictureNext.BackgroundImage");
+            pictureNext.BackgroundImageLayout = ImageLayout.Stretch;
+            pictureNext.Location = new Point(1845, 526);
+            pictureNext.Name = "pictureNext";
+            pictureNext.Size = new Size(64, 64);
+            pictureNext.TabIndex = 30;
+            pictureNext.TabStop = false;
+            // 
+            // picturePrev
+            // 
+            picturePrev.BackColor = Color.Transparent;
+            picturePrev.BackgroundImage = (Image)resources.GetObject("picturePrev.BackgroundImage");
+            picturePrev.BackgroundImageLayout = ImageLayout.Stretch;
+            picturePrev.Location = new Point(20, 526);
+            picturePrev.Name = "picturePrev";
+            picturePrev.Size = new Size(64, 64);
+            picturePrev.TabIndex = 31;
+            picturePrev.TabStop = false;
+            picturePrev.Visible = false;
+            // 
+            // pagelabel
+            // 
+            pagelabel.AutoSize = true;
+            pagelabel.BackColor = Color.Transparent;
+            pagelabel.ForeColor = Color.White;
+            pagelabel.Location = new Point(930, 980);
+            pagelabel.Name = "pagelabel";
+            pagelabel.Size = new Size(0, 15);
+            pagelabel.TabIndex = 32;
+            pagelabel.TextAlign = ContentAlignment.MiddleCenter;
             // 
             // Form1
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(1920, 1080);
+            Controls.Add(pagelabel);
+            Controls.Add(picturePrev);
+            Controls.Add(pictureNext);
+            Controls.Add(keylabel);
             Controls.Add(tableLayoutPanel1);
             Controls.Add(titlePanel);
             FormBorderStyle = FormBorderStyle.None;
             Name = "Form1";
             StartPosition = FormStartPosition.CenterScreen;
             Text = "Form1";
-            Load += Form1_Load;
             KeyDown += Form1_KeyDown;
             ((System.ComponentModel.ISupportInitialize)picArtist1).EndInit();
             ((System.ComponentModel.ISupportInitialize)picArtist2).EndInit();
@@ -423,7 +483,10 @@
             ((System.ComponentModel.ISupportInitialize)picArtist5).EndInit();
             tableLayoutPanel1.ResumeLayout(false);
             tableLayoutPanel1.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)pictureNext).EndInit();
+            ((System.ComponentModel.ISupportInitialize)picturePrev).EndInit();
             ResumeLayout(false);
+            PerformLayout();
         }
 
         #endregion
@@ -453,5 +516,9 @@
         private Label idlabel8;
         private Panel titlePanel;
         private TableLayoutPanel tableLayoutPanel1;
+        private Label keylabel;
+        private PictureBox pictureNext;
+        private PictureBox picturePrev;
+        private Label pagelabel;
     }
 }
