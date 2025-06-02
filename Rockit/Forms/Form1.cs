@@ -311,7 +311,8 @@ namespace Rockit
         }
         private void SelectArtist()
         {
-
+            ArtistMenu artistMenu = new ArtistMenu(key);
+            artistMenu.Show();
         }
         public void RefreshMenu()
         {
@@ -399,7 +400,7 @@ namespace Rockit
         {
             keylabel.Text = "";
             keyresponse.Stop();
-            MessageBox.Show(key);
+            SelectArtist();
         }
         private void startkeyresponse()
         {
