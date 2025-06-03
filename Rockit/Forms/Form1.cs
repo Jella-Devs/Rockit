@@ -10,6 +10,7 @@ using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
 using System.Security.Cryptography;
 using Timer = System.Windows.Forms.Timer;
+using System.Linq;
 
 namespace Rockit
 {
@@ -17,12 +18,14 @@ namespace Rockit
     {
         // Index para movimiento de paginas del menu
         int pages;
-        int cursor = 0, navigator = 0;
-        string[] letters = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "L", "M", "N", "Ñ", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"];
+        int cursor = 0, navigator = 0, doublecheck = 0;
+        string[] letters = new string[] { "A", "B", "C", "D", "E", "F", "G", "H", "I",
+            "J", "L", "M", "N", "Ñ", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X",
+            "Y", "Z" };
 
         // Clave para seleccionar artista
         string key = string.Empty;
-        private Timer keyresponse;
+        private Timer keyresponse, keyresponse2;
 
         public Form1()
         {
@@ -32,9 +35,14 @@ namespace Rockit
         }
         private void UIMenuDrawer()
         {
+            // Inicializador de Timers
             keyresponse = new Timer();
-            keyresponse.Interval = 2000;
-            keyresponse.Tick += keyresponse_Tick;
+            keyresponse2 = new Timer();
+            keyresponse.Interval = 1000;
+            keyresponse2.Interval = 1000;
+            keyresponse.Tick += Keyresponse_Tick;
+            keyresponse2.Tick += Keyresponse2_Tick;
+
             this.KeyPreview = true;
             this.DoubleBuffered = true; // Para evitar parpadeo
             this.ResizeRedraw = true;   // Redibuja al cambiar tamaño
@@ -55,6 +63,8 @@ namespace Rockit
             keylabel.Font = new Font(leagueSpartan, 38f);
             pagelabel.Font = new Font(leagueSpartan, 12f);
             navlabel.Font = new Font(leagueSpartan, 38f);
+            navlabel.BackColor = Color.FromArgb(45, 0, 0, 0);
+            SetRoundedLabel(navlabel, 8);
             foreach (var pb in pictureBoxes)
             {
                 SetRoundedPictureBox(pb, 20);
@@ -182,15 +192,7 @@ namespace Rockit
                     cursor = cursor - 8;
                     ClearMenu();
                 }
-                if (((int)Math.Ceiling((double)cursor / 8) < 1))
-                {
-                    picturePrev.Visible = false;
-                }
-                if (((int)Math.Ceiling((double)cursor / 8) == pages - 2))
-                {
-                    pictureNext.Visible = true;
-                }
-
+                ButtonVisibility();
                 RefreshMenu();
             }
             else if (e.KeyCode == Keys.Add)
@@ -198,18 +200,9 @@ namespace Rockit
                 if ((int)Math.Ceiling((double)cursor / 8) != pages - 1)
                 {
                     cursor = cursor + 8;
-                    pictureNext.Visible = true;
                     ClearMenu();
                 }
-
-                if (((int)Math.Ceiling((double)cursor / 8) == 1))
-                {
-                    picturePrev.Visible = true;
-                }
-                if (((int)Math.Ceiling((double)cursor / 8) == pages - 1))
-                {
-                    pictureNext.Visible = false;
-                }
+                ButtonVisibility();
                 RefreshMenu();
             }
             else if (e.KeyCode == Keys.Multiply)
@@ -218,10 +211,25 @@ namespace Rockit
             }
             else if (e.KeyCode == Keys.Decimal)
             {
-                if((navigator < letters.Length - 1))
+                if (doublecheck == 0)
+                {
+                    navlabel.Visible = true;
+                    doublecheck++;
+                    startkeyresponse2();
+                }
+                else if ((navigator < letters.Length - 1))
                 {
                     navigator++;
                     navlabel.Text = letters[navigator];
+                    navlabel.Visible = true;
+                    startkeyresponse2();
+                }
+                else
+                {
+                    navigator = 0;
+                    navlabel.Text = letters[navigator];
+                    navlabel.Visible = true;
+                    startkeyresponse2();
                 }
             }
             else if (e.KeyCode == Keys.F5)
@@ -321,8 +329,36 @@ namespace Rockit
         }
         private void SelectArtist()
         {
-            ArtistMenu artistMenu = new ArtistMenu(key);
-            artistMenu.Show();
+            if (int.TryParse(key, out int parsedKey))
+            {
+                var existingArtistID = new HashSet<int>(ArtistStore.ListOfArtist.Select(artist => artist.ArtistId));
+                if (existingArtistID.Contains(parsedKey))
+                {
+                    ArtistMenu artistMenu = new ArtistMenu(key);
+                    artistMenu.Show();
+                }
+                key = "";
+            }
+        }
+        private void NavigatorSelArt()
+        {
+            var artist = ArtistStore.ListOfArtist.FirstOrDefault(a => a.Name.StartsWith(letters[navigator], StringComparison.OrdinalIgnoreCase));
+            if (artist != null)
+            {
+                int artistId = artist.ArtistId;
+                artistId = ((int)Math.Ceiling((double)artistId / 8));
+                cursor = ((artistId - 1) * 8);
+
+                ClearMenu();
+                ButtonVisibility();
+                RefreshMenu();
+            }
+        }
+        private void ButtonVisibility()
+        {
+            int currentPage = (int)Math.Ceiling((double)cursor / 8);
+            pictureNext.Visible = currentPage < pages - 1;
+            picturePrev.Visible = currentPage > 0;
         }
         public void RefreshMenu()
         {
@@ -406,11 +442,19 @@ namespace Rockit
                 lbl.BackColor = Color.FromArgb(0, 0, 0, 0); 
             }
         }
-        private void keyresponse_Tick(object sender, EventArgs e)
+        private void Keyresponse_Tick(object sender, EventArgs e)
         {
-            keylabel.Text = "";
             keyresponse.Stop();
+            keylabel.Text = "";
             SelectArtist();
+        }
+        
+        private void Keyresponse2_Tick(object sender, EventArgs e)
+        {
+            keyresponse2.Stop();
+            navlabel.Visible = false;
+            NavigatorSelArt();
+            doublecheck = 0; 
         }
         private void startkeyresponse()
         {
@@ -422,6 +466,18 @@ namespace Rockit
             else
             {
                 keyresponse.Start();
+            }
+        }
+        private void startkeyresponse2()
+        {
+            if (keyresponse2.Enabled)
+            {
+                keyresponse2.Stop();
+                keyresponse2.Start();
+            }
+            else
+            {
+                keyresponse2.Start();
             }
         }
         public static class FontLoader

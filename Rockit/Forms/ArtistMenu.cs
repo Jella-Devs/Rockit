@@ -67,10 +67,5 @@ namespace Rockit.Forms
             base.OnResize(e);
             ApplyRoundedCorners(30); // Asegura que se mantenga al cambiar de tamaño
         }
-
-        private void tableLayoutPanel2_Paint(object sender, PaintEventArgs e)
-        {
-
-        }
     }
 }
