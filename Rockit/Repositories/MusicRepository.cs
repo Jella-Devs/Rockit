@@ -63,6 +63,12 @@ namespace Rockit.Repositories
                 _context.SaveChanges();
             }
         }
+
+        public Artist GetArtistById(int artistId)
+        {
+            return _context.Artists.FirstOrDefault(a => a.ArtistId == artistId);
+        }
+
         public bool ExistsArtist(int artistId)
         {
             return _context.Artists.Any(a => a.ArtistId == artistId);
@@ -84,6 +90,7 @@ namespace Rockit.Repositories
             _context.Songs.Add(song);
             _context.SaveChanges();
         }
+        
 
         public List<Song> GetSongsByArtistName(string artistName)
         {
