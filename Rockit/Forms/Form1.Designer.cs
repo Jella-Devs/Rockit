@@ -421,8 +421,10 @@
             keylabel.ForeColor = Color.White;
             keylabel.Location = new Point(885, 30);
             keylabel.Name = "keylabel";
+            keylabel.RightToLeft = RightToLeft.Yes;
             keylabel.Size = new Size(0, 15);
             keylabel.TabIndex = 29;
+            keylabel.TextAlign = ContentAlignment.MiddleCenter;
             // 
             // pictureNext
             // 
@@ -460,14 +462,16 @@
             // 
             // navlabel
             // 
-            navlabel.AutoSize = true;
+            navlabel.AutoEllipsis = true;
             navlabel.BackColor = Color.Transparent;
             navlabel.ForeColor = Color.White;
-            navlabel.Location = new Point(930, 89);
+            navlabel.Location = new Point(924, 89);
             navlabel.Name = "navlabel";
-            navlabel.Size = new Size(15, 15);
+            navlabel.Size = new Size(80, 80);
             navlabel.TabIndex = 33;
             navlabel.Text = "A";
+            navlabel.TextAlign = ContentAlignment.MiddleCenter;
+            navlabel.Visible = false;
             // 
             // Form1
             // 
