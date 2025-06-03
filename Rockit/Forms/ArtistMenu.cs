@@ -20,11 +20,14 @@ namespace Rockit.Forms
         {
             InitializeComponent();
             artistkey = key;
+            this.Focus();
             UIMenuDrawer();
 
         }
         private void UIMenuDrawer()
         {
+            this.KeyPreview = true;
+            this.DoubleBuffered = true; // Para evitar parpadeo
             FontFamily leagueSpartan = FontLoader.LoadFont();
             keylabel.Text = artistkey;
             this.BackColor = Color.FromArgb(157, 117, 119);

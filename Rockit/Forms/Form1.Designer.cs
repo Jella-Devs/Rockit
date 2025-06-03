@@ -59,6 +59,7 @@
             pictureNext = new PictureBox();
             picturePrev = new PictureBox();
             pagelabel = new Label();
+            navlabel = new Label();
             ((System.ComponentModel.ISupportInitialize)picArtist1).BeginInit();
             ((System.ComponentModel.ISupportInitialize)picArtist2).BeginInit();
             ((System.ComponentModel.ISupportInitialize)picArtist3).BeginInit();
@@ -418,7 +419,7 @@
             keylabel.AutoSize = true;
             keylabel.BackColor = Color.Transparent;
             keylabel.ForeColor = Color.White;
-            keylabel.Location = new Point(885, 60);
+            keylabel.Location = new Point(885, 30);
             keylabel.Name = "keylabel";
             keylabel.Size = new Size(0, 15);
             keylabel.TabIndex = 29;
@@ -457,11 +458,23 @@
             pagelabel.TabIndex = 32;
             pagelabel.TextAlign = ContentAlignment.MiddleCenter;
             // 
+            // navlabel
+            // 
+            navlabel.AutoSize = true;
+            navlabel.BackColor = Color.Transparent;
+            navlabel.ForeColor = Color.White;
+            navlabel.Location = new Point(930, 89);
+            navlabel.Name = "navlabel";
+            navlabel.Size = new Size(15, 15);
+            navlabel.TabIndex = 33;
+            navlabel.Text = "A";
+            // 
             // Form1
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(1920, 1080);
+            Controls.Add(navlabel);
             Controls.Add(pagelabel);
             Controls.Add(picturePrev);
             Controls.Add(pictureNext);
@@ -520,5 +533,6 @@
         private PictureBox pictureNext;
         private PictureBox picturePrev;
         private Label pagelabel;
+        private Label navlabel;
     }
 }

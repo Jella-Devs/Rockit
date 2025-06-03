@@ -17,7 +17,8 @@ namespace Rockit
     {
         // Index para movimiento de paginas del menu
         int pages;
-        int cursor = 0;
+        int cursor = 0, navigator = 0;
+        string[] letters = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "L", "M", "N", "Ñ", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"];
 
         // Clave para seleccionar artista
         string key = string.Empty;
@@ -53,6 +54,7 @@ namespace Rockit
                 };
             keylabel.Font = new Font(leagueSpartan, 38f);
             pagelabel.Font = new Font(leagueSpartan, 12f);
+            navlabel.Font = new Font(leagueSpartan, 38f);
             foreach (var pb in pictureBoxes)
             {
                 SetRoundedPictureBox(pb, 20);
@@ -213,6 +215,14 @@ namespace Rockit
             else if (e.KeyCode == Keys.Multiply)
             {
                 MessageBox.Show("Search");
+            }
+            else if (e.KeyCode == Keys.Decimal)
+            {
+                if((navigator < letters.Length - 1))
+                {
+                    navigator++;
+                    navlabel.Text = letters[navigator];
+                }
             }
             else if (e.KeyCode == Keys.F5)
             {
