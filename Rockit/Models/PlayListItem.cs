@@ -23,4 +23,9 @@ namespace Rockit.Models
 
         public DateTime AddedAt { get; set; } = DateTime.Now;
     }
+
+    public static class PlaylistStore
+    {
+        public static List<PlayListItem> playlist { get; set; } = new List<PlayListItem>();
+    }
 }

@@ -60,6 +60,7 @@
             picturePrev = new PictureBox();
             pagelabel = new Label();
             navlabel = new Label();
+            mediaPlayer = new AxWMPLib.AxWindowsMediaPlayer();
             ((System.ComponentModel.ISupportInitialize)picArtist1).BeginInit();
             ((System.ComponentModel.ISupportInitialize)picArtist2).BeginInit();
             ((System.ComponentModel.ISupportInitialize)picArtist3).BeginInit();
@@ -71,6 +72,7 @@
             tableLayoutPanel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)pictureNext).BeginInit();
             ((System.ComponentModel.ISupportInitialize)picturePrev).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)mediaPlayer).BeginInit();
             SuspendLayout();
             // 
             // picArtist1
@@ -473,11 +475,21 @@
             navlabel.TextAlign = ContentAlignment.MiddleCenter;
             navlabel.Visible = false;
             // 
+            // mediaPlayer
+            // 
+            mediaPlayer.Enabled = true;
+            mediaPlayer.Location = new Point(90, 935);
+            mediaPlayer.Name = "mediaPlayer";
+            mediaPlayer.OcxState = (AxHost.State)resources.GetObject("mediaPlayer.OcxState");
+            mediaPlayer.Size = new Size(352, 47);
+            mediaPlayer.TabIndex = 34;
+            // 
             // Form1
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(1920, 1080);
+            Controls.Add(mediaPlayer);
             Controls.Add(navlabel);
             Controls.Add(pagelabel);
             Controls.Add(picturePrev);
@@ -502,6 +514,7 @@
             tableLayoutPanel1.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)pictureNext).EndInit();
             ((System.ComponentModel.ISupportInitialize)picturePrev).EndInit();
+            ((System.ComponentModel.ISupportInitialize)mediaPlayer).EndInit();
             ResumeLayout(false);
             PerformLayout();
         }
@@ -538,5 +551,6 @@
         private PictureBox picturePrev;
         private Label pagelabel;
         private Label navlabel;
+        private AxWMPLib.AxWindowsMediaPlayer mediaPlayer;
     }
 }

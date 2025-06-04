@@ -1,5 +1,6 @@
 ﻿using Rockit.Models;
 using Rockit.Repositories;
+using Rockit.Services;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -11,12 +12,15 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using WMPLib;
 using static Rockit.Form1;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Rockit.Forms
 {
     public partial class ArtistMenu : Form
     {
+
         string artistkey;
         private MusicRepository _musicRepository;
         int currentIndex = 0;
@@ -115,8 +119,7 @@ namespace Rockit.Forms
                 var selectedItem = listView1.SelectedItems[0];
                 string tagValue = selectedItem.Tag?.ToString();
 
-                MessageBox.Show($"El path es:\n{tagValue}");
-                e.Handled = true;
+                MusicPlayerService.AgregarCancionAPlaylist(selectedItem.SubItems[1].Text, tagValue);
             }
 
         }

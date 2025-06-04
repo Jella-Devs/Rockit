@@ -1,16 +1,18 @@
 using Rockit.Forms;
 using Rockit.Models;
 using Rockit.Repositories;
+using Rockit.Services;
 using System.ComponentModel.DataAnnotations;
-using System.Drawing.Text;
-using System.Runtime.InteropServices;
-using System.Windows.Forms;
-using System.IO;
 using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
-using System.Security.Cryptography;
-using Timer = System.Windows.Forms.Timer;
+using System.Drawing.Text;
+using System.IO;
 using System.Linq;
+using System.Runtime.InteropServices;
+using System.Security.Cryptography;
+using System.Windows.Forms;
+using WMPLib;
+using Timer = System.Windows.Forms.Timer;
 
 namespace Rockit
 {
@@ -42,7 +44,7 @@ namespace Rockit
             keyresponse2.Interval = 1000;
             keyresponse.Tick += Keyresponse_Tick;
             keyresponse2.Tick += Keyresponse2_Tick;
-
+            MusicPlayerService.Inicializar(this.mediaPlayer);
             this.KeyPreview = true;
             this.DoubleBuffered = true; // Para evitar parpadeo
             this.ResizeRedraw = true;   // Redibuja al cambiar tamaño
@@ -252,12 +254,12 @@ namespace Rockit
                 {
                     keyresponse.Stop();
                 }
-                
+
             }
             else if (e.KeyCode >= Keys.NumPad0 && e.KeyCode <= Keys.NumPad9)
             {
                 int numPressed = e.KeyCode - Keys.NumPad0;
-                if(key.Length<4) //Parametro
+                if (key.Length < 4) //Parametro
                 {
                     key = key + (int)numPressed;
                     keylabel.Text = key;
@@ -365,7 +367,7 @@ namespace Rockit
             if (ArtistStore.ListOfArtist.Count > 0)
             {
                 pages = (int)Math.Ceiling((double)ArtistStore.ListOfArtist.Count / 8);
-                pagelabel.Text = "Pag: " + ((int)Math.Ceiling((double)cursor / 8)+1) + "/" + pages;
+                pagelabel.Text = "Pag: " + ((int)Math.Ceiling((double)cursor / 8) + 1) + "/" + pages;
 
                 // Declarar elementos dinamicos
                 var pictureBoxes = new List<PictureBox>
@@ -439,7 +441,7 @@ namespace Rockit
             foreach (var lbl in labels)
             {
                 lbl.Text = string.Empty;
-                lbl.BackColor = Color.FromArgb(0, 0, 0, 0); 
+                lbl.BackColor = Color.FromArgb(0, 0, 0, 0);
             }
         }
         private void Keyresponse_Tick(object sender, EventArgs e)
@@ -448,13 +450,13 @@ namespace Rockit
             keylabel.Text = "";
             SelectArtist();
         }
-        
+
         private void Keyresponse2_Tick(object sender, EventArgs e)
         {
             keyresponse2.Stop();
             navlabel.Visible = false;
             NavigatorSelArt();
-            doublecheck = 0; 
+            doublecheck = 0;
         }
         private void startkeyresponse()
         {
@@ -526,5 +528,6 @@ namespace Rockit
             pic.Image = img;
             pic.SizeMode = PictureBoxSizeMode.StretchImage;
         }
+        
     }
 }
