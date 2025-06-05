@@ -225,7 +225,10 @@ namespace Rockit
             }
             else if (e.KeyCode == Keys.K)
             {
-                playerService.Stop();
+
+                playerService.ClearPlaylist();
+
+
             }
             else if (e.KeyCode == Keys.N)
             {

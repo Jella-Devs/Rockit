@@ -86,18 +86,26 @@ namespace Rockit.Services
             Play();
         }
         public void Stop()
+        {
+            if (outputDevice != null)
             {
-                if (outputDevice != null)
-                {
-                    skipPlaybackStopped = true; // Ignora el evento en este caso
-                    outputDevice.Stop();
-                }
-
-                audioFile?.Dispose();
-                outputDevice?.Dispose();
+                skipPlaybackStopped = true; // Ignora el evento en este caso
+                outputDevice.Stop();
             }
-            public void Skip()
-            {
+
+            audioFile?.Dispose();
+            outputDevice?.Dispose();
+            
+        }
+        public void ClearPlaylist()
+        {
+            Stop();
+            PlaylistStore.playlist.Clear();
+            isPlaying = false;
+            mainForm.StatusPlayerinLabels();
+        }
+        public void Skip()
+        {
             Stop();
 
             if (PlaylistStore.playlist.Count == 0)
