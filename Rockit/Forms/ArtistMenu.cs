@@ -14,6 +14,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using static Rockit.Form1;
+using static Rockit.Forms.ToastForms.FormConfirmToast;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Rockit.Forms
@@ -89,7 +90,7 @@ namespace Rockit.Forms
                 listView1.Focus();
             }
         }
-        private void ArtistMenu_KeyDown(object sender, KeyEventArgs e)
+        private async void ArtistMenu_KeyDown(object sender, KeyEventArgs e)
         {
             if (listView1.Items.Count == 0) return;
 
@@ -103,7 +104,11 @@ namespace Rockit.Forms
             {
                 this.Close();
             }
-            
+            else if (e.KeyCode == Keys.Back)
+            {
+                this.Close();
+            }
+
             if (e.KeyCode == Keys.Oemplus || e.KeyCode == Keys.Add) // Tecla "+"
             {
                 if (currentIndex < listView1.Items.Count - 1)
@@ -128,7 +133,11 @@ namespace Rockit.Forms
             {
                 var selectedItem = listView1.SelectedItems[0];
                 string tagValue = selectedItem.Tag?.ToString();
-                playerService.AgregarCancionAPlaylist(selectedItem.SubItems[1].Text, tagValue);
+
+                if (ToastHelper.MostrarConfirmacion(selectedItem.SubItems[1].Text))
+                {
+                    playerService.AgregarCancionAPlaylist(selectedItem.SubItems[1].Text, tagValue);
+                }
             }
         }
         private void ApplyRoundedCorners(int radius)
