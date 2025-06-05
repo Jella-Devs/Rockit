@@ -70,8 +70,10 @@ namespace Rockit
             ANameLabel.Font = new Font(leagueSpartan, 12f);
             LegendLabel.Font = new Font(leagueSpartan, 16f);
             navlabel.BackColor = Color.FromArgb(45, 0, 0, 0);
+            ANameLabel.BackColor = Color.FromArgb(65, 0, 0, 0);
             tableLayoutPanel3.BackColor = Color.FromArgb(20, 0, 0, 0);
             SetRoundedLabel(navlabel, 8);
+            SetRoundedTableLayoutUpperCorners(tableLayoutPanel3, 32);
             foreach (var pb in pictureBoxes)
             {
                 SetRoundedPictureBox(pb, 20);
@@ -184,6 +186,25 @@ namespace Rockit
 
             lbl.Region = new Region(draw);
         }
+        private void SetRoundedTableLayoutUpperCorners(TableLayoutPanel panel, int radius)
+        {
+            GraphicsPath path = new GraphicsPath();
+
+            Rectangle bounds = panel.ClientRectangle;
+
+            // Esquinas superiores redondeadas
+            path.AddArc(bounds.X, bounds.Y, radius * 2, radius * 2, 180, 90);
+            path.AddArc(bounds.Right - radius * 2, bounds.Y, radius * 2, radius * 2, 270, 90);
+
+            // Lados
+            path.AddLine(bounds.Right, bounds.Y + radius, bounds.Right, bounds.Bottom);
+            path.AddLine(bounds.Right, bounds.Bottom, bounds.X, bounds.Bottom);
+            path.AddLine(bounds.X, bounds.Bottom, bounds.X, bounds.Y + radius);
+
+            path.CloseFigure();
+
+            panel.Region = new Region(path);
+        }
         public void FeederMenu()
         {
             Feeder feeder = new Feeder();
@@ -276,7 +297,7 @@ namespace Rockit
 
                 MessageBox.Show(sb.ToString(), "Canciones en la Playlist");
             }
-            else if (e.KeyCode == Keys.Back)
+            else if (e.KeyCode == Keys.Back || e.KeyCode == Keys.Divide)
             {
                 if (key.Length > 0)
                 {
@@ -460,6 +481,7 @@ namespace Rockit
                 //string result = $"{parentFolderName} - {fileNameWithoutExtension}";
                 string result = $"{parentFolderName.Trim()} - {fileNameWithoutExtension.Trim()}";
                 ANameLabel.Text = (result);
+                tableLayoutPanel3.Visible = true;
                 //string imagepath = ArtistStore.ListOfArtist[int.Parse(key)-1].Picture;
                 //LoadPictureBox(playerPic1, imagepath);
             }
@@ -467,6 +489,7 @@ namespace Rockit
             {
                 LegendLabel.Visible = false;
                 ANameLabel.Text = "";
+                tableLayoutPanel3.Visible = false;
                 //playerPic1.Image = null;
             }
         }

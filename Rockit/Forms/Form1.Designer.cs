@@ -463,10 +463,10 @@
             pagelabel.BackColor = Color.Transparent;
             pagelabel.Dock = DockStyle.Fill;
             pagelabel.ForeColor = Color.White;
-            pagelabel.Location = new Point(480, 0);
+            pagelabel.Location = new Point(576, 0);
             pagelabel.Margin = new Padding(0);
             pagelabel.Name = "pagelabel";
-            pagelabel.Size = new Size(960, 22);
+            pagelabel.Size = new Size(768, 22);
             pagelabel.TabIndex = 32;
             pagelabel.TextAlign = ContentAlignment.MiddleCenter;
             // 
@@ -487,9 +487,9 @@
             // 
             tableLayoutPanel2.BackColor = Color.Transparent;
             tableLayoutPanel2.ColumnCount = 3;
-            tableLayoutPanel2.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 25F));
-            tableLayoutPanel2.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 50F));
-            tableLayoutPanel2.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 25F));
+            tableLayoutPanel2.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 30F));
+            tableLayoutPanel2.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 40F));
+            tableLayoutPanel2.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 30F));
             tableLayoutPanel2.Controls.Add(pagelabel, 1, 0);
             tableLayoutPanel2.Controls.Add(playerPic1, 2, 1);
             tableLayoutPanel2.Controls.Add(tableLayoutPanel3, 1, 1);
@@ -507,7 +507,7 @@
             // 
             playerPic1.BackgroundImageLayout = ImageLayout.Stretch;
             playerPic1.Dock = DockStyle.Fill;
-            playerPic1.Location = new Point(1440, 22);
+            playerPic1.Location = new Point(1344, 22);
             playerPic1.Margin = new Padding(0, 0, 850, 0);
             playerPic1.Name = "playerPic1";
             playerPic1.Size = new Size(1, 91);
@@ -522,13 +522,14 @@
             tableLayoutPanel3.Controls.Add(ANameLabel, 0, 1);
             tableLayoutPanel3.Controls.Add(LegendLabel, 0, 0);
             tableLayoutPanel3.Dock = DockStyle.Fill;
-            tableLayoutPanel3.Location = new Point(483, 25);
+            tableLayoutPanel3.Location = new Point(579, 25);
             tableLayoutPanel3.Name = "tableLayoutPanel3";
             tableLayoutPanel3.RowCount = 2;
             tableLayoutPanel3.RowStyles.Add(new RowStyle(SizeType.Percent, 50F));
             tableLayoutPanel3.RowStyles.Add(new RowStyle(SizeType.Percent, 50F));
-            tableLayoutPanel3.Size = new Size(954, 85);
+            tableLayoutPanel3.Size = new Size(762, 85);
             tableLayoutPanel3.TabIndex = 34;
+            tableLayoutPanel3.Visible = false;
             // 
             // ANameLabel
             // 
@@ -540,7 +541,7 @@
             ANameLabel.Margin = new Padding(0);
             ANameLabel.Name = "ANameLabel";
             ANameLabel.RightToLeft = RightToLeft.Yes;
-            ANameLabel.Size = new Size(954, 43);
+            ANameLabel.Size = new Size(762, 43);
             ANameLabel.TabIndex = 31;
             ANameLabel.TextAlign = ContentAlignment.MiddleCenter;
             // 
@@ -554,7 +555,7 @@
             LegendLabel.Margin = new Padding(0);
             LegendLabel.Name = "LegendLabel";
             LegendLabel.RightToLeft = RightToLeft.No;
-            LegendLabel.Size = new Size(954, 42);
+            LegendLabel.Size = new Size(762, 42);
             LegendLabel.TabIndex = 30;
             LegendLabel.Text = "▶️ Está sonando:";
             LegendLabel.TextAlign = ContentAlignment.MiddleCenter;
