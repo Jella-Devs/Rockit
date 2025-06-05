@@ -33,9 +33,9 @@ namespace Rockit
         public Form1()
         {
             InitializeComponent();
+            MusicPlayerService.Instance.SetMainForm(this);
             UIMenuDrawer();
             Loader();
-            MusicPlayerService.Instance.SetMainForm(this);
         }
         private void UIMenuDrawer()
         {
@@ -379,8 +379,27 @@ namespace Rockit
                     }
                 }
             }
+            CargarPlaylistDesdeBaseDeDatos();
             RefreshMenu();
         }
+        private void CargarPlaylistDesdeBaseDeDatos()
+        {
+            var repo = new MusicRepository();
+            var playlistDesdeBD = repo.GetPlaylist();
+
+            if (playlistDesdeBD != null && playlistDesdeBD.Count > 0)
+            {
+                PlaylistStore.playlist = playlistDesdeBD;
+                playerService.isPlaying = true;
+                StatusPlayerinLabels();
+                playerService.Play();
+            }
+            else
+            {
+                PlaylistStore.playlist = new List<PlayListItem>(); // por seguridad, aseguramos una lista vacía
+            }
+        }
+
         private void SelectArtist()
         {
             if (int.TryParse(key, out int parsedKey))

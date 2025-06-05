@@ -1,11 +1,14 @@
-﻿using Rockit.Models;
+﻿using NAudio.Wave;
+using NAudio.Wave.SampleProviders;
+using Rockit.Models;
+using Rockit.Repositories;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using NAudio.Wave;
-using NAudio.Wave.SampleProviders;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement.StartPanel;
 
 namespace Rockit.Services
@@ -19,6 +22,7 @@ namespace Rockit.Services
         private AudioFileReader audioFile;
         private static MusicPlayerService instance;
         private bool skipPlaybackStopped = false;
+        public static MusicRepository musicRepository = new MusicRepository();
 
         private string artistkey;
         public static MusicPlayerService Instance
@@ -70,6 +74,8 @@ namespace Rockit.Services
             if (currentIndex < PlaylistStore.playlist.Count)
             {
                 PlaylistStore.playlist.RemoveAt(currentIndex);
+                PlayListItem currentSong = PlaylistStore.playlist[currentIndex];
+                musicRepository.RemoveToPlaylist(currentSong);
             }
 
             if (PlaylistStore.playlist.Count == 0)
@@ -101,6 +107,7 @@ namespace Rockit.Services
         {
             Stop();
             PlaylistStore.playlist.Clear();
+            musicRepository.ClearPlaylist();
             isPlaying = false;
             mainForm.StatusPlayerinLabels();
         }
@@ -114,6 +121,9 @@ namespace Rockit.Services
             // Eliminar la canción actual solo si está dentro del rango
             if (currentIndex >= 0 && currentIndex < PlaylistStore.playlist.Count)
             {
+
+                PlayListItem currentSong = PlaylistStore.playlist[currentIndex];
+                musicRepository.RemoveToPlaylist(currentSong);
                 PlaylistStore.playlist.RemoveAt(currentIndex);
             }
 
@@ -141,12 +151,14 @@ namespace Rockit.Services
                 SongName = nombre,
                 SongPath = path
             });
+            musicRepository.AddToPlaylist(nombre, path);
             // Solo iniciar la reproducción si no hay nada en reproducción o aún no se ha empezado
             if (!isPlaying)
             {
                 currentIndex = 0;
                 Play();
             }
+
         }
         private void RemoveCurrentSong()
         {

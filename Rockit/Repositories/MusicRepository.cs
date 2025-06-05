@@ -121,6 +121,16 @@ namespace Rockit.Repositories
             _context.SaveChanges();
         }
 
+        public void RemoveToPlaylist(PlayListItem song)
+        {
+            var existing = _context.PlaylistItems.FirstOrDefault(p => p.SongName == song.SongName);
+            if (existing != null)
+            {
+                _context.PlaylistItems.Remove(existing);
+                _context.SaveChanges();
+            }
+        }
+
         public List<PlayListItem> GetPlaylist()
         {
             return _context.PlaylistItems

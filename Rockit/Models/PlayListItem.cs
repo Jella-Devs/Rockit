@@ -21,7 +21,7 @@ namespace Rockit.Models
         [Required]
         public string SongKey => $"{SongName}|{SongPath}";
 
-        public DateTime AddedAt { get; set; } = DateTime.Now;
+        public DateTime AddedAt { get; set; } = DateTime.UtcNow;
     }
 
     public static class PlaylistStore
