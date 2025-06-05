@@ -54,6 +54,7 @@ namespace Rockit.Forms
             );
 
             // Preparar rutas de salida
+
             string finderFolder = Properties.Settings.Default.FindFolderPath;
             string pathFinderResultSongs = Path.Combine(finderFolder, "FinderResultSongs.txt");
             string pathFinderResultArtist = Path.Combine(finderFolder, "FinderResultArtist.txt");
@@ -61,13 +62,11 @@ namespace Rockit.Forms
             if (!File.Exists(pathFinderResultSongs))
             {
                 using FileStream fs = File.Create(pathFinderResultSongs);
-                MessageBox.Show("pathFinderResultSong Creado");
             }
 
             if (!File.Exists(pathFinderResultArtist))
             {
                 using FileStream fa = File.Create(pathFinderResultArtist);
-                MessageBox.Show("pathFinderResultSong Creado");
             }
 
             // Procesar directorios
@@ -83,12 +82,20 @@ namespace Rockit.Forms
                 if (!existingArtistNames.Contains(artistName))
                 {
                     string picturePath = Path.Combine(dir, "portada.jpg");
-                    Artist newArtist = AddArtist(artistName, TempArtistId, picturePath);
-                    ArtistStore.ListOfArtist.Add(newArtist);
-                    newArtists.Add(newArtist);
+                    if (!File.Exists(picturePath))
+                    {
+                        picturePath = Path.GetFullPath(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"..\..\..\Resources\Images\portadadefault.png"));
+                    }
 
-                    existingArtistNames.Add(artistName); // actualizar índice
-                    TempArtistId++; // Avanza el ID 
+                    if (Directory.GetFiles(dir, "*.mp3").Length > 0)
+                    {
+                        Artist newArtist = AddArtist(artistName, TempArtistId, picturePath);
+                        ArtistStore.ListOfArtist.Add(newArtist);
+                        newArtists.Add(newArtist);
+
+                        existingArtistNames.Add(artistName); // actualizar índice
+                        TempArtistId++; // Avanza el ID 
+                    }
                 }
                 // Procesar canciones dentro del directorio
                 foreach (var file in dirInfo.GetFiles("*.mp3"))
@@ -165,69 +172,6 @@ namespace Rockit.Forms
                     break;
             }
         }
-        // DELETE
-        //   private void Cleaner(string[] directories, string pathFinderResultArtist, string pathFinderResultSongs)
-        //   {
-        //       var currentArtistNames = new HashSet<string>(
-        //           directories.Select(dir =>
-        //           {
-        //               var name = new DirectoryInfo(dir.ToString()).Name;
-        //               return name.Contains(" - ") ? name.Split(" -")[0] : name;
-        //           })
-        //       );
-        //       //ArtistStore.ListOfArtist.RemoveAll(a => !currentArtistNames.Contains(a.Name));
-
-
-        //       //var validArtistNames = ArtistStore.ListOfArtist.Select(a => a.Name).ToHashSet();
-        //       //SongStore.ListOfSongs.RemoveAll(s => !validArtistNames.Contains(s.ArtistName));
-
-        //       //// INSERT
-
-
-
-        //       // --- Limpieza en base de datos ---
-        //       var repo = new MusicRepository(); // Asegúrate de que _context esté bien configurado
-
-        //       // Artistas en base de datos
-        //       var dbArtists = repo.GetAllArtists();
-        //       var artistsToDelete = dbArtists
-        //           .Where(a => !currentArtistNames.Contains(a.Name))
-        //           .ToList();
-
-        //       foreach (var artist in artistsToDelete)
-        //       {
-        //           repo.DeleteArtist(artist);
-        //       }
-
-        //       // Canciones en base de datos
-        //       var removedArtistNames = artistsToDelete.Select(a => a.Name).ToHashSet();
-
-        //       using var artistWriter = new StreamWriter(pathFinderResultArtist, append: false);
-
-        //       foreach (var artist in ArtistStore.ListOfArtist)
-        //       {
-        //           artistWriter.WriteLine($"{artist.ArtistId}|{artist.Name}${artist.Picture}");
-        //       }
-
-
-        //       var songsToRemove = repo.GetAllSongs()
-        //.Where(s => removedArtistNames.Contains(s.ArtistName))
-        //.ToList();
-
-
-        //       foreach (var song in songsToRemove)
-        //       {
-        //           repo.DeleteSong(song);
-        //       }
-
-        //       using var songsWriter = new StreamWriter(pathFinderResultSongs, append: false);
-
-        //       foreach (var song in SongStore.ListOfSongs)
-        //       {
-        //           songsWriter.WriteLine(song.SongId + "|" + song.Path + "$" + song.Name + "%" + song.ArtistName);
-        //       }
-        //       repo.SaveChanges();
-        //   }
         private void Cleaner(string[] directories, string pathFinderResultArtist, string pathFinderResultSongs)
         {
             var repo = new MusicRepository();
@@ -280,7 +224,6 @@ namespace Rockit.Forms
                 songWriter.WriteLine($"{song.SongId}|{song.Path}${song.Name}%{song.ArtistName}");
             }
         }
-
         private void SelectSongsFolder()
         {
             string folderPath = Properties.Settings.Default.SongsFolderPath;

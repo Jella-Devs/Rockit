@@ -10,8 +10,8 @@ using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Security.Cryptography;
+using System.Text;
 using System.Windows.Forms;
-using WMPLib;
 using Timer = System.Windows.Forms.Timer;
 
 namespace Rockit
@@ -28,12 +28,14 @@ namespace Rockit
         // Clave para seleccionar artista
         string key = string.Empty;
         private Timer keyresponse, keyresponse2;
+        MusicPlayerService playerService = MusicPlayerService.Instance;
 
         public Form1()
         {
             InitializeComponent();
             UIMenuDrawer();
             Loader();
+            MusicPlayerService.Instance.SetMainForm(this);
         }
         private void UIMenuDrawer()
         {
@@ -44,7 +46,7 @@ namespace Rockit
             keyresponse2.Interval = 1000;
             keyresponse.Tick += Keyresponse_Tick;
             keyresponse2.Tick += Keyresponse2_Tick;
-            MusicPlayerService.Inicializar(this.mediaPlayer);
+
             this.KeyPreview = true;
             this.DoubleBuffered = true; // Para evitar parpadeo
             this.ResizeRedraw = true;   // Redibuja al cambiar tamaño
@@ -65,12 +67,16 @@ namespace Rockit
             keylabel.Font = new Font(leagueSpartan, 38f);
             pagelabel.Font = new Font(leagueSpartan, 12f);
             navlabel.Font = new Font(leagueSpartan, 38f);
+            ANameLabel.Font = new Font(leagueSpartan, 12f);
+            LegendLabel.Font = new Font(leagueSpartan, 16f);
             navlabel.BackColor = Color.FromArgb(45, 0, 0, 0);
+            tableLayoutPanel3.BackColor = Color.FromArgb(20, 0, 0, 0);
             SetRoundedLabel(navlabel, 8);
             foreach (var pb in pictureBoxes)
             {
                 SetRoundedPictureBox(pb, 20);
             }
+            SetRoundedPictureBox(playerPic1, 32);
             foreach (var lbl in labels)
             {
                 lbl.Font = new Font(leagueSpartan, 18f);
@@ -86,6 +92,12 @@ namespace Rockit
             typeof(TableLayoutPanel)
             .GetProperty("DoubleBuffered", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic)
             ?.SetValue(tableLayoutPanel1, true, null);
+            typeof(TableLayoutPanel)
+            .GetProperty("DoubleBuffered", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic)
+            ?.SetValue(tableLayoutPanel2, true, null);
+            typeof(TableLayoutPanel)
+            .GetProperty("DoubleBuffered", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic)
+            ?.SetValue(tableLayoutPanel3, true, null);
         }
         protected override void OnPaintBackground(PaintEventArgs e)
         {
@@ -209,7 +221,15 @@ namespace Rockit
             }
             else if (e.KeyCode == Keys.Multiply)
             {
-                MessageBox.Show("Search");
+                //MessageBox.Show("Search");
+            }
+            else if (e.KeyCode == Keys.K)
+            {
+                playerService.Stop();
+            }
+            else if (e.KeyCode == Keys.N)
+            {
+                playerService.Skip();
             }
             else if (e.KeyCode == Keys.Decimal)
             {
@@ -241,6 +261,17 @@ namespace Rockit
             else if (e.KeyCode == Keys.F6)
             {
                 Loader();
+            }
+            else if (e.KeyCode == Keys.F7)
+            {
+                StringBuilder sb = new StringBuilder();
+
+                for (int i = 0; i < PlaylistStore.playlist.Count; i++)
+                {
+                    sb.AppendLine($"{i + 1}. {PlaylistStore.playlist[i].SongName}");
+                }
+
+                MessageBox.Show(sb.ToString(), "Canciones en la Playlist");
             }
             else if (e.KeyCode == Keys.Back)
             {
@@ -324,9 +355,6 @@ namespace Rockit
                     }
                 }
             }
-
-            MessageBox.Show(Properties.Settings.Default.ArtistCount.ToString());
-            MessageBox.Show("Carga completa");
             RefreshMenu();
         }
         private void SelectArtist()
@@ -367,7 +395,7 @@ namespace Rockit
             if (ArtistStore.ListOfArtist.Count > 0)
             {
                 pages = (int)Math.Ceiling((double)ArtistStore.ListOfArtist.Count / 8);
-                pagelabel.Text = "Pag: " + ((int)Math.Ceiling((double)cursor / 8) + 1) + "/" + pages;
+                pagelabel.Text = "Pág: " + ((int)Math.Ceiling((double)cursor / 8) + 1) + "/" + pages;
 
                 // Declarar elementos dinamicos
                 var pictureBoxes = new List<PictureBox>
@@ -416,6 +444,27 @@ namespace Rockit
                         pictureBoxes[i].Image = null;
                     }
                 }
+            }
+        }
+        public void StatusPlayerinLabels()
+        {
+            if (playerService.isPlaying)
+            {
+                LegendLabel.Visible = true;
+                string fullpath = PlaylistStore.playlist[0].SongPath;
+                string fileNameWithoutExtension = Path.GetFileNameWithoutExtension(fullpath);
+                string parentFolderName = new DirectoryInfo(Path.GetDirectoryName(fullpath)).Name;
+                //string result = $"{parentFolderName} - {fileNameWithoutExtension}";
+                string result = $"{parentFolderName.Trim()} - {fileNameWithoutExtension.Trim()}";
+                ANameLabel.Text = (result);
+                //string imagepath = ArtistStore.ListOfArtist[int.Parse(key)-1].Picture;
+                //LoadPictureBox(playerPic1, imagepath);
+            }
+            else
+            {
+                LegendLabel.Visible = false;
+                ANameLabel.Text = "";
+                //playerPic1.Image = null;
             }
         }
         private void ClearMenu()
@@ -528,6 +577,10 @@ namespace Rockit
             pic.Image = img;
             pic.SizeMode = PictureBoxSizeMode.StretchImage;
         }
-        
+
+        private void tableLayoutPanel2_Paint(object sender, PaintEventArgs e)
+        {
+
+        }
     }
 }

@@ -51,6 +51,7 @@
             // 
             // tableLayoutPanel1
             // 
+            tableLayoutPanel1.BackColor = Color.Transparent;
             tableLayoutPanel1.ColumnCount = 1;
             tableLayoutPanel1.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100F));
             tableLayoutPanel1.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 20F));
@@ -67,17 +68,22 @@
             // 
             // listView1
             // 
-            listView1.BackColor = SystemColors.Menu;
+            listView1.Alignment = ListViewAlignment.SnapToGrid;
+            listView1.BackColor = Color.Black;
+            listView1.BorderStyle = BorderStyle.None;
             listView1.Dock = DockStyle.Fill;
-            listView1.ForeColor = SystemColors.WindowText;
-            listView1.Location = new Point(3, 58);
+            listView1.ForeColor = Color.White;
+            listView1.HeaderStyle = ColumnHeaderStyle.None;
+            listView1.Location = new Point(0, 55);
+            listView1.Margin = new Padding(0, 0, 40, 38);
             listView1.Name = "listView1";
-            listView1.Size = new Size(681, 495);
+            listView1.Size = new Size(647, 463);
             listView1.TabIndex = 31;
             listView1.UseCompatibleStateImageBehavior = false;
             // 
             // tableLayoutPanel2
             // 
+            tableLayoutPanel2.BackColor = Color.Transparent;
             tableLayoutPanel2.ColumnCount = 2;
             tableLayoutPanel2.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 39.759037F));
             tableLayoutPanel2.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 60.240963F));
@@ -98,9 +104,10 @@
             pictureBox1.BackgroundImage = (Image)resources.GetObject("pictureBox1.BackgroundImage");
             pictureBox1.BackgroundImageLayout = ImageLayout.Stretch;
             pictureBox1.Dock = DockStyle.Fill;
-            pictureBox1.Location = new Point(3, 3);
+            pictureBox1.Location = new Point(40, 60);
+            pictureBox1.Margin = new Padding(40, 60, 0, 40);
             pictureBox1.Name = "pictureBox1";
-            pictureBox1.Size = new Size(450, 556);
+            pictureBox1.Size = new Size(416, 462);
             pictureBox1.TabIndex = 32;
             pictureBox1.TabStop = false;
             // 

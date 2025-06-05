@@ -60,7 +60,11 @@
             picturePrev = new PictureBox();
             pagelabel = new Label();
             navlabel = new Label();
-            mediaPlayer = new AxWMPLib.AxWindowsMediaPlayer();
+            tableLayoutPanel2 = new TableLayoutPanel();
+            playerPic1 = new PictureBox();
+            tableLayoutPanel3 = new TableLayoutPanel();
+            ANameLabel = new Label();
+            LegendLabel = new Label();
             ((System.ComponentModel.ISupportInitialize)picArtist1).BeginInit();
             ((System.ComponentModel.ISupportInitialize)picArtist2).BeginInit();
             ((System.ComponentModel.ISupportInitialize)picArtist3).BeginInit();
@@ -72,7 +76,9 @@
             tableLayoutPanel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)pictureNext).BeginInit();
             ((System.ComponentModel.ISupportInitialize)picturePrev).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)mediaPlayer).BeginInit();
+            tableLayoutPanel2.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)playerPic1).BeginInit();
+            tableLayoutPanel3.SuspendLayout();
             SuspendLayout();
             // 
             // picArtist1
@@ -402,9 +408,9 @@
             tableLayoutPanel1.Controls.Add(idlabel8, 3, 4);
             tableLayoutPanel1.Controls.Add(picArtist8, 3, 5);
             tableLayoutPanel1.Controls.Add(label8, 3, 6);
-            tableLayoutPanel1.Location = new Point(90, 200);
+            tableLayoutPanel1.Location = new Point(85, 200);
             tableLayoutPanel1.Name = "tableLayoutPanel1";
-            tableLayoutPanel1.RowCount = 6;
+            tableLayoutPanel1.RowCount = 7;
             tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Percent, 4.76190472F));
             tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Percent, 38.0952377F));
             tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Percent, 4.76190472F));
@@ -421,7 +427,7 @@
             keylabel.AutoSize = true;
             keylabel.BackColor = Color.Transparent;
             keylabel.ForeColor = Color.White;
-            keylabel.Location = new Point(885, 30);
+            keylabel.Location = new Point(883, 30);
             keylabel.Name = "keylabel";
             keylabel.RightToLeft = RightToLeft.Yes;
             keylabel.Size = new Size(0, 15);
@@ -433,7 +439,7 @@
             pictureNext.BackColor = Color.Transparent;
             pictureNext.BackgroundImage = (Image)resources.GetObject("pictureNext.BackgroundImage");
             pictureNext.BackgroundImageLayout = ImageLayout.Stretch;
-            pictureNext.Location = new Point(1845, 526);
+            pictureNext.Location = new Point(1835, 511);
             pictureNext.Name = "pictureNext";
             pictureNext.Size = new Size(64, 64);
             pictureNext.TabIndex = 30;
@@ -444,7 +450,7 @@
             picturePrev.BackColor = Color.Transparent;
             picturePrev.BackgroundImage = (Image)resources.GetObject("picturePrev.BackgroundImage");
             picturePrev.BackgroundImageLayout = ImageLayout.Stretch;
-            picturePrev.Location = new Point(20, 526);
+            picturePrev.Location = new Point(20, 511);
             picturePrev.Name = "picturePrev";
             picturePrev.Size = new Size(64, 64);
             picturePrev.TabIndex = 31;
@@ -455,10 +461,12 @@
             // 
             pagelabel.AutoSize = true;
             pagelabel.BackColor = Color.Transparent;
+            pagelabel.Dock = DockStyle.Fill;
             pagelabel.ForeColor = Color.White;
-            pagelabel.Location = new Point(930, 980);
+            pagelabel.Location = new Point(480, 0);
+            pagelabel.Margin = new Padding(0);
             pagelabel.Name = "pagelabel";
-            pagelabel.Size = new Size(0, 15);
+            pagelabel.Size = new Size(960, 22);
             pagelabel.TabIndex = 32;
             pagelabel.TextAlign = ContentAlignment.MiddleCenter;
             // 
@@ -467,7 +475,7 @@
             navlabel.AutoEllipsis = true;
             navlabel.BackColor = Color.Transparent;
             navlabel.ForeColor = Color.White;
-            navlabel.Location = new Point(924, 89);
+            navlabel.Location = new Point(920, 89);
             navlabel.Name = "navlabel";
             navlabel.Size = new Size(80, 80);
             navlabel.TabIndex = 33;
@@ -475,23 +483,90 @@
             navlabel.TextAlign = ContentAlignment.MiddleCenter;
             navlabel.Visible = false;
             // 
-            // mediaPlayer
+            // tableLayoutPanel2
             // 
-            mediaPlayer.Enabled = true;
-            mediaPlayer.Location = new Point(90, 935);
-            mediaPlayer.Name = "mediaPlayer";
-            mediaPlayer.OcxState = (AxHost.State)resources.GetObject("mediaPlayer.OcxState");
-            mediaPlayer.Size = new Size(352, 47);
-            mediaPlayer.TabIndex = 34;
+            tableLayoutPanel2.BackColor = Color.Transparent;
+            tableLayoutPanel2.ColumnCount = 3;
+            tableLayoutPanel2.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 25F));
+            tableLayoutPanel2.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 50F));
+            tableLayoutPanel2.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 25F));
+            tableLayoutPanel2.Controls.Add(pagelabel, 1, 0);
+            tableLayoutPanel2.Controls.Add(playerPic1, 2, 1);
+            tableLayoutPanel2.Controls.Add(tableLayoutPanel3, 1, 1);
+            tableLayoutPanel2.Dock = DockStyle.Bottom;
+            tableLayoutPanel2.Location = new Point(0, 967);
+            tableLayoutPanel2.Name = "tableLayoutPanel2";
+            tableLayoutPanel2.RowCount = 2;
+            tableLayoutPanel2.RowStyles.Add(new RowStyle(SizeType.Percent, 20F));
+            tableLayoutPanel2.RowStyles.Add(new RowStyle(SizeType.Percent, 80F));
+            tableLayoutPanel2.Size = new Size(1920, 113);
+            tableLayoutPanel2.TabIndex = 34;
+            tableLayoutPanel2.Paint += tableLayoutPanel2_Paint;
+            // 
+            // playerPic1
+            // 
+            playerPic1.BackgroundImageLayout = ImageLayout.Stretch;
+            playerPic1.Dock = DockStyle.Fill;
+            playerPic1.Location = new Point(1440, 22);
+            playerPic1.Margin = new Padding(0, 0, 850, 0);
+            playerPic1.Name = "playerPic1";
+            playerPic1.Size = new Size(1, 91);
+            playerPic1.TabIndex = 33;
+            playerPic1.TabStop = false;
+            playerPic1.Visible = false;
+            // 
+            // tableLayoutPanel3
+            // 
+            tableLayoutPanel3.ColumnCount = 1;
+            tableLayoutPanel3.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 50F));
+            tableLayoutPanel3.Controls.Add(ANameLabel, 0, 1);
+            tableLayoutPanel3.Controls.Add(LegendLabel, 0, 0);
+            tableLayoutPanel3.Dock = DockStyle.Fill;
+            tableLayoutPanel3.Location = new Point(483, 25);
+            tableLayoutPanel3.Name = "tableLayoutPanel3";
+            tableLayoutPanel3.RowCount = 2;
+            tableLayoutPanel3.RowStyles.Add(new RowStyle(SizeType.Percent, 50F));
+            tableLayoutPanel3.RowStyles.Add(new RowStyle(SizeType.Percent, 50F));
+            tableLayoutPanel3.Size = new Size(954, 85);
+            tableLayoutPanel3.TabIndex = 34;
+            // 
+            // ANameLabel
+            // 
+            ANameLabel.AutoSize = true;
+            ANameLabel.BackColor = Color.Transparent;
+            ANameLabel.Dock = DockStyle.Fill;
+            ANameLabel.ForeColor = Color.White;
+            ANameLabel.Location = new Point(0, 42);
+            ANameLabel.Margin = new Padding(0);
+            ANameLabel.Name = "ANameLabel";
+            ANameLabel.RightToLeft = RightToLeft.Yes;
+            ANameLabel.Size = new Size(954, 43);
+            ANameLabel.TabIndex = 31;
+            ANameLabel.TextAlign = ContentAlignment.MiddleCenter;
+            // 
+            // LegendLabel
+            // 
+            LegendLabel.AutoSize = true;
+            LegendLabel.BackColor = Color.Transparent;
+            LegendLabel.Dock = DockStyle.Fill;
+            LegendLabel.ForeColor = Color.White;
+            LegendLabel.Location = new Point(0, 0);
+            LegendLabel.Margin = new Padding(0);
+            LegendLabel.Name = "LegendLabel";
+            LegendLabel.RightToLeft = RightToLeft.No;
+            LegendLabel.Size = new Size(954, 42);
+            LegendLabel.TabIndex = 30;
+            LegendLabel.Text = "▶️ Está sonando:";
+            LegendLabel.TextAlign = ContentAlignment.MiddleCenter;
+            LegendLabel.Visible = false;
             // 
             // Form1
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(1920, 1080);
-            Controls.Add(mediaPlayer);
+            Controls.Add(tableLayoutPanel2);
             Controls.Add(navlabel);
-            Controls.Add(pagelabel);
             Controls.Add(picturePrev);
             Controls.Add(pictureNext);
             Controls.Add(keylabel);
@@ -514,7 +589,11 @@
             tableLayoutPanel1.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)pictureNext).EndInit();
             ((System.ComponentModel.ISupportInitialize)picturePrev).EndInit();
-            ((System.ComponentModel.ISupportInitialize)mediaPlayer).EndInit();
+            tableLayoutPanel2.ResumeLayout(false);
+            tableLayoutPanel2.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)playerPic1).EndInit();
+            tableLayoutPanel3.ResumeLayout(false);
+            tableLayoutPanel3.PerformLayout();
             ResumeLayout(false);
             PerformLayout();
         }
@@ -551,6 +630,10 @@
         private PictureBox picturePrev;
         private Label pagelabel;
         private Label navlabel;
-        private AxWMPLib.AxWindowsMediaPlayer mediaPlayer;
+        private TableLayoutPanel tableLayoutPanel2;
+        private Label LegendLabel;
+        private PictureBox playerPic1;
+        private TableLayoutPanel tableLayoutPanel3;
+        private Label ANameLabel;
     }
 }
