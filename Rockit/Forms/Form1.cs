@@ -100,6 +100,20 @@ namespace Rockit
             typeof(TableLayoutPanel)
             .GetProperty("DoubleBuffered", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic)
             ?.SetValue(tableLayoutPanel3, true, null);
+            /*
+            try
+            {
+                string videopath = Path.GetFullPath(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"..\..\..\Resources\videos\bgroundparty.mp4"));
+                axWindowsMediaPlayer1.URL = videopath;
+                axWindowsMediaPlayer1.settings.setMode("loop", true);
+                axWindowsMediaPlayer1.settings.autoStart = true;
+                axWindowsMediaPlayer1.uiMode = "none"; // Oculta controles
+                axWindowsMediaPlayer1.Dock = DockStyle.Fill;
+                axWindowsMediaPlayer1.stretchToFit = true;
+                axWindowsMediaPlayer1.SendToBack(); // Esto lo manda detrás de todo
+            }
+            catch { Exception e; }*/
+
         }
         protected override void OnPaintBackground(PaintEventArgs e)
         {
@@ -139,6 +153,7 @@ namespace Rockit
                 e.Graphics.FillRectangle(brush, rect);
             }
         }
+          
         private void titlePanel_Paint(object sender, PaintEventArgs e)
         {
             FontFamily leagueSpartan = FontLoader.LoadFont();

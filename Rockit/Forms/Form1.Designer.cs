@@ -65,6 +65,7 @@
             tableLayoutPanel3 = new TableLayoutPanel();
             ANameLabel = new Label();
             LegendLabel = new Label();
+            axWindowsMediaPlayer1 = new AxWMPLib.AxWindowsMediaPlayer();
             ((System.ComponentModel.ISupportInitialize)picArtist1).BeginInit();
             ((System.ComponentModel.ISupportInitialize)picArtist2).BeginInit();
             ((System.ComponentModel.ISupportInitialize)picArtist3).BeginInit();
@@ -79,6 +80,7 @@
             tableLayoutPanel2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)playerPic1).BeginInit();
             tableLayoutPanel3.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)axWindowsMediaPlayer1).BeginInit();
             SuspendLayout();
             // 
             // picArtist1
@@ -561,11 +563,22 @@
             LegendLabel.TextAlign = ContentAlignment.MiddleCenter;
             LegendLabel.Visible = false;
             // 
+            // axWindowsMediaPlayer1
+            // 
+            axWindowsMediaPlayer1.Enabled = true;
+            axWindowsMediaPlayer1.Location = new Point(633, 112);
+            axWindowsMediaPlayer1.Name = "axWindowsMediaPlayer1";
+            axWindowsMediaPlayer1.OcxState = (AxHost.State)resources.GetObject("axWindowsMediaPlayer1.OcxState");
+            axWindowsMediaPlayer1.Size = new Size(250, 41);
+            axWindowsMediaPlayer1.TabIndex = 35;
+            axWindowsMediaPlayer1.Visible = false;
+            // 
             // Form1
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(1920, 1080);
+            Controls.Add(axWindowsMediaPlayer1);
             Controls.Add(tableLayoutPanel2);
             Controls.Add(navlabel);
             Controls.Add(picturePrev);
@@ -595,6 +608,7 @@
             ((System.ComponentModel.ISupportInitialize)playerPic1).EndInit();
             tableLayoutPanel3.ResumeLayout(false);
             tableLayoutPanel3.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)axWindowsMediaPlayer1).EndInit();
             ResumeLayout(false);
             PerformLayout();
         }
@@ -636,5 +650,6 @@
         private PictureBox playerPic1;
         private TableLayoutPanel tableLayoutPanel3;
         private Label ANameLabel;
+        private AxWMPLib.AxWindowsMediaPlayer axWindowsMediaPlayer1;
     }
 }
