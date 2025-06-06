@@ -81,7 +81,7 @@ namespace Rockit
             SetRoundedPictureBox(playerPic1, 32);
             foreach (var lbl in labels)
             {
-                lbl.Font = new Font(leagueSpartan, 18f);
+                lbl.Font = new Font(leagueSpartan, 12f);
                 SetRoundedLabel(lbl, 20);
             }
             foreach (var lbl in idlabels)
@@ -157,7 +157,7 @@ namespace Rockit
         private void titlePanel_Paint(object sender, PaintEventArgs e)
         {
             FontFamily leagueSpartan = FontLoader.LoadFont();
-            string[] lines = { "Billares", "La Quinta" };
+            string[] lines = { "Salón", "Presidencial" };
             Font font = new Font(leagueSpartan, 56f);
             float lineHeight = font.GetHeight(e.Graphics) - 2; // reduce espacio
 
