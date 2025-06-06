@@ -1,4 +1,5 @@
-﻿using Rockit.Data;
+﻿using Microsoft.EntityFrameworkCore;
+using Rockit.Data;
 using Rockit.Models;
 using System;
 using System.Collections.Generic;
@@ -14,7 +15,24 @@ namespace Rockit.Repositories
 
         public MusicRepository()
         {
-            _context = new RockolaDbContext();
+            try
+            {
+                _context = new RockolaDbContext();
+
+                // Probar conexión de inmediato
+                _context.Database.OpenConnection();
+                _context.Database.CloseConnection();
+            }
+            catch (Npgsql.NpgsqlException ex)
+            {
+                MessageBox.Show($"[PostgreSQL] Error al conectar con la base de datos:\n{ex.Message}", "Error de Conexión", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                throw;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"[General] Error inesperado:\n{ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                throw;
+            }
         }
         public void LoadDataToMemory()
         {
