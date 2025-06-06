@@ -345,7 +345,7 @@ namespace Rockit
             {
                 // Si hay datos en la base, simplemente carga a memoria
                 repo.LoadDataToMemory();
-                MessageBox.Show("Datos cargados desde la base de datos");
+                //MessageBox.Show("Datos cargados desde la base de datos");
             }
             else
             {

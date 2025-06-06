@@ -73,9 +73,9 @@ namespace Rockit.Services
 
             if (currentIndex < PlaylistStore.playlist.Count)
             {
-                PlaylistStore.playlist.RemoveAt(currentIndex);
                 PlayListItem currentSong = PlaylistStore.playlist[currentIndex];
                 musicRepository.RemoveToPlaylist(currentSong);
+                PlaylistStore.playlist.RemoveAt(currentIndex);
             }
 
             if (PlaylistStore.playlist.Count == 0)
