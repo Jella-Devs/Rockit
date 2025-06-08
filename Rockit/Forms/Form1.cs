@@ -86,7 +86,7 @@ namespace Rockit
             }
             foreach (var lbl in idlabels)
             {
-                lbl.Font = new Font(leagueSpartan, 16f);
+                lbl.Font = new Font(leagueSpartan, 13f);
                 SetRoundedLabel(lbl, 10);
                 lbl.ForeColor = Color.White;
                 lbl.TextAlign = ContentAlignment.MiddleCenter;
@@ -100,20 +100,15 @@ namespace Rockit
             typeof(TableLayoutPanel)
             .GetProperty("DoubleBuffered", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic)
             ?.SetValue(tableLayoutPanel3, true, null);
-            /*
-            try
-            {
-                string videopath = Path.GetFullPath(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"..\..\..\Resources\videos\bgroundparty.mp4"));
-                axWindowsMediaPlayer1.URL = videopath;
-                axWindowsMediaPlayer1.settings.setMode("loop", true);
-                axWindowsMediaPlayer1.settings.autoStart = true;
-                axWindowsMediaPlayer1.uiMode = "none"; // Oculta controles
-                axWindowsMediaPlayer1.Dock = DockStyle.Fill;
-                axWindowsMediaPlayer1.stretchToFit = true;
-                axWindowsMediaPlayer1.SendToBack(); // Esto lo manda detrás de todo
-            }
-            catch { Exception e; }*/
-
+            typeof(TableLayoutPanel)
+            .GetProperty("DoubleBuffered", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic)
+            ?.SetValue(tableLayoutPanel4, true, null);
+            typeof(TableLayoutPanel)
+            .GetProperty("DoubleBuffered", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic)
+            ?.SetValue(tableLayoutPanel5, true, null);
+            typeof(FlowLayoutPanel)
+            .GetProperty("DoubleBuffered", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic)
+            ?.SetValue(flowLayoutPanel1, true, null);
         }
         protected override void OnPaintBackground(PaintEventArgs e)
         {
@@ -122,11 +117,11 @@ namespace Rockit
             // Definir colores del gradiente
             Color[] colors = new Color[]
             {
-                ColorTranslator.FromHtml("#405f8f"),
-                ColorTranslator.FromHtml("#69607d"),
-                ColorTranslator.FromHtml("#f19e72"),
-                ColorTranslator.FromHtml("#cd856e"),
-                ColorTranslator.FromHtml("#9d7577")
+                 ColorTranslator.FromHtml("#5F4B8B"),
+                 ColorTranslator.FromHtml("#826E93"),
+                 ColorTranslator.FromHtml("#FFB694"),
+                 ColorTranslator.FromHtml("#D77464"),
+                 ColorTranslator.FromHtml("#AF5D63")
             };
 
             // Crear rectángulo para cubrir todo el formulario
@@ -153,12 +148,12 @@ namespace Rockit
                 e.Graphics.FillRectangle(brush, rect);
             }
         }
-          
+
         private void titlePanel_Paint(object sender, PaintEventArgs e)
         {
             FontFamily leagueSpartan = FontLoader.LoadFont();
             string[] lines = { "Salón", "Presidencial" };
-            Font font = new Font(leagueSpartan, 56f);
+            Font font = new Font(leagueSpartan, 46f);
             float lineHeight = font.GetHeight(e.Graphics) - 2; // reduce espacio
 
             // Activar anti-aliasing para texto
@@ -636,11 +631,6 @@ namespace Rockit
             Image img = await LoadImageAsync(path);
             pic.Image = img;
             pic.SizeMode = PictureBoxSizeMode.StretchImage;
-        }
-
-        private void tableLayoutPanel2_Paint(object sender, PaintEventArgs e)
-        {
-
         }
     }
 }
