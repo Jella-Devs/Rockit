@@ -93,13 +93,7 @@ namespace Rockit.Forms
         private async void ArtistMenu_KeyDown(object sender, KeyEventArgs e)
         {
             if (listView1.Items.Count == 0) return;
-
-            // Busca el elemento seleccionado actualmente            
-
-            if (e.KeyCode == Keys.Divide)
-            {
-                this.Close();
-            }
+          
             else if (e.KeyCode == Keys.Escape)
             {
                 this.Close();

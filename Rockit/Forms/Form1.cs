@@ -261,7 +261,7 @@ namespace Rockit
 
 
             }
-            else if (e.KeyCode == Keys.N)
+            else if (e.KeyCode == Keys.N || e.KeyCode == Keys.Divide)
             {
                 playerService.Skip();
             }
@@ -307,7 +307,7 @@ namespace Rockit
 
                 MessageBox.Show(sb.ToString(), "Canciones en la Playlist");
             }
-            else if (e.KeyCode == Keys.Back || e.KeyCode == Keys.Divide)
+            else if (e.KeyCode == Keys.Back)
             {
                 if (key.Length > 0)
                 {
