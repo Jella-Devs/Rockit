@@ -435,7 +435,7 @@
             keylabel.AutoSize = true;
             keylabel.BackColor = Color.Transparent;
             keylabel.ForeColor = Color.White;
-            keylabel.Location = new Point(348, 65);
+            keylabel.Location = new Point(338, 65);
             keylabel.Name = "keylabel";
             keylabel.RightToLeft = RightToLeft.Yes;
             keylabel.Size = new Size(0, 15);
@@ -483,7 +483,7 @@
             navlabel.AutoEllipsis = true;
             navlabel.BackColor = Color.Transparent;
             navlabel.ForeColor = Color.White;
-            navlabel.Location = new Point(354, 65);
+            navlabel.Location = new Point(344, 65);
             navlabel.Name = "navlabel";
             navlabel.Size = new Size(80, 80);
             navlabel.TabIndex = 33;
@@ -590,10 +590,9 @@
             flowLayoutPanel1.Controls.Add(keylabel);
             flowLayoutPanel1.Controls.Add(navlabel);
             flowLayoutPanel1.Dock = DockStyle.Fill;
-            flowLayoutPanel1.FlowDirection = FlowDirection.TopDown;
             flowLayoutPanel1.Location = new Point(401, 3);
             flowLayoutPanel1.Name = "flowLayoutPanel1";
-            flowLayoutPanel1.Padding = new Padding(345, 65, 345, 60);
+            flowLayoutPanel1.Padding = new Padding(335, 65, 335, 60);
             flowLayoutPanel1.Size = new Size(791, 213);
             flowLayoutPanel1.TabIndex = 37;
             // 

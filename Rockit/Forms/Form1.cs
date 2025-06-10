@@ -64,7 +64,7 @@ namespace Rockit
                 {
                     idlabel1,idlabel2,idlabel3,idlabel4,idlabel5, idlabel6, idlabel7, idlabel8
                 };
-            keylabel.Font = new Font(leagueSpartan, 38f);
+            keylabel.Font = new Font(leagueSpartan, 24f);
             pagelabel.Font = new Font(leagueSpartan, 12f);
             navlabel.Font = new Font(leagueSpartan, 38f);
             ANameLabel.Font = new Font(leagueSpartan, 12f);
