@@ -3,6 +3,7 @@ using Rockit.Models;
 using Rockit.Repositories;
 using Rockit.Services;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -52,6 +53,7 @@ namespace Rockit.Forms
             listView1.Font = new Font(leagueSpartan, 14f);
             listView1.Dock = DockStyle.Fill;
             listView1.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            //listView1.Columns[0].Width = 0;
             foreach (ColumnHeader column in listView1.Columns)
             {
                 column.Width = -2; // Auto-ajustar al contenido
@@ -75,25 +77,48 @@ namespace Rockit.Forms
             foreach (var song in Songs)
             {
                 //var item = new ListViewItem(song.SongId.ToString());
-                var item = new ListViewItem((listView1.Items.Count + 1).ToString());
+                //var item = new ListViewItem((listView1.Items.Count + 1).ToString());
+                var item = new ListViewItem((""));
                 item.SubItems.Add(Path.GetFileNameWithoutExtension(song.Name));
                 // Guardar "Path + Nombre" como valor oculto en Tag
                 item.Tag = $"{song.Path}\\{song.Name}";
+
 
                 listView1.Items.Add(item);
             }
             // Seleccionar y enfocar el primer ítem
             if (listView1.Items.Count > 0)
             {
+                listView1.ListViewItemSorter = new ListViewItemComparer(1, true); // true = ascendente
+                listView1.Sort();
                 listView1.Items[0].Selected = true;
                 listView1.Select();
                 listView1.Focus();
             }
         }
+        class ListViewItemComparer : IComparer
+        {
+            private int col;
+            private bool ascending;
+
+            public ListViewItemComparer(int column, bool ascending = true)
+            {
+                this.col = column;
+                this.ascending = ascending;
+            }
+
+            public int Compare(object x, object y)
+            {
+                string itemX = ((ListViewItem)x).SubItems[col].Text;
+                string itemY = ((ListViewItem)y).SubItems[col].Text;
+
+                return ascending ? string.Compare(itemX, itemY) : string.Compare(itemY, itemX);
+            }
+        }
         private async void ArtistMenu_KeyDown(object sender, KeyEventArgs e)
         {
             if (listView1.Items.Count == 0) return;
-          
+
             else if (e.KeyCode == Keys.Escape)
             {
                 this.Close();
@@ -111,6 +136,7 @@ namespace Rockit.Forms
                     listView1.Items[currentIndex].Selected = true;
                     listView1.Items[currentIndex].Focused = true;
                     listView1.EnsureVisible(currentIndex);
+                    e.SuppressKeyPress = true; // evita beep y propagación
                 }
             }
             else if (e.KeyCode == Keys.OemMinus || e.KeyCode == Keys.Subtract) // Tecla "-"
@@ -121,6 +147,7 @@ namespace Rockit.Forms
                     listView1.Items[currentIndex].Selected = true;
                     listView1.Items[currentIndex].Focused = true;
                     listView1.EnsureVisible(currentIndex);
+                    e.SuppressKeyPress = true; // evita beep y propagación
                 }
             }
             if (e.KeyCode == Keys.Enter && listView1.SelectedItems.Count > 0)
@@ -135,7 +162,7 @@ namespace Rockit.Forms
             }
         }
         private void ApplyRoundedCorners(int radius)
-        { 
+        {
             GraphicsPath path = new GraphicsPath();
             Rectangle bounds = new Rectangle(0, 0, this.Width, this.Height);
 
@@ -222,6 +249,14 @@ namespace Rockit.Forms
                     return Image.FromStream(ms);
                 }
             });
+        }
+
+        private void listView1_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Add || e.KeyCode == Keys.Subtract)
+            {
+                e.SuppressKeyPress = true; // Suprime el beep del sistema
+            }
         }
     }
 }

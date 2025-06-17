@@ -160,18 +160,6 @@ namespace Rockit.Services
             }
 
         }
-        private void RemoveCurrentSong()
-        {
-            if (PlaylistStore.playlist.Count > 0 && currentIndex < PlaylistStore.playlist.Count)
-            {
-                PlaylistStore.playlist.RemoveAt(currentIndex);
-            }
-            if (currentIndex >= PlaylistStore.playlist.Count)
-            {
-                currentIndex = 0;
-                isPlaying = false;
-            }
-        }
     }
 
 }

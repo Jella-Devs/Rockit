@@ -80,6 +80,7 @@
             listView1.Size = new Size(647, 463);
             listView1.TabIndex = 31;
             listView1.UseCompatibleStateImageBehavior = false;
+            listView1.KeyDown += listView1_KeyDown;
             // 
             // tableLayoutPanel2
             // 

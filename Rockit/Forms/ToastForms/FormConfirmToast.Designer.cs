@@ -91,7 +91,7 @@
             tableLayoutPanel2.Controls.Add(button1, 1, 1);
             tableLayoutPanel2.Controls.Add(label2, 1, 0);
             tableLayoutPanel2.Dock = DockStyle.Bottom;
-            tableLayoutPanel2.Location = new Point(0, 220);
+            tableLayoutPanel2.Location = new Point(0, 120);
             tableLayoutPanel2.Name = "tableLayoutPanel2";
             tableLayoutPanel2.RowCount = 2;
             tableLayoutPanel2.RowStyles.Add(new RowStyle(SizeType.Percent, 30F));
@@ -138,7 +138,7 @@
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(420, 300);
+            ClientSize = new Size(420, 200);
             Controls.Add(tableLayoutPanel2);
             Controls.Add(tableLayoutPanel1);
             FormBorderStyle = FormBorderStyle.None;

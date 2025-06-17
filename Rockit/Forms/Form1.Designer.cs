@@ -447,7 +447,7 @@
             pictureNext.BackColor = Color.Transparent;
             pictureNext.BackgroundImage = (Image)resources.GetObject("pictureNext.BackgroundImage");
             pictureNext.BackgroundImageLayout = ImageLayout.Stretch;
-            pictureNext.Location = new Point(1835, 511);
+            pictureNext.Location = new Point(0, 511);
             pictureNext.Name = "pictureNext";
             pictureNext.Size = new Size(64, 64);
             pictureNext.TabIndex = 30;
@@ -629,7 +629,6 @@
             Name = "Form1";
             StartPosition = FormStartPosition.CenterScreen;
             Text = "Form1";
-            TopMost = true;
             WindowState = FormWindowState.Maximized;
             KeyDown += Form1_KeyDown;
             ((System.ComponentModel.ISupportInitialize)picArtist1).EndInit();

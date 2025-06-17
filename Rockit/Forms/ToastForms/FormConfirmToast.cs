@@ -22,8 +22,8 @@ namespace Rockit.Forms.ToastForms
             this.FormBorderStyle = FormBorderStyle.None;
             this.StartPosition = FormStartPosition.CenterScreen;
             this.TopMost = true;
-            this.BackColor = Color.FromArgb(241, 178, 134);
-            this.Opacity = 0.90;
+            this.BackColor = Color.FromArgb(175, 93, 99);
+            this.Opacity = 0.98;
             this.ShowInTaskbar = false;
             label1.Font = new Font(leagueSpartan, 20f);
             label2.Font = new Font(leagueSpartan, 10f);
@@ -37,10 +37,6 @@ namespace Rockit.Forms.ToastForms
             button1.BackColor = Color.FromArgb(218, 247, 166);
             button2.BackColor = Color.FromArgb(108, 117, 125);
             ApplyRoundedCorners(30);
-            /*
-            ApplyRoundedButton(button1, 20);
-            ApplyRoundedButton(button2, 20);
-            */
             Label label = new Label()
             {
                 Text = message,
@@ -53,7 +49,7 @@ namespace Rockit.Forms.ToastForms
             this.Controls.Add(label);
 
             this.Width = 420;
-            this.Height = 300;
+            this.Height = 200;
             this.KeyPreview = true;
             this.KeyDown += ToastConfirmForm_KeyDown;
         }

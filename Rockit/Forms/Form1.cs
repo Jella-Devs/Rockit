@@ -42,8 +42,8 @@ namespace Rockit
             // Inicializador de Timers
             keyresponse = new Timer();
             keyresponse2 = new Timer();
-            keyresponse.Interval = 1000;
-            keyresponse2.Interval = 1000;
+            keyresponse.Interval = 2000;
+            keyresponse2.Interval = 2000;
             keyresponse.Tick += Keyresponse_Tick;
             keyresponse2.Tick += Keyresponse2_Tick;
 
