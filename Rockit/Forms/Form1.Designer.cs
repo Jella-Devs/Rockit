@@ -629,6 +629,7 @@
             Name = "Form1";
             StartPosition = FormStartPosition.CenterScreen;
             Text = "Form1";
+            TopMost = true;
             WindowState = FormWindowState.Maximized;
             KeyDown += Form1_KeyDown;
             ((System.ComponentModel.ISupportInitialize)picArtist1).EndInit();
