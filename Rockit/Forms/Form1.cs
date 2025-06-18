@@ -1,4 +1,5 @@
 using Rockit.Forms;
+using Rockit.Forms.ToastForms;
 using Rockit.Models;
 using Rockit.Repositories;
 using Rockit.Services;
@@ -261,9 +262,13 @@ namespace Rockit
 
 
             }
-            else if (e.KeyCode == Keys.N || e.KeyCode == Keys.Divide)
+            else if (e.KeyCode == Keys.Divide)
             {
-                playerService.Skip();
+                //playerService.Skip();
+                FormController formController = new FormController();
+                formController.ShowDialog();
+                e.Handled = true;           // Marca el evento como manejado
+                e.SuppressKeyPress = true;  //  Suprime la tecla para el sistema
             }
             else if (e.KeyCode == Keys.Decimal)
             {

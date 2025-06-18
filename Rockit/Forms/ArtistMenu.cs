@@ -1,4 +1,5 @@
 ﻿using Microsoft.VisualBasic;
+using Rockit.Forms.ToastForms;
 using Rockit.Models;
 using Rockit.Repositories;
 using Rockit.Services;
@@ -126,6 +127,13 @@ namespace Rockit.Forms
             else if (e.KeyCode == Keys.Back)
             {
                 this.Close();
+            }
+            else if (e.KeyCode == Keys.Divide)
+            {
+                FormController formController = new FormController();
+                formController.ShowDialog();
+                e.Handled = true;
+                e.SuppressKeyPress = true; // evita beep y propagación
             }
 
             if (e.KeyCode == Keys.Oemplus || e.KeyCode == Keys.Add) // Tecla "+"

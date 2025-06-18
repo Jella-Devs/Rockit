@@ -10,6 +10,8 @@ using System.Text;
 using System.Threading.Tasks;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement.StartPanel;
+using NAudio.CoreAudioApi;
+
 
 namespace Rockit.Services
 {
@@ -159,6 +161,33 @@ namespace Rockit.Services
                 Play();
             }
 
+        }
+        public class VolumeController
+        {
+            private static MMDeviceEnumerator enumerator = new MMDeviceEnumerator();
+            private static MMDevice device = enumerator.GetDefaultAudioEndpoint(DataFlow.Render, Role.Multimedia);
+
+            public static void SetVolume(float level) // level de 0.0 a 1.0
+            {
+                device.AudioEndpointVolume.MasterVolumeLevelScalar = level;
+            }
+
+            public static float GetVolume()
+            {
+                return device.AudioEndpointVolume.MasterVolumeLevelScalar;
+            }
+
+            public static void IncreaseVolume(float step = 0.05f)
+            {
+                float newVolume = Math.Min(1.0f, GetVolume() + step);
+                SetVolume(newVolume);
+            }
+
+            public static void DecreaseVolume(float step = 0.05f)
+            {
+                float newVolume = Math.Max(0.0f, GetVolume() - step);
+                SetVolume(newVolume);
+            }
         }
     }
 
