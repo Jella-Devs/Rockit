@@ -29,6 +29,7 @@
         private void InitializeComponent()
         {
             btnCargar = new Button();
+            progressBar1 = new ProgressBar();
             SuspendLayout();
             // 
             // btnCargar
@@ -41,11 +42,19 @@
             btnCargar.UseVisualStyleBackColor = true;
             btnCargar.Click += btnCargar_Click;
             // 
+            // progressBar1
+            // 
+            progressBar1.Location = new Point(54, 422);
+            progressBar1.Name = "progressBar1";
+            progressBar1.Size = new Size(269, 43);
+            progressBar1.TabIndex = 1;
+            // 
             // Feeder
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(384, 561);
+            Controls.Add(progressBar1);
             Controls.Add(btnCargar);
             Name = "Feeder";
             Text = "Feeder";
@@ -56,5 +65,6 @@
         #endregion
 
         private Button btnCargar;
+        private ProgressBar progressBar1;
     }
 }

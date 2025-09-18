@@ -20,6 +20,7 @@ namespace Rockit
     public partial class Form1 : Form
     {
         // Index para movimiento de paginas del menu
+        //public int credits = 0;
         int pages;
         int cursor = 0, navigator = 0, doublecheck = 0;
         string[] letters = new string[] { "A", "B", "C", "D", "E", "F", "G", "H", "I",
@@ -66,6 +67,7 @@ namespace Rockit
                     idlabel1,idlabel2,idlabel3,idlabel4,idlabel5, idlabel6, idlabel7, idlabel8
                 };
             keylabel.Font = new Font(leagueSpartan, 24f);
+            creditslabel.Font = new Font(leagueSpartan, 68f);
             pagelabel.Font = new Font(leagueSpartan, 12f);
             navlabel.Font = new Font(leagueSpartan, 38f);
             ANameLabel.Font = new Font(leagueSpartan, 12f);
@@ -110,6 +112,41 @@ namespace Rockit
             typeof(FlowLayoutPanel)
             .GetProperty("DoubleBuffered", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic)
             ?.SetValue(flowLayoutPanel1, true, null);
+
+            InitializeCredits();
+        }
+        private void InitializeCredits()
+        {
+            string filePath = @"C:\Rockit\temp_credits.txt";
+            try
+            {
+                // Asegura que la carpeta exista
+                string dir = Path.GetDirectoryName(filePath);
+                if (!Directory.Exists(dir))
+                {
+                    Directory.CreateDirectory(dir);
+                }
+
+                // Si existe archivo, lo lee
+                if (File.Exists(filePath))
+                {
+                    string contenido = File.ReadAllText(filePath);
+                    if (int.TryParse(contenido, out int valor))
+                    {
+                        Properties.Settings.Default.Credits = valor;
+                    }
+                }
+                else
+                {
+                    // Si no existe, lo crea con valor 0
+                    File.WriteAllText(filePath, Properties.Settings.Default.Credits.ToString());
+                }
+                creditslabel.Text = Properties.Settings.Default.Credits.ToString("D2"); // Formato con dos dígitos
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error cargando créditos: " + ex.Message);
+            }
         }
         protected override void OnPaintBackground(PaintEventArgs e)
         {
@@ -153,7 +190,7 @@ namespace Rockit
         private void titlePanel_Paint(object sender, PaintEventArgs e)
         {
             FontFamily leagueSpartan = FontLoader.LoadFont();
-            string[] lines = { "Salón", "Presidencial" };
+            string[] lines = { "Billares", "La Quinta" };
             Font font = new Font(leagueSpartan, 46f);
             float lineHeight = font.GetHeight(e.Graphics) - 2; // reduce espacio
 
@@ -262,6 +299,7 @@ namespace Rockit
 
 
             }
+            /*
             else if (e.KeyCode == Keys.Divide)
             {
                 //playerService.Skip();
@@ -269,7 +307,7 @@ namespace Rockit
                 formController.ShowDialog();
                 e.Handled = true;           // Marca el evento como manejado
                 e.SuppressKeyPress = true;  //  Suprime la tecla para el sistema
-            }
+            }*/
             else if (e.KeyCode == Keys.Decimal)
             {
                 if (doublecheck == 0)
@@ -300,6 +338,29 @@ namespace Rockit
             else if (e.KeyCode == Keys.F6)
             {
                 Loader();
+            }
+            //Monedero + 1
+            else if (e.KeyCode == Keys.J)
+            {
+                Properties.Settings.Default.Credits = Properties.Settings.Default.Credits + 2;
+                string filePath = @"C:\Rockit\temp_credits.txt";
+                try
+                    {
+                    // Asegura que el directorio exista
+                    string dir = Path.GetDirectoryName(filePath);
+                    if (!Directory.Exists(dir))
+                    {
+                        Directory.CreateDirectory(dir);
+                    }
+
+                    // Valor numérico que quieras escribir
+
+                    creditslabel.Text = Properties.Settings.Default.Credits.ToString("D2"); // Formato con dos dígitos
+
+                    // Crea o sobreescribe el archivo con el nuevo valor
+                    File.WriteAllText(filePath, Properties.Settings.Default.Credits.ToString());
+                }
+                catch(Exception err) { MessageBox.Show(err.ToString()); }
             }
             else if (e.KeyCode == Keys.F7)
             {
@@ -422,7 +483,7 @@ namespace Rockit
                 var existingArtistID = new HashSet<int>(ArtistStore.ListOfArtist.Select(artist => artist.ArtistId));
                 if (existingArtistID.Contains(parsedKey))
                 {
-                    ArtistMenu artistMenu = new ArtistMenu(key);
+                    ArtistMenu artistMenu = new ArtistMenu(key,navlabel,creditslabel);
                     artistMenu.Show();
                 }
                 key = "";

@@ -60,7 +60,7 @@ namespace Rockit.Forms.ToastForms
                 Confirmed = true;
                 this.Close();
             }
-            else if (e.KeyCode == Keys.Back)
+            else if (e.KeyCode == Keys.Back || e.KeyCode == Keys.Divide)
             {
                 Confirmed = false;
                 this.Close();
@@ -78,7 +78,7 @@ namespace Rockit.Forms.ToastForms
             {
                 using (var toast = new FormConfirmToast(mensaje))
                 {
-                    // ShowDialog bloquea hasta que el usuario responda
+                    // ShowDialog bloquea hasta que el usuario responda, esperando
                     DialogResult result = toast.ShowDialog();
                     return toast.Confirmed; // o result == DialogResult.OK
                 }

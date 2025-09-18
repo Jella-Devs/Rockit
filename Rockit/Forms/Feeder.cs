@@ -39,7 +39,11 @@ namespace Rockit.Forms
             int TempSongsId = SongStore.ListOfSongs.Count() + 1;
             var newArtists = new List<Artist>();
             var newSongs = new List<Song>();
-            
+
+            progressBar1.Minimum = 0;
+            progressBar1.Maximum = directories.Length;
+            progressBar1.Value = 0;
+
             // Inicializar listas si son nulas
             ArtistStore.ListOfArtist ??= new List<Artist>();
             SongStore.ListOfSongs ??= new List<Song>();
@@ -77,6 +81,12 @@ namespace Rockit.Forms
 
                 if (artistName.Contains(" - "))
                     artistName = artistName.Split(" -")[0];
+
+                // Actualizas el progreso
+                progressBar1.Value += 1;
+
+                // Permite refrescar la UI mientras corre el bucle
+                Application.DoEvents();
 
                 // Verificar si es un artista nuevo
                 if (!existingArtistNames.Contains(artistName))

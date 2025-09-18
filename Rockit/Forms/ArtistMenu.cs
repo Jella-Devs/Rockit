@@ -18,20 +18,26 @@ using System.Windows.Forms;
 using static Rockit.Form1;
 using static Rockit.Forms.ToastForms.FormConfirmToast;
 using static System.Runtime.InteropServices.JavaScript.JSType;
+using Timer = System.Windows.Forms.Timer;
 
 namespace Rockit.Forms
 {
     public partial class ArtistMenu : Form
     {
         string artistkey;
+        Label navlabel, creditslabel;
+        //int credits;
+        private Timer keyresponse, keyresponse2;
         private MusicRepository _musicRepository;
         int currentIndex = 0;
         MusicPlayerService playerService = MusicPlayerService.Instance;
-        public ArtistMenu(string key)
+        public ArtistMenu(string key, Label label,Label clabel)
         {
             InitializeComponent();
             _musicRepository = new MusicRepository();
             artistkey = key;
+            navlabel = label;
+            creditslabel = clabel;
             this.Focus();
             UIMenuDrawer();
         }
@@ -130,12 +136,63 @@ namespace Rockit.Forms
             }
             else if (e.KeyCode == Keys.Divide)
             {
+                this.Close();
+            }
+            /*
+            else if (e.KeyCode == Keys.Divide)
+            {
                 FormController formController = new FormController();
                 formController.ShowDialog();
                 e.Handled = true;
                 e.SuppressKeyPress = true; // evita beep y propagación
-            }
+            }*/
+            /*
+            else if (e.KeyCode == Keys.Decimal)
+            {
+                if (doublecheck == 0)
+                {
+                    navlabel.Visible = true;
+                    doublecheck++;
+                    startkeyresponse2();
+                }
+                else if ((navigator < letters.Length - 1))
+                {
+                    navigator++;
+                    navlabel.Text = letters[navigator];
+                    navlabel.Visible = true;
+                    startkeyresponse2();
+                }
+                else
+                {
+                    navigator = 0;
+                    navlabel.Text = letters[navigator];
+                    navlabel.Visible = true;
+                    startkeyresponse2();
+                }
+            }*/
+            //Monedero + 1
+            else if (e.KeyCode == Keys.J)
+            {
+                Properties.Settings.Default.Credits = Properties.Settings.Default.Credits + 2;
+                string filePath = @"C:\Rockit\temp_credits.txt";
+                try
+                {
+                    // Asegura que el directorio exista
+                    string dir = Path.GetDirectoryName(filePath);
+                    if (!Directory.Exists(dir))
+                    {
+                        Directory.CreateDirectory(dir);
+                    }
 
+                    // Valor numérico que quieras escribir
+
+                    creditslabel.Text = Properties.Settings.Default.Credits.ToString("D2"); // Formato con dos dígitos
+
+                    // Crea o sobreescribe el archivo con el nuevo valor
+                    File.WriteAllText(filePath, Properties.Settings.Default.Credits.ToString());
+                }
+                catch (Exception err) { MessageBox.Show(err.ToString()); }
+            }
             if (e.KeyCode == Keys.Oemplus || e.KeyCode == Keys.Add) // Tecla "+"
             {
                 if (currentIndex < listView1.Items.Count - 1)
@@ -158,13 +215,32 @@ namespace Rockit.Forms
                     e.SuppressKeyPress = true; // evita beep y propagación
                 }
             }
-            if (e.KeyCode == Keys.Enter && listView1.SelectedItems.Count > 0)
+            if (e.KeyCode == Keys.Enter && listView1.SelectedItems.Count > 0 && Properties.Settings.Default.Credits > 0)
             {
                 var selectedItem = listView1.SelectedItems[0];
                 string tagValue = selectedItem.Tag?.ToString();
 
                 if (ToastHelper.MostrarConfirmacion(selectedItem.SubItems[1].Text))
                 {
+                    Properties.Settings.Default.Credits = Properties.Settings.Default.Credits - 1;
+                    string filePath = @"C:\Rockit\temp_credits.txt";
+                    try
+                    {
+                        // Asegura que el directorio exista
+                        string dir = Path.GetDirectoryName(filePath);
+                        if (!Directory.Exists(dir))
+                        {
+                            Directory.CreateDirectory(dir);
+                        }
+
+                        // Valor numérico que quieras escribir
+
+                        creditslabel.Text = Properties.Settings.Default.Credits.ToString("D2"); // Formato con dos dígitos
+
+                        // Crea o sobreescribe el archivo con el nuevo valor
+                        File.WriteAllText(filePath, Properties.Settings.Default.Credits.ToString());
+                    }
+                    catch (Exception err) { MessageBox.Show(err.ToString()); }
                     playerService.AgregarCancionAPlaylist(selectedItem.SubItems[1].Text, tagValue);
                 }
             }

@@ -67,6 +67,7 @@
             LegendLabel = new Label();
             tableLayoutPanel4 = new TableLayoutPanel();
             flowLayoutPanel1 = new FlowLayoutPanel();
+            creditslabel = new Label();
             tableLayoutPanel5 = new TableLayoutPanel();
             ((System.ComponentModel.ISupportInitialize)picArtist1).BeginInit();
             ((System.ComponentModel.ISupportInitialize)picArtist2).BeginInit();
@@ -577,6 +578,7 @@
             tableLayoutPanel4.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 25F));
             tableLayoutPanel4.Controls.Add(flowLayoutPanel1, 1, 0);
             tableLayoutPanel4.Controls.Add(titlePanel, 0, 0);
+            tableLayoutPanel4.Controls.Add(creditslabel, 2, 0);
             tableLayoutPanel4.Dock = DockStyle.Fill;
             tableLayoutPanel4.Location = new Point(3, 3);
             tableLayoutPanel4.Name = "tableLayoutPanel4";
@@ -595,6 +597,19 @@
             flowLayoutPanel1.Padding = new Padding(335, 65, 335, 60);
             flowLayoutPanel1.Size = new Size(791, 213);
             flowLayoutPanel1.TabIndex = 37;
+            // 
+            // creditslabel
+            // 
+            creditslabel.AutoSize = true;
+            creditslabel.Dock = DockStyle.Fill;
+            creditslabel.Font = new Font("Verdana", 72F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            creditslabel.ForeColor = Color.White;
+            creditslabel.Location = new Point(1198, 0);
+            creditslabel.Name = "creditslabel";
+            creditslabel.Size = new Size(393, 219);
+            creditslabel.TabIndex = 38;
+            creditslabel.Text = "00";
+            creditslabel.TextAlign = ContentAlignment.MiddleCenter;
             // 
             // tableLayoutPanel5
             // 
@@ -649,6 +664,7 @@
             tableLayoutPanel3.ResumeLayout(false);
             tableLayoutPanel3.PerformLayout();
             tableLayoutPanel4.ResumeLayout(false);
+            tableLayoutPanel4.PerformLayout();
             flowLayoutPanel1.ResumeLayout(false);
             flowLayoutPanel1.PerformLayout();
             tableLayoutPanel5.ResumeLayout(false);
@@ -695,5 +711,6 @@
         private TableLayoutPanel tableLayoutPanel4;
         private FlowLayoutPanel flowLayoutPanel1;
         private TableLayoutPanel tableLayoutPanel5;
+        private Label creditslabel;
     }
 }
