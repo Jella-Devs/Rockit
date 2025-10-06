@@ -170,10 +170,33 @@ namespace Rockit.Forms
                     startkeyresponse2();
                 }
             }*/
-            //Monedero + 1
-            else if (e.KeyCode == Keys.J)
+            //Monedero + 2
+            else if (e.KeyCode == Keys.Z)
             {
                 Properties.Settings.Default.Credits = Properties.Settings.Default.Credits + 2;
+                string filePath = @"C:\Rockit\temp_credits.txt";
+                try
+                {
+                    // Asegura que el directorio exista
+                    string dir = Path.GetDirectoryName(filePath);
+                    if (!Directory.Exists(dir))
+                    {
+                        Directory.CreateDirectory(dir);
+                    }
+
+                    // Valor numérico que quieras escribir
+
+                    creditslabel.Text = Properties.Settings.Default.Credits.ToString("D2"); // Formato con dos dígitos
+
+                    // Crea o sobreescribe el archivo con el nuevo valor
+                    File.WriteAllText(filePath, Properties.Settings.Default.Credits.ToString());
+                }
+                catch (Exception err) { MessageBox.Show(err.ToString()); }
+            }
+            //Monedero + 3
+            else if (e.KeyCode == Keys.X)
+            {
+                Properties.Settings.Default.Credits = Properties.Settings.Default.Credits + 3;
                 string filePath = @"C:\Rockit\temp_credits.txt";
                 try
                 {

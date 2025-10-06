@@ -36,8 +36,8 @@ namespace Rockit.Repositories
         }
         public void LoadDataToMemory()
         {
-            var artists = _context.Artists.ToList();
-            var songs = _context.Songs.ToList();
+            var artists = _context.Artists.OrderBy(a => a.Name).ToList();
+            var songs = _context.Songs.OrderBy(a => a.Name).ToList();
 
             ArtistStore.ListOfArtist = artists;
             SongStore.ListOfSongs = songs;

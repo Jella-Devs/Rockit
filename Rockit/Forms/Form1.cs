@@ -76,21 +76,23 @@ namespace Rockit
             ANameLabel.BackColor = Color.FromArgb(65, 0, 0, 0);
             tableLayoutPanel3.BackColor = Color.FromArgb(20, 0, 0, 0);
             SetRoundedLabel(navlabel, 8);
-            SetRoundedTableLayoutUpperCorners(tableLayoutPanel3, 32);
+            //SetRoundedTableLayoutUpperCorners(tableLayoutPanel3, 32);
             foreach (var pb in pictureBoxes)
             {
                 SetRoundedPictureBox(pb, 20);
             }
-            SetRoundedPictureBox(playerPic1, 32);
+            //SetRoundedPictureBox(playerPic1, 32);
             foreach (var lbl in labels)
             {
                 lbl.Font = new Font(leagueSpartan, 12f);
-                SetRoundedLabel(lbl, 20);
+                AdjustLabelNameToText(lbl);
+                //SetRoundedLabel(lbl, 20);
             }
             foreach (var lbl in idlabels)
             {
-                lbl.Font = new Font(leagueSpartan, 13f);
-                SetRoundedLabel(lbl, 10);
+                lbl.Font = new Font(leagueSpartan, 10f);
+                AdjustLabelToText(lbl);
+                //SetRoundedLabel(lbl, 16);
                 lbl.ForeColor = Color.White;
                 lbl.TextAlign = ContentAlignment.MiddleCenter;
             }
@@ -112,7 +114,6 @@ namespace Rockit
             typeof(FlowLayoutPanel)
             .GetProperty("DoubleBuffered", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic)
             ?.SetValue(flowLayoutPanel1, true, null);
-
             InitializeCredits();
         }
         private void InitializeCredits()
@@ -206,53 +207,63 @@ namespace Rockit
                 y += lineHeight;
             }
         }
-        private void SetRoundedPictureBox(PictureBox pb, int radius)
+        private void SetRoundedPictureBox(PictureBox pb, int baseRadius)
         {
-            var rect = new Rectangle(0, 0, pb.Width, pb.Height);
-            var draw = new System.Drawing.Drawing2D.GraphicsPath();
+            float widthRatio = Screen.PrimaryScreen.Bounds.Width / 1600f;
+            float heightRatio = Screen.PrimaryScreen.Bounds.Height / 900f;
+            float scale = Math.Min(widthRatio, heightRatio);
 
+            int radius = (int)(baseRadius * scale);
+            ApplyRoundedRegion(pb, radius);
+        }
+        private void SetRoundedLabel(Label lbl, int baseRadius)
+        {
+            float widthRatio = Screen.PrimaryScreen.Bounds.Width / 1600f;
+            float heightRatio = Screen.PrimaryScreen.Bounds.Height / 900f;
+            float scale = Math.Min(widthRatio, heightRatio);
+
+            int radius = (int)(baseRadius * scale);
+            ApplyRoundedRegion(lbl, radius);
+        }
+        private void ApplyRoundedRegion(Control ctrl, int radius)
+        {
+            var rect = new Rectangle(0, 0, ctrl.Width, ctrl.Height);
+            var draw = new System.Drawing.Drawing2D.GraphicsPath();
             int diameter = radius * 2;
-            draw.AddArc(rect.X, rect.Y, diameter, diameter, 180, 90);                          // esquina superior izquierda
-            draw.AddArc(rect.Right - diameter, rect.Y, diameter, diameter, 270, 90);          // esquina superior derecha
-            draw.AddArc(rect.Right - diameter, rect.Bottom - diameter, diameter, diameter, 0, 90);  // esquina inferior derecha
-            draw.AddArc(rect.X, rect.Bottom - diameter, diameter, diameter, 90, 90);           // esquina inferior izquierda
+
+            draw.AddArc(rect.X, rect.Y, diameter, diameter, 180, 90);
+            draw.AddArc(rect.Right - diameter, rect.Y, diameter, diameter, 270, 90);
+            draw.AddArc(rect.Right - diameter, rect.Bottom - diameter, diameter, diameter, 0, 90);
+            draw.AddArc(rect.X, rect.Bottom - diameter, diameter, diameter, 90, 90);
             draw.CloseAllFigures();
 
-            pb.Region = new Region(draw);
+            ctrl.Region = new Region(draw);
         }
-        private void SetRoundedLabel(Label lbl, int radius)
+        private void AdjustLabelToText(Label lbl)
         {
-            var rect = new Rectangle(0, 0, lbl.Width, lbl.Height);
-            var draw = new System.Drawing.Drawing2D.GraphicsPath();
+            using (Graphics g = lbl.CreateGraphics())
+            {
+                SizeF textSize = g.MeasureString(lbl.Text, lbl.Font);
+                lbl.Width = (int)textSize.Width + 10;  // margen adicional
+                lbl.Height = (int)textSize.Height + 4;
+                //MessageBox.Show(textSize.ToString() + "," + lbl.Width + "," + lbl.Height);
 
-            int diameter = radius * 2;
-            draw.AddArc(rect.X, rect.Y, diameter, diameter, 180, 90);                          // esquina superior izquierda
-            draw.AddArc(rect.Right - diameter, rect.Y, diameter, diameter, 270, 90);          // esquina superior derecha
-            draw.AddArc(rect.Right - diameter, rect.Bottom - diameter, diameter, diameter, 0, 90);  // esquina inferior derecha
-            draw.AddArc(rect.X, rect.Bottom - diameter, diameter, diameter, 90, 90);           // esquina inferior izquierda
-            draw.CloseAllFigures();
-
-            lbl.Region = new Region(draw);
+                lbl.Margin = new Padding(lbl.Width + 100, 0, lbl.Width + 100, 0);
+            }
         }
-        private void SetRoundedTableLayoutUpperCorners(TableLayoutPanel panel, int radius)
+        private void AdjustLabelNameToText(Label lbl)
         {
-            GraphicsPath path = new GraphicsPath();
+            using (Graphics g = lbl.CreateGraphics())
+            {
+                SizeF textSize = g.MeasureString(lbl.Text, lbl.Font);
+                lbl.Width = (int)textSize.Width + 10;  // margen adicional
+                lbl.Height = (int)textSize.Height + 4;
+                //MessageBox.Show(textSize.ToString() + "," + lbl.Width + "," + lbl.Height);
 
-            Rectangle bounds = panel.ClientRectangle;
-
-            // Esquinas superiores redondeadas
-            path.AddArc(bounds.X, bounds.Y, radius * 2, radius * 2, 180, 90);
-            path.AddArc(bounds.Right - radius * 2, bounds.Y, radius * 2, radius * 2, 270, 90);
-
-            // Lados
-            path.AddLine(bounds.Right, bounds.Y + radius, bounds.Right, bounds.Bottom);
-            path.AddLine(bounds.Right, bounds.Bottom, bounds.X, bounds.Bottom);
-            path.AddLine(bounds.X, bounds.Bottom, bounds.X, bounds.Y + radius);
-
-            path.CloseFigure();
-
-            panel.Region = new Region(path);
+                lbl.Margin = new Padding(lbl.Width - 100, 0, lbl.Width - 100, 0);
+            }
         }
+
         public void FeederMenu()
         {
             Feeder feeder = new Feeder();
@@ -294,10 +305,7 @@ namespace Rockit
             }
             else if (e.KeyCode == Keys.K)
             {
-
                 playerService.ClearPlaylist();
-
-
             }
             /*
             else if (e.KeyCode == Keys.Divide)
@@ -333,19 +341,21 @@ namespace Rockit
             }
             else if (e.KeyCode == Keys.F5)
             {
+                Loader();
                 RefreshMenu();
+                MessageBox.Show("El menu se ha actualizado");
             }
             else if (e.KeyCode == Keys.F6)
             {
                 Loader();
             }
-            //Monedero + 1
-            else if (e.KeyCode == Keys.J)
+            //Monedero + 2
+            else if (e.KeyCode == Keys.Z)
             {
                 Properties.Settings.Default.Credits = Properties.Settings.Default.Credits + 2;
                 string filePath = @"C:\Rockit\temp_credits.txt";
                 try
-                    {
+                {
                     // Asegura que el directorio exista
                     string dir = Path.GetDirectoryName(filePath);
                     if (!Directory.Exists(dir))
@@ -360,7 +370,52 @@ namespace Rockit
                     // Crea o sobreescribe el archivo con el nuevo valor
                     File.WriteAllText(filePath, Properties.Settings.Default.Credits.ToString());
                 }
-                catch(Exception err) { MessageBox.Show(err.ToString()); }
+                catch (Exception err) { MessageBox.Show(err.ToString()); }
+            }
+            //Monedero + 3
+            else if (e.KeyCode == Keys.X)
+            {
+                Properties.Settings.Default.Credits = Properties.Settings.Default.Credits + 3;
+                string filePath = @"C:\Rockit\temp_credits.txt";
+                try
+                {
+                    // Asegura que el directorio exista
+                    string dir = Path.GetDirectoryName(filePath);
+                    if (!Directory.Exists(dir))
+                    {
+                        Directory.CreateDirectory(dir);
+                    }
+
+                    // Valor numérico que quieras escribir
+
+                    creditslabel.Text = Properties.Settings.Default.Credits.ToString("D2"); // Formato con dos dígitos
+
+                    // Crea o sobreescribe el archivo con el nuevo valor
+                    File.WriteAllText(filePath, Properties.Settings.Default.Credits.ToString());
+                }
+                catch (Exception err) { MessageBox.Show(err.ToString()); }
+            }
+            else if (e.KeyCode == Keys.C)
+            {
+                Properties.Settings.Default.Credits = 0;
+                string filePath = @"C:\Rockit\temp_credits.txt";
+                try
+                {
+                    // Asegura que el directorio exista
+                    string dir = Path.GetDirectoryName(filePath);
+                    if (!Directory.Exists(dir))
+                    {
+                        Directory.CreateDirectory(dir);
+                    }
+
+                    // Valor numérico que quieras escribir
+
+                    creditslabel.Text = Properties.Settings.Default.Credits.ToString("D2"); // Formato con dos dígitos
+
+                    // Crea o sobreescribe el archivo con el nuevo valor
+                    File.WriteAllText(filePath, Properties.Settings.Default.Credits.ToString());
+                }
+                catch (Exception err) { MessageBox.Show(err.ToString()); }
             }
             else if (e.KeyCode == Keys.F7)
             {
@@ -414,6 +469,7 @@ namespace Rockit
                 string pathFinderResultArtist = Path.Combine(finderFolder, "FinderResultArtist.txt");
 
                 if (!File.Exists(pathFinderResultArtist))
+
                     return;
 
                 var lines = File.ReadAllLines(pathFinderResultArtist);
@@ -483,7 +539,7 @@ namespace Rockit
                 var existingArtistID = new HashSet<int>(ArtistStore.ListOfArtist.Select(artist => artist.ArtistId));
                 if (existingArtistID.Contains(parsedKey))
                 {
-                    ArtistMenu artistMenu = new ArtistMenu(key,navlabel,creditslabel);
+                    ArtistMenu artistMenu = new ArtistMenu(key, navlabel, creditslabel);
                     artistMenu.Show();
                 }
                 key = "";
@@ -494,9 +550,9 @@ namespace Rockit
             var artist = ArtistStore.ListOfArtist.FirstOrDefault(a => a.Name.StartsWith(letters[navigator], StringComparison.OrdinalIgnoreCase));
             if (artist != null)
             {
-                int artistId = artist.ArtistId;
-                artistId = ((int)Math.Ceiling((double)artistId / 8));
-                cursor = ((artistId - 1) * 8);
+                int artistPos = ArtistStore.ListOfArtist.IndexOf(artist);
+                artistPos = ((int)Math.Ceiling((double)artistPos / 8));
+                cursor = ((artistPos - 1) * 8);
 
                 ClearMenu();
                 ButtonVisibility();
@@ -697,6 +753,23 @@ namespace Rockit
             Image img = await LoadImageAsync(path);
             pic.Image = img;
             pic.SizeMode = PictureBoxSizeMode.StretchImage;
+        }
+
+        private void Form1_Load(object sender, EventArgs e)
+        {
+            foreach (Control ctrl in this.Controls)
+            {
+                if (ctrl is PictureBox pb)
+                {
+                    pb.Resize += (s, ev) => SetRoundedPictureBox(pb, 20);
+                    SetRoundedPictureBox(pb, 20);
+                }
+                else if (ctrl is Label lbl)
+                {
+                    lbl.Resize += (s, ev) => SetRoundedLabel(lbl, 10);
+                    SetRoundedLabel(lbl, 10);
+                }
+            }
         }
     }
 }
