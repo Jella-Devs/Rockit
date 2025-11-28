@@ -138,38 +138,6 @@ namespace Rockit.Forms
             {
                 this.Close();
             }
-            /*
-            else if (e.KeyCode == Keys.Divide)
-            {
-                FormController formController = new FormController();
-                formController.ShowDialog();
-                e.Handled = true;
-                e.SuppressKeyPress = true; // evita beep y propagación
-            }*/
-            /*
-            else if (e.KeyCode == Keys.Decimal)
-            {
-                if (doublecheck == 0)
-                {
-                    navlabel.Visible = true;
-                    doublecheck++;
-                    startkeyresponse2();
-                }
-                else if ((navigator < letters.Length - 1))
-                {
-                    navigator++;
-                    navlabel.Text = letters[navigator];
-                    navlabel.Visible = true;
-                    startkeyresponse2();
-                }
-                else
-                {
-                    navigator = 0;
-                    navlabel.Text = letters[navigator];
-                    navlabel.Visible = true;
-                    startkeyresponse2();
-                }
-            }*/
             //Monedero + 2
             else if (e.KeyCode == Keys.Z)
             {

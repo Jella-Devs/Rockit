@@ -24,8 +24,11 @@ namespace Rockit
         int pages;
         int cursor = 0, navigator = 0, doublecheck = 0;
         string[] letters = new string[] { "A", "B", "C", "D", "E", "F", "G", "H", "I",
-            "J", "L", "M", "N", "Ñ", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X",
+            "J", "K" ,"L", "M", "N", "Ñ", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X",
             "Y", "Z" };
+
+        //Modo buscador alfabetico
+        bool lettersearchmode = false;
 
         // Clave para seleccionar artista
         string key = string.Empty;
@@ -281,23 +284,44 @@ namespace Rockit
             }
             else if (e.KeyCode == Keys.Subtract)
             {
-                if ((int)Math.Ceiling((double)cursor / 8) > 0)
+                if (lettersearchmode)
                 {
-                    cursor = cursor - 8;
-                    ClearMenu();
+                    lettersearch("back");
                 }
-                ButtonVisibility();
-                RefreshMenu();
+                else
+                {
+                    if ((int)Math.Ceiling((double)cursor / 8) > 0)
+                    {
+                        cursor = cursor - 8;
+                        ClearMenu();
+                    }
+                    ButtonVisibility();
+                    RefreshMenu();
+                }
             }
             else if (e.KeyCode == Keys.Add)
             {
-                if ((int)Math.Ceiling((double)cursor / 8) != pages - 1)
+                if (lettersearchmode)
                 {
-                    cursor = cursor + 8;
-                    ClearMenu();
+                    lettersearch("forward");
                 }
-                ButtonVisibility();
-                RefreshMenu();
+                else
+                {
+                    if ((int)Math.Ceiling((double)cursor / 8) != pages - 1)
+                    {
+                        cursor = cursor + 8;
+                        ClearMenu();
+                    }
+                    ButtonVisibility();
+                    RefreshMenu();
+                }
+            }
+            else if (e.KeyCode == Keys.Enter)
+            {
+                if (lettersearchmode)
+                {
+                    lettersearch("select");
+                }
             }
             else if (e.KeyCode == Keys.Multiply)
             {
@@ -318,26 +342,8 @@ namespace Rockit
             }*/
             else if (e.KeyCode == Keys.Decimal)
             {
-                if (doublecheck == 0)
-                {
-                    navlabel.Visible = true;
-                    doublecheck++;
-                    startkeyresponse2();
-                }
-                else if ((navigator < letters.Length - 1))
-                {
-                    navigator++;
-                    navlabel.Text = letters[navigator];
-                    navlabel.Visible = true;
-                    startkeyresponse2();
-                }
-                else
-                {
-                    navigator = 0;
-                    navlabel.Text = letters[navigator];
-                    navlabel.Visible = true;
-                    startkeyresponse2();
-                }
+                lettersearchmode = true;
+                lettersearch("forward");
             }
             else if (e.KeyCode == Keys.F5)
             {
@@ -440,6 +446,11 @@ namespace Rockit
                 {
                     keyresponse.Stop();
                 }
+
+            }
+            else if (e.KeyCode == Keys.S)
+            {
+                playerService.Skip();
 
             }
             else if (e.KeyCode >= Keys.NumPad0 && e.KeyCode <= Keys.NumPad9)
@@ -629,19 +640,15 @@ namespace Rockit
                 string fullpath = PlaylistStore.playlist[0].SongPath;
                 string fileNameWithoutExtension = Path.GetFileNameWithoutExtension(fullpath);
                 string parentFolderName = new DirectoryInfo(Path.GetDirectoryName(fullpath)).Name;
-                //string result = $"{parentFolderName} - {fileNameWithoutExtension}";
                 string result = $"{parentFolderName.Trim()} - {fileNameWithoutExtension.Trim()}";
                 ANameLabel.Text = (result);
                 tableLayoutPanel3.Visible = true;
-                //string imagepath = ArtistStore.ListOfArtist[int.Parse(key)-1].Picture;
-                //LoadPictureBox(playerPic1, imagepath);
             }
             else
             {
                 LegendLabel.Visible = false;
                 ANameLabel.Text = "";
                 tableLayoutPanel3.Visible = false;
-                //playerPic1.Image = null;
             }
         }
         private void ClearMenu()
@@ -670,6 +677,65 @@ namespace Rockit
                 lbl.BackColor = Color.FromArgb(0, 0, 0, 0);
             }
         }
+        private void lettersearch(string direction)
+        {
+            if (direction == "back")
+            {
+                if (doublecheck == 0)
+                {
+                    navlabel.Visible = true;
+                    doublecheck++;
+                    startkeyresponse2();
+                }
+                else if ((navigator > 0))
+                {
+                    navigator--;
+                    navlabel.Text = letters[navigator];
+                    navlabel.Visible = true;
+                    startkeyresponse2();
+                }
+                else
+                {
+                    navigator = letters.Length - 1;
+                    navlabel.Text = letters[navigator];
+                    navlabel.Visible = true;
+                    startkeyresponse2();
+                }
+                //LetterNavigatorForm.Instance.Showing(navigator);
+            }
+            else if (direction == "forward")
+            {
+                if (doublecheck == 0)
+                {
+                    navlabel.Visible = true;
+                    doublecheck++;
+                    startkeyresponse2();
+                }
+                else if ((navigator < letters.Length - 1))
+                {
+                    navigator++;
+                    navlabel.Text = letters[navigator];
+                    navlabel.Visible = true;
+                    startkeyresponse2();
+                }
+                else
+                {
+                    navigator = 0;
+                    navlabel.Text = letters[navigator];
+                    navlabel.Visible = true;
+                    startkeyresponse2();
+                }
+                //LetterNavigatorForm.Instance.Showing(navigator);
+            }
+            else if (direction == "select")
+            {
+                navlabel.Visible = false;
+                NavigatorSelArt();
+                doublecheck = 0;
+                lettersearchmode = false;
+                //LetterNavigatorForm.Instance.Hiding();
+            }
+        }
         private void Keyresponse_Tick(object sender, EventArgs e)
         {
             keyresponse.Stop();
@@ -683,6 +749,8 @@ namespace Rockit
             navlabel.Visible = false;
             NavigatorSelArt();
             doublecheck = 0;
+            lettersearchmode = false;
+            //LetterNavigatorForm.Instance.Hiding();
         }
         private void startkeyresponse()
         {
