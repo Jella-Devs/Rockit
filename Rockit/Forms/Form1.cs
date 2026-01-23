@@ -23,6 +23,8 @@ namespace Rockit
         //public int credits = 0;
         int pages;
         int cursor = 0, navigator = 0, doublecheck = 0;
+        private bool creditLock = false;
+        private bool creditPressed = false;
         string[] letters = new string[] { "A", "B", "C", "D", "E", "F", "G", "H", "I",
             "J", "K" ,"L", "M", "N", "Ñ", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X",
             "Y", "Z" };
@@ -272,7 +274,7 @@ namespace Rockit
             Feeder feeder = new Feeder();
             feeder.Show();
         }
-        private void Form1_KeyDown(object sender, KeyEventArgs e)
+        private async void Form1_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.KeyCode == Keys.F1 && (e.Alt || e.Control || e.Shift))
             {
@@ -358,7 +360,13 @@ namespace Rockit
             //Monedero + 2
             else if (e.KeyCode == Keys.Z)
             {
-                Properties.Settings.Default.Credits = Properties.Settings.Default.Credits + 2;
+                if (creditLock) return; // bloquea si está en delay
+                if (creditPressed) return;
+
+                creditPressed = true;
+                creditLock = true;
+
+                Properties.Settings.Default.Credits += 2;
                 string filePath = @"C:\Rockit\temp_credits.txt";
                 try
                 {
@@ -370,13 +378,15 @@ namespace Rockit
                     }
 
                     // Valor numérico que quieras escribir
-
                     creditslabel.Text = Properties.Settings.Default.Credits.ToString("D2"); // Formato con dos dígitos
 
                     // Crea o sobreescribe el archivo con el nuevo valor
                     File.WriteAllText(filePath, Properties.Settings.Default.Credits.ToString());
                 }
                 catch (Exception err) { MessageBox.Show(err.ToString()); }
+
+                await Task.Delay(1200);
+                creditLock = false;
             }
             //Monedero + 3
             else if (e.KeyCode == Keys.X)
@@ -837,6 +847,14 @@ namespace Rockit
                     lbl.Resize += (s, ev) => SetRoundedLabel(lbl, 10);
                     SetRoundedLabel(lbl, 10);
                 }
+            }
+        }
+
+        private void Form1_KeyUp(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Z)
+            {
+                creditPressed = false;
             }
         }
     }
