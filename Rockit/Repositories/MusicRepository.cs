@@ -1,4 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using Rockit.Data;
 using Rockit.Models;
 using System;
@@ -62,23 +62,31 @@ namespace Rockit.Repositories
 
             _context.SaveChanges();
         }
-        public void UpdateSongPlayCount(int songId)
+        public void RegisterSongPlay(string songPath)
         {
-            var song = _context.Songs.FirstOrDefault(s => s.SongId == songId);
-            if (song != null)
+            var memSong = SongStore.ListOfSongs.FirstOrDefault(s => s.Path == songPath || $"{s.Path}\\{s.Name}" == songPath);
+            if (memSong != null)
             {
-                song.Rp++;
-                _context.SaveChanges();
-            }
-        }
+                var song = _context.Songs.FirstOrDefault(s => s.SongId == memSong.SongId);
+                if (song != null)
+                {
+                    song.Rp++;
+                    _context.Songs.Update(song);
+                    _context.SaveChanges();
 
-        public void UpdateArtistPlayCount(int artistId)
-        {
-            var artist = _context.Artists.FirstOrDefault(a => a.ArtistId == artistId);
-            if (artist != null)
-            {
-                artist.Rp++;
-                _context.SaveChanges();
+                    var artist = _context.Artists.FirstOrDefault(a => a.Name == song.ArtistName);
+                    if (artist != null)
+                    {
+                        artist.Rp = _context.Songs.Where(s => s.ArtistName == song.ArtistName).Sum(s => s.Rp);
+                        _context.Artists.Update(artist);
+                        _context.SaveChanges();
+                    }
+
+                    // Sincronizar con la memoria
+                    memSong.Rp = song.Rp;
+                    var memArtist = ArtistStore.ListOfArtist.FirstOrDefault(a => a.Name == song.ArtistName);
+                    if (memArtist != null && artist != null) memArtist.Rp = artist.Rp;
+                }
             }
         }
 

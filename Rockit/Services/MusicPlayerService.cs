@@ -1,4 +1,4 @@
-﻿using NAudio.Wave;
+using NAudio.Wave;
 using NAudio.Wave.SampleProviders;
 using Rockit.Models;
 using Rockit.Repositories;
@@ -20,7 +20,7 @@ namespace Rockit.Services
         private Form1 mainForm;
         public WaveOutEvent outputDevice;
         public bool isPlaying = false;
-        private int currentIndex = 0;
+        public int currentIndex = 0;
         private AudioFileReader audioFile;
         private static MusicPlayerService instance;
         private bool skipPlaybackStopped = false;
@@ -55,6 +55,7 @@ namespace Rockit.Services
                 outputDevice.PlaybackStopped += OnPlaybackStopped;
                 outputDevice.Play();
                 isPlaying = true;
+                musicRepository.RegisterSongPlay(PlaylistStore.playlist[currentIndex].SongPath);
                 mainForm.StatusPlayerinLabels();
             }
             catch (Exception ex)

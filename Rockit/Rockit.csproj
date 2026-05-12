@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
@@ -43,6 +43,7 @@
 
   <ItemGroup>
     <EmbeddedResource Include="Resources\Fonts\LeagueSpartan-SemiBold.ttf" />
+    <EmbeddedResource Include="Resources\Fonts\DSEG7Classic-Regular.ttf" />
     <EmbeddedResource Include="Resources\Images\lblbacktransp.png" />
     <EmbeddedResource Include="Resources\images\next.png" />
     <EmbeddedResource Include="Resources\images\prev.png" />

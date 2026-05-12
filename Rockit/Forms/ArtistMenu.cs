@@ -1,4 +1,4 @@
-﻿using Microsoft.VisualBasic;
+using Microsoft.VisualBasic;
 using Rockit.Forms.ToastForms;
 using Rockit.Models;
 using Rockit.Repositories;
@@ -52,12 +52,10 @@ namespace Rockit.Forms
             listView1.Items.Clear();
             this.KeyPreview = true;
             this.DoubleBuffered = true; // Para evitar parpadeo
-            FontFamily leagueSpartan = FontLoader.LoadFont();
             RoundLeftCorners(pictureBox1);
             RoundRightCorners(listView1);
             var artist = _musicRepository.GetArtistById(Int32.Parse(artistkey)); // Asumiendo que este método carga los datos del artista en la UI
             keylabel.Text = artistkey + " - " + artist.Name;
-            listView1.Font = new Font(leagueSpartan, 14f);
             listView1.Dock = DockStyle.Fill;
             listView1.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             //listView1.Columns[0].Width = 0;
@@ -76,50 +74,65 @@ namespace Rockit.Forms
             this.BackColor = Color.FromArgb(50, 45, 45);
             this.DoubleBuffered = true; // Para reducir parpadeo
             ApplyRoundedCorners(30); // Radio del borde
-
-            keylabel.Font = new Font(leagueSpartan, 28f);
+            ApplyResponsiveLayout();
         }
         private void loadSongs(List<Song> Songs)
         {
-            foreach (var song in Songs)
+            var topSongs = Songs.Where(s => s.Rp > 0).OrderByDescending(s => s.Rp).Take(15).ToList();
+            var allSongs = Songs.OrderBy(s => Path.GetFileNameWithoutExtension(s.Name)).ToList();
+
+            // Separador inicial si hay canciones en Top 15
+            if (topSongs.Count > 0)
             {
-                //var item = new ListViewItem(song.SongId.ToString());
-                //var item = new ListViewItem((listView1.Items.Count + 1).ToString());
-                var item = new ListViewItem((""));
+                var topSeparator = new ListViewItem("");
+                topSeparator.SubItems.Add("――――― TOP CANCIONES ―――――");
+                topSeparator.Tag = "SEPARATOR";
+                topSeparator.ForeColor = Color.Gray;
+                listView1.Items.Add(topSeparator);
+            }
+
+            // Agregar Top 15
+            foreach (var song in topSongs)
+            {
+                var item = new ListViewItem("");
                 item.SubItems.Add(Path.GetFileNameWithoutExtension(song.Name));
-                // Guardar "Path + Nombre" como valor oculto en Tag
                 item.Tag = $"{song.Path}\\{song.Name}";
-
-
                 listView1.Items.Add(item);
             }
-            // Seleccionar y enfocar el primer ítem
+
+            // Separador antes del orden alfabético
+            if (topSongs.Count > 0 && allSongs.Count > 0)
+            {
+                var separator = new ListViewItem("");
+                separator.SubItems.Add("――――― ORDEN ALFABÉTICO ―――――");
+                separator.Tag = "SEPARATOR";
+                separator.ForeColor = Color.Gray;
+                listView1.Items.Add(separator);
+            }
+
+            // Agregar todas alfabeticamente
+            foreach (var song in allSongs)
+            {
+                var item = new ListViewItem("");
+                item.SubItems.Add(Path.GetFileNameWithoutExtension(song.Name));
+                item.Tag = $"{song.Path}\\{song.Name}";
+                listView1.Items.Add(item);
+            }
+
+            // Seleccionar y enfocar el primer ítem que no sea separador
             if (listView1.Items.Count > 0)
             {
-                listView1.ListViewItemSorter = new ListViewItemComparer(1, true); // true = ascendente
-                listView1.Sort();
-                listView1.Items[0].Selected = true;
+                for (int i = 0; i < listView1.Items.Count; i++)
+                {
+                    if (listView1.Items[i].Tag?.ToString() != "SEPARATOR")
+                    {
+                        currentIndex = i;
+                        break;
+                    }
+                }
+                listView1.Items[currentIndex].Selected = true;
                 listView1.Select();
                 listView1.Focus();
-            }
-        }
-        class ListViewItemComparer : IComparer
-        {
-            private int col;
-            private bool ascending;
-
-            public ListViewItemComparer(int column, bool ascending = true)
-            {
-                this.col = column;
-                this.ascending = ascending;
-            }
-
-            public int Compare(object x, object y)
-            {
-                string itemX = ((ListViewItem)x).SubItems[col].Text;
-                string itemY = ((ListViewItem)y).SubItems[col].Text;
-
-                return ascending ? string.Compare(itemX, itemY) : string.Compare(itemY, itemX);
             }
         }
         private async void ArtistMenu_KeyDown(object sender, KeyEventArgs e)
@@ -154,7 +167,7 @@ namespace Rockit.Forms
 
                     // Valor numérico que quieras escribir
 
-                    creditslabel.Text = Properties.Settings.Default.Credits.ToString("D2"); // Formato con dos dígitos
+                        creditslabel.Text = $"{Properties.Settings.Default.Credits} creditos";
 
                     // Crea o sobreescribe el archivo con el nuevo valor
                     File.WriteAllText(filePath, Properties.Settings.Default.Credits.ToString());
@@ -177,7 +190,7 @@ namespace Rockit.Forms
 
                     // Valor numérico que quieras escribir
 
-                    creditslabel.Text = Properties.Settings.Default.Credits.ToString("D2"); // Formato con dos dígitos
+                        creditslabel.Text = $"{Properties.Settings.Default.Credits} creditos";
 
                     // Crea o sobreescribe el archivo con el nuevo valor
                     File.WriteAllText(filePath, Properties.Settings.Default.Credits.ToString());
@@ -189,6 +202,10 @@ namespace Rockit.Forms
                 if (currentIndex < listView1.Items.Count - 1)
                 {
                     currentIndex++;
+                    if (listView1.Items[currentIndex].Tag?.ToString() == "SEPARATOR" && currentIndex < listView1.Items.Count - 1)
+                    {
+                        currentIndex++;
+                    }
                     listView1.Items[currentIndex].Selected = true;
                     listView1.Items[currentIndex].Focused = true;
                     listView1.EnsureVisible(currentIndex);
@@ -200,6 +217,10 @@ namespace Rockit.Forms
                 if (currentIndex > 0)
                 {
                     currentIndex--;
+                    if (listView1.Items[currentIndex].Tag?.ToString() == "SEPARATOR" && currentIndex > 0)
+                    {
+                        currentIndex--;
+                    }
                     listView1.Items[currentIndex].Selected = true;
                     listView1.Items[currentIndex].Focused = true;
                     listView1.EnsureVisible(currentIndex);
@@ -210,6 +231,8 @@ namespace Rockit.Forms
             {
                 var selectedItem = listView1.SelectedItems[0];
                 string tagValue = selectedItem.Tag?.ToString();
+
+                if (tagValue == "SEPARATOR") return;
 
                 if (ToastHelper.MostrarConfirmacion(selectedItem.SubItems[1].Text))
                 {
@@ -226,7 +249,7 @@ namespace Rockit.Forms
 
                         // Valor numérico que quieras escribir
 
-                        creditslabel.Text = Properties.Settings.Default.Credits.ToString("D2"); // Formato con dos dígitos
+                            creditslabel.Text = $"{Properties.Settings.Default.Credits} creditos";
 
                         // Crea o sobreescribe el archivo con el nuevo valor
                         File.WriteAllText(filePath, Properties.Settings.Default.Credits.ToString());
@@ -305,6 +328,29 @@ namespace Rockit.Forms
         {
             base.OnResize(e);
             ApplyRoundedCorners(30); // Asegura que se mantenga al cambiar de tamaño
+        }
+
+        private void ApplyResponsiveLayout()
+        {
+            float scaleX = (float)Screen.PrimaryScreen.Bounds.Width / 1600f;
+            float scaleY = (float)Screen.PrimaryScreen.Bounds.Height / 900f;
+            
+            // Limitar para que no sea demasiado pequeña en resoluciones muy bajas
+            scaleX = Math.Max(0.5f, scaleX);
+            scaleY = Math.Max(0.5f, scaleY);
+
+            // Escalar tamaño base de la ventana
+            this.Size = new Size((int)(1149 * scaleX), (int)(562 * scaleY));
+            this.CenterToScreen();
+
+            // Escalar fuentes
+            FontFamily leagueSpartan = FontLoader.LoadFont();
+            keylabel.Font = new Font(leagueSpartan, Math.Max(14f, 28f * scaleX));
+            listView1.Font = new Font(leagueSpartan, Math.Max(9f, 14f * scaleX));
+
+            // Escalar márgenes dinámicos del layout original de diseñador
+            pictureBox1.Margin = new Padding((int)(40 * scaleX), (int)(60 * scaleY), 0, (int)(40 * scaleY));
+            listView1.Margin = new Padding(0, 0, (int)(40 * scaleX), (int)(38 * scaleY));
         }
         private async void LoadPictureBox(string path)
         {

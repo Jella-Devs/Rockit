@@ -19,14 +19,21 @@ namespace Rockit
 {
     public partial class Form1 : Form
     {
+        #region Variables y Campos de Estado
+
         // Index para movimiento de paginas del menu
         //public int credits = 0;
         int pages;
         int cursor = 0, navigator = 0, doublecheck = 0;
         private bool creditLock = false;
         private bool creditPressed = false;
-        string[] letters = new string[] { "A", "B", "C", "D", "E", "F", "G", "H", "I",
-            "J", "K" ,"L", "M", "N", "�", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X",
+        bool isTop8Page = false;
+        private bool HasEnoughTopArtists()
+        {
+            return ArtistStore.ListOfArtist != null && ArtistStore.ListOfArtist.Count(a => a.Rp > 0) >= 8;
+        }
+        string[] letters = new string[] { "★", "A", "B", "C", "D", "E", "F", "G", "H", "I",
+            "J", "K" ,"L", "M", "N", "Ñ", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X",
             "Y", "Z" };
 
         //Modo buscador alfabetico
@@ -37,6 +44,10 @@ namespace Rockit
         private Timer keyresponse, keyresponse2;
         MusicPlayerService playerService = MusicPlayerService.Instance;
 
+        #endregion
+
+        #region Constructor e Inicialización
+
         public Form1()
         {
             InitializeComponent();
@@ -44,6 +55,10 @@ namespace Rockit
             UIMenuDrawer();
             Loader();
         }
+        /// <summary>
+        /// Prepara y dibuja los controles UI iniciales en el formulario, 
+        /// estableciendo fuentes, fondos y activando el DoubleBuffering.
+        /// </summary>
         private void UIMenuDrawer()
         {
             // Inicializador de Timers
@@ -56,48 +71,19 @@ namespace Rockit
 
             this.KeyPreview = true;
             this.DoubleBuffered = true; // Para evitar parpadeo
-            this.ResizeRedraw = true;   // Redibuja al cambiar tama�o
-            FontFamily leagueSpartan = FontLoader.LoadFont();
-            var pictureBoxes = new List<PictureBox>
-            {
-                picArtist1, picArtist2, picArtist3, picArtist4,
-                picArtist5, picArtist6, picArtist7, picArtist8
-            };
-            var labels = new List<Label>
-                {
-                    label1,label2,label3,label4,label5, label6, label7, label8
-                };
+            this.ResizeRedraw = true;   // Redibuja al cambiar tama�o
             var idlabels = new List<Label>
-                {
-                    idlabel1,idlabel2,idlabel3,idlabel4,idlabel5, idlabel6, idlabel7, idlabel8
-                };
-            keylabel.Font = new Font(leagueSpartan, 24f);
-            creditslabel.Font = new Font(leagueSpartan, 68f);
-            pagelabel.Font = new Font(leagueSpartan, 12f);
-            navlabel.Font = new Font(leagueSpartan, 38f);
-            ANameLabel.Font = new Font(leagueSpartan, 12f);
-            LegendLabel.Font = new Font(leagueSpartan, 16f);
+            {
+                idlabel1, idlabel2, idlabel3, idlabel4,
+                idlabel5, idlabel6, idlabel7, idlabel8
+            };
+            // Fuentes y regiones escaladas dinamicamente por ApplyResponsiveLayout()
             navlabel.BackColor = Color.FromArgb(45, 0, 0, 0);
             ANameLabel.BackColor = Color.FromArgb(65, 0, 0, 0);
-            tableLayoutPanel3.BackColor = Color.FromArgb(20, 0, 0, 0);
-            SetRoundedLabel(navlabel, 8);
-            //SetRoundedTableLayoutUpperCorners(tableLayoutPanel3, 32);
-            foreach (var pb in pictureBoxes)
-            {
-                SetRoundedPictureBox(pb, 20);
-            }
-            //SetRoundedPictureBox(playerPic1, 32);
-            foreach (var lbl in labels)
-            {
-                lbl.Font = new Font(leagueSpartan, 12f);
-                AdjustLabelNameToText(lbl);
-                //SetRoundedLabel(lbl, 20);
-            }
+            tableLayoutPanel3.BackColor = Color.Transparent;
+            tableLayoutPanel3.Paint += TableLayoutPanel3_Paint;
             foreach (var lbl in idlabels)
             {
-                lbl.Font = new Font(leagueSpartan, 10f);
-                AdjustLabelToText(lbl);
-                //SetRoundedLabel(lbl, 16);
                 lbl.ForeColor = Color.White;
                 lbl.TextAlign = ContentAlignment.MiddleCenter;
             }
@@ -121,6 +107,9 @@ namespace Rockit
             ?.SetValue(flowLayoutPanel1, true, null);
             InitializeCredits();
         }
+        /// <summary>
+        /// Carga los créditos actuales desde el sistema de archivos o los inicializa en 0.
+        /// </summary>
         private void InitializeCredits()
         {
             string filePath = @"C:\Rockit\temp_credits.txt";
@@ -147,36 +136,63 @@ namespace Rockit
                     // Si no existe, lo crea con valor 0
                     File.WriteAllText(filePath, Properties.Settings.Default.Credits.ToString());
                 }
-                creditslabel.Text = Properties.Settings.Default.Credits.ToString("D2"); // Formato con dos d�gitos
+                creditslabel.Text = $"{Properties.Settings.Default.Credits} creditos";
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Error cargando cr�ditos: " + ex.Message);
+                MessageBox.Show("Error cargando creditos: " + ex.Message);
+            }
+        }
+
+        #endregion
+
+        #region Métodos de Dibujado y UI
+
+        protected override void OnPaint(PaintEventArgs e)
+        {
+            base.OnPaint(e);
+            if (isTop8Page)
+            {
+                float scale = (float)this.ClientSize.Width / 1600f;
+                float scaleY = (float)this.ClientSize.Height / 900f;
+                float fontSize = Math.Max(12f, 32f * scale);
+
+                e.Graphics.TextRenderingHint = System.Drawing.Text.TextRenderingHint.AntiAlias;
+                using (Font font = new Font(FontLoader.LoadFont(), fontSize, FontStyle.Bold))
+                using (SolidBrush brush = new SolidBrush(Color.AntiqueWhite))
+                {
+                    // Para orientacion vertical: leemos de abajo hacia arriba
+                    // Trasladamos al punto inferior izquierdo donde empezara el texto
+                    e.Graphics.TranslateTransform((int)(12 * scale), (int)(800 * scaleY));
+                    e.Graphics.RotateTransform(-90);
+                    e.Graphics.DrawString("LOS MÁS ESCUCHADOS", font, brush, 0, 0);
+                    e.Graphics.ResetTransform();
+                }
             }
         }
         protected override void OnPaintBackground(PaintEventArgs e)
         {
             base.OnPaintBackground(e);
 
-            // Definir colores del gradiente
+            // Definir colores del gradiente (naranja vibrante a morado oscuro profundo)
             Color[] colors = new Color[]
             {
-                 ColorTranslator.FromHtml("#5F4B8B"),
-                 ColorTranslator.FromHtml("#826E93"),
-                 ColorTranslator.FromHtml("#FFB694"),
-                 ColorTranslator.FromHtml("#D77464"),
-                 ColorTranslator.FromHtml("#AF5D63")
+                 ColorTranslator.FromHtml("#14081C"), // Naranja vibrante
+                 ColorTranslator.FromHtml("#300F3C"), // Carmesí
+                 ColorTranslator.FromHtml("#6D174A"), // Magenta oscuro
+                 ColorTranslator.FromHtml("#300F3C"), // Morado profundo
+                 ColorTranslator.FromHtml("#14081C")  // Casi negro/morado
             };
 
-            // Crear rect�ngulo para cubrir todo el formulario
+            // Crear rectángulo para cubrir todo el formulario
             Rectangle rect = this.ClientRectangle;
 
-            // Crear gradiente lineal diagonal
+            // Crear gradiente lineal diagonal (45 grados)
             using (LinearGradientBrush brush = new LinearGradientBrush(
                 rect,
                 colors[0],
                 colors[^1],
-                90f)) // 90 grados: superior derecha a inferior izquierda
+                45f)) // 45 grados: superior izquierda a inferior derecha
             {
                 // Configurar mezcla de colores personalizada
                 ColorBlend blend = new ColorBlend
@@ -184,7 +200,7 @@ namespace Rockit
                     Colors = colors,
                     Positions = new float[]
                     {
-                    0.0f, 0.2f, 0.5f, 0.7f, 1.0f
+                    0.0f, 0.25f, 0.5f, 0.75f, 1.0f
                     }
                 };
 
@@ -196,15 +212,19 @@ namespace Rockit
         private void titlePanel_Paint(object sender, PaintEventArgs e)
         {
             FontFamily leagueSpartan = FontLoader.LoadFont();
+            // Escalar fuente proporcional a la resolucion de diseño (1600x900 base)
+            float scale = Math.Min(
+                (float)this.ClientSize.Width / 1600f,
+                (float)this.ClientSize.Height / 900f);
+            float fontSize = Math.Max(16f, 58f * scale);
             string[] lines = { "Billares", "La Quinta" };
-            Font font = new Font(leagueSpartan, 46f);
-            float lineHeight = font.GetHeight(e.Graphics) - 2; // reduce espacio
+            Font font = new Font(leagueSpartan, fontSize, FontStyle.Bold);
+            float lineHeight = font.GetHeight(e.Graphics) - 4;
 
-            // Activar anti-aliasing para texto
             e.Graphics.TextRenderingHint = System.Drawing.Text.TextRenderingHint.AntiAlias;
 
-            float paddingX = 12f; // Padding izquierdo
-            float paddingY = 26f; // Padding superior
+            float paddingX = Math.Max(10f, 24f * scale);
+            float paddingY = Math.Max(12f, 36f * scale);
             float y = paddingY;
             foreach (var line in lines)
             {
@@ -212,29 +232,13 @@ namespace Rockit
                 y += lineHeight;
             }
         }
-        private void SetRoundedPictureBox(PictureBox pb, int baseRadius)
-        {
-            float widthRatio = Screen.PrimaryScreen.Bounds.Width / 1600f;
-            float heightRatio = Screen.PrimaryScreen.Bounds.Height / 900f;
-            float scale = Math.Min(widthRatio, heightRatio);
-
-            int radius = (int)(baseRadius * scale);
-            ApplyRoundedRegion(pb, radius);
-        }
-        private void SetRoundedLabel(Label lbl, int baseRadius)
-        {
-            float widthRatio = Screen.PrimaryScreen.Bounds.Width / 1600f;
-            float heightRatio = Screen.PrimaryScreen.Bounds.Height / 900f;
-            float scale = Math.Min(widthRatio, heightRatio);
-
-            int radius = (int)(baseRadius * scale);
-            ApplyRoundedRegion(lbl, radius);
-        }
         private void ApplyRoundedRegion(Control ctrl, int radius)
         {
+            if (ctrl.Width <= 0 || ctrl.Height <= 0) return;
+            int r = Math.Max(1, radius);
+            int diameter = r * 2;
             var rect = new Rectangle(0, 0, ctrl.Width, ctrl.Height);
             var draw = new System.Drawing.Drawing2D.GraphicsPath();
-            int diameter = radius * 2;
 
             draw.AddArc(rect.X, rect.Y, diameter, diameter, 180, 90);
             draw.AddArc(rect.Right - diameter, rect.Y, diameter, diameter, 270, 90);
@@ -243,6 +247,28 @@ namespace Rockit
             draw.CloseAllFigures();
 
             ctrl.Region = new Region(draw);
+        }
+        private void SetRoundedPictureBox(PictureBox pb, int radius)
+        {
+            ApplyRoundedRegion(pb, radius);
+        }
+        private void SetRoundedLabel(Label lbl, int radius)
+        {
+            ApplyRoundedRegion(lbl, radius);
+        }
+        private void SetRoundedTableLayoutUpperCorners(TableLayoutPanel panel, int radius)
+        {
+            System.Drawing.Drawing2D.GraphicsPath path = new System.Drawing.Drawing2D.GraphicsPath();
+            Rectangle bounds = panel.ClientRectangle;
+            if (bounds.Width <= 0 || bounds.Height <= 0) return;
+            int diameter = radius * 2;
+            path.AddArc(bounds.X, bounds.Y, diameter, diameter, 180, 90);
+            path.AddArc(bounds.Right - diameter, bounds.Y, diameter, diameter, 270, 90);
+            path.AddLine(bounds.Right, bounds.Y + radius, bounds.Right, bounds.Bottom);
+            path.AddLine(bounds.Right, bounds.Bottom, bounds.X, bounds.Bottom);
+            path.AddLine(bounds.X, bounds.Bottom, bounds.X, bounds.Y + radius);
+            path.CloseFigure();
+            panel.Region = new Region(path);
         }
         private void AdjustLabelToText(Label lbl)
         {
@@ -269,6 +295,10 @@ namespace Rockit
             }
         }
 
+        #endregion
+
+        #region Eventos de Teclado
+
         public void FeederMenu()
         {
             Feeder feeder = new Feeder();
@@ -292,11 +322,17 @@ namespace Rockit
                 }
                 else
                 {
-                    if ((int)Math.Ceiling((double)cursor / 8) > 0)
+                    if (!isTop8Page && cursor == 0 && HasEnoughTopArtists())
                     {
-                        cursor = cursor - 8;
+                        isTop8Page = true;
                         ClearMenu();
                     }
+                    else if ((int)Math.Ceiling((double)cursor / 8) > 0)
+                        if ((int)Math.Ceiling((double)cursor / 8) > 0)
+                        {
+                            cursor = cursor - 8;
+                            ClearMenu();
+                        }
                     ButtonVisibility();
                     RefreshMenu();
                 }
@@ -309,11 +345,18 @@ namespace Rockit
                 }
                 else
                 {
-                    if ((int)Math.Ceiling((double)cursor / 8) != pages - 1)
+                    if (isTop8Page)
                     {
-                        cursor = cursor + 8;
+                        isTop8Page = false;
+                        cursor = 0;
                         ClearMenu();
                     }
+                    else if ((int)Math.Ceiling((double)cursor / 8) != pages - 1)
+                        if ((int)Math.Ceiling((double)cursor / 8) != pages - 1)
+                        {
+                            cursor = cursor + 8;
+                            ClearMenu();
+                        }
                     ButtonVisibility();
                     RefreshMenu();
                 }
@@ -360,7 +403,7 @@ namespace Rockit
             //Monedero + 2
             else if (e.KeyCode == Keys.Z)
             {
-                if (creditLock) return; // bloquea si est� en delay
+                if (creditLock) return; // bloquea si esta en delay
                 if (creditPressed) return;
 
                 creditPressed = true;
@@ -377,8 +420,8 @@ namespace Rockit
                         Directory.CreateDirectory(dir);
                     }
 
-                    // Valor num�rico que quieras escribir
-                    creditslabel.Text = Properties.Settings.Default.Credits.ToString("D2"); // Formato con dos d�gitos
+                    // Valor numérico que quieras escribir
+                    creditslabel.Text = $"{Properties.Settings.Default.Credits} creditos";
 
                     // Crea o sobreescribe el archivo con el nuevo valor
                     File.WriteAllText(filePath, Properties.Settings.Default.Credits.ToString());
@@ -402,9 +445,9 @@ namespace Rockit
                         Directory.CreateDirectory(dir);
                     }
 
-                    // Valor num�rico que quieras escribir
+                    // Valor numrico que quieras escribir
 
-                    creditslabel.Text = Properties.Settings.Default.Credits.ToString("D2"); // Formato con dos d�gitos
+                    creditslabel.Text = $"{Properties.Settings.Default.Credits} creditos";
 
                     // Crea o sobreescribe el archivo con el nuevo valor
                     File.WriteAllText(filePath, Properties.Settings.Default.Credits.ToString());
@@ -424,9 +467,9 @@ namespace Rockit
                         Directory.CreateDirectory(dir);
                     }
 
-                    // Valor num�rico que quieras escribir
+                    // Valor numrico que quieras escribir
 
-                    creditslabel.Text = Properties.Settings.Default.Credits.ToString("D2"); // Formato con dos d�gitos
+                    creditslabel.Text = $"{Properties.Settings.Default.Credits} creditos";
 
                     // Crea o sobreescribe el archivo con el nuevo valor
                     File.WriteAllText(filePath, Properties.Settings.Default.Credits.ToString());
@@ -474,6 +517,15 @@ namespace Rockit
                 }
             }
         }
+
+        #endregion
+
+        #region Lógica de Negocio y Navegación
+
+        /// <summary>
+        /// Inicializa el estado de la aplicación. 
+        /// Verifica si existen artistas en BD, los carga en memoria o importa desde archivos de texto local.
+        /// </summary>
         public void Loader()
         {
             var repo = new MusicRepository();
@@ -511,7 +563,7 @@ namespace Rockit
                     string name = subParts[0];
                     string picture = subParts[1];
 
-                    // Verifica si ya est� en memoria
+                    // Verifica si ya est� en memoria
                     if (ArtistStore.ListOfArtist.Any(a => a.ArtistId == artistId))
                         continue;
 
@@ -533,6 +585,7 @@ namespace Rockit
                 }
             }
             CargarPlaylistDesdeBaseDeDatos();
+            isTop8Page = HasEnoughTopArtists();
             RefreshMenu();
         }
         private void CargarPlaylistDesdeBaseDeDatos()
@@ -549,7 +602,7 @@ namespace Rockit
             }
             else
             {
-                PlaylistStore.playlist = new List<PlayListItem>(); // por seguridad, aseguramos una lista vac�a
+                PlaylistStore.playlist = new List<PlayListItem>(); // por seguridad, aseguramos una lista vac�a
             }
         }
 
@@ -568,6 +621,17 @@ namespace Rockit
         }
         private void NavigatorSelArt()
         {
+            if (letters[navigator] == "★")
+            {
+                if (!HasEnoughTopArtists()) return;
+                isTop8Page = true;
+                cursor = 0;
+                ClearMenu();
+                ButtonVisibility();
+                RefreshMenu();
+                return;
+            }
+            isTop8Page = false;
             var artist = ArtistStore.ListOfArtist.FirstOrDefault(a => a.Name.StartsWith(letters[navigator], StringComparison.OrdinalIgnoreCase));
             if (artist != null)
             {
@@ -583,17 +647,21 @@ namespace Rockit
         private void ButtonVisibility()
         {
             int currentPage = (int)Math.Ceiling((double)cursor / 8);
-            pictureNext.Visible = currentPage < pages - 1;
-            picturePrev.Visible = currentPage > 0;
+            pictureNext.Visible = isTop8Page ? (pages > 0) : (currentPage < pages - 1);
+            picturePrev.Visible = !isTop8Page;
         }
+
+        /// <summary>
+        /// Actualiza la vista de cuadrícula de portadas de artistas basándose en la posición del cursor.
+        /// </summary>
         public void RefreshMenu()
         {
+            if (isTop8Page && !HasEnoughTopArtists()) { isTop8Page = false; cursor = 0; }
             if (ArtistStore.ListOfArtist.Count > 0)
             {
                 pages = (int)Math.Ceiling((double)ArtistStore.ListOfArtist.Count / 8);
-                pagelabel.Text = "P�g: " + ((int)Math.Ceiling((double)cursor / 8) + 1) + "/" + pages;
-
-                // Declarar elementos dinamicos
+                if (isTop8Page) pagelabel.Text = "Pág: ★ Top 8 ★";
+                else pagelabel.Text = "Pág: " + ((int)Math.Ceiling((double)cursor / 8) + 1) + "/" + pages;
                 var pictureBoxes = new List<PictureBox>
                 {
                     picArtist1, picArtist2, picArtist3, picArtist4,
@@ -609,7 +677,9 @@ namespace Rockit
                 };
 
                 // Tomar datos de la lista dependiendo la posicion del cursor
-                var topArtists = ArtistStore.ListOfArtist.Skip(cursor).Take(8).ToList();
+                var topArtists = isTop8Page ?
+                    ArtistStore.ListOfArtist.OrderByDescending(a => a.Rp).Take(8).ToList() :
+                    ArtistStore.ListOfArtist.Skip(cursor).Take(8).ToList();
 
                 // Asignar cada portada a su PictureBox
                 for (int i = 0; i < topArtists.Count; i++)
@@ -644,14 +714,51 @@ namespace Rockit
         }
         public void StatusPlayerinLabels()
         {
-            if (playerService.isPlaying)
+            if (playerService.isPlaying && PlaylistStore.playlist.Count > playerService.currentIndex)
             {
                 LegendLabel.Visible = true;
-                string fullpath = PlaylistStore.playlist[0].SongPath;
-                string fileNameWithoutExtension = Path.GetFileNameWithoutExtension(fullpath);
-                string parentFolderName = new DirectoryInfo(Path.GetDirectoryName(fullpath)).Name;
-                string result = $"{parentFolderName.Trim()} - {fileNameWithoutExtension.Trim()}";
-                ANameLabel.Text = (result);
+                
+                var currentSong = PlaylistStore.playlist[playerService.currentIndex];
+                string fullpath = currentSong.SongPath;
+                
+                // Extraer el nombre de la canción estrictamente del archivo
+                string songName = Path.GetFileNameWithoutExtension(fullpath);
+
+                // Obtener el artista exacto de la base de datos
+                string artistName = "Desconocido";
+                var songFromDb = SongStore.ListOfSongs.FirstOrDefault(s => string.Equals($"{s.Path}\\{s.Name}", fullpath, StringComparison.OrdinalIgnoreCase) || string.Equals(s.Path + "/" + s.Name, fullpath, StringComparison.OrdinalIgnoreCase));
+                
+                if (songFromDb != null && !string.IsNullOrWhiteSpace(songFromDb.ArtistName))
+                {
+                    artistName = songFromDb.ArtistName;
+                }
+                else
+                {
+                    // Fallback si no se encuentra en memoria por alguna razón
+                    string parentFolder = new DirectoryInfo(Path.GetDirectoryName(fullpath)).Name;
+                    var matchingArtist = ArtistStore.ListOfArtist.FirstOrDefault(a => fullpath.IndexOf($"\\{a.Name}\\", StringComparison.OrdinalIgnoreCase) >= 0 || fullpath.IndexOf($"/{a.Name}/", StringComparison.OrdinalIgnoreCase) >= 0);
+                    if (matchingArtist != null)
+                    {
+                        artistName = matchingArtist.Name;
+                    }
+                    else
+                    {
+                        artistName = parentFolder.Split('-')[0].Trim(); // Ej. "Grupo Frontera - Agosto 2025" -> "Grupo Frontera"
+                    }
+                }
+
+                // Evitar duplicar el nombre del artista si la canción ya lo incluye
+                string result;
+                if (songName.StartsWith(artistName, StringComparison.OrdinalIgnoreCase))
+                {
+                    result = songName.Trim();
+                }
+                else
+                {
+                    result = $"{artistName.Trim()} - {songName.Trim()}";
+                }
+
+                ANameLabel.Text = result;
                 tableLayoutPanel3.Visible = true;
             }
             else
@@ -746,6 +853,11 @@ namespace Rockit
                 //LetterNavigatorForm.Instance.Hiding();
             }
         }
+
+        #endregion
+
+        #region Manejo de Timers
+
         private void Keyresponse_Tick(object sender, EventArgs e)
         {
             keyresponse.Stop();
@@ -786,31 +898,49 @@ namespace Rockit
                 keyresponse2.Start();
             }
         }
+
+        #endregion
+
+        #region Clases Anidadas y Utilidades
+
+        /// <summary>
+        /// Carga y expone las fuentes personalizadas del proyecto (LeagueSpartan y DSEG7).
+        /// </summary>
         public static class FontLoader
         {
-            public static PrivateFontCollection FontCollection = new PrivateFontCollection();
+            private static PrivateFontCollection _fontCollection = new PrivateFontCollection();
+            private static PrivateFontCollection _dsegCollection = new PrivateFontCollection();
+            private static FontFamily? _leagueSpartan = null;
+            private static FontFamily? _dseg7 = null;
 
+            /// <summary>Retorna la familia LeagueSpartan Bold.</summary>
             public static FontFamily LoadFont()
             {
-                string leaguespartan = Path.GetFullPath(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"..\..\..\Resources\Fonts\LeagueSpartan-Bold.ttf"));
-                string bungee = Path.GetFullPath(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"..\..\..\Resources\Fonts\Bungee-Regular.ttf"));
+                if (_leagueSpartan != null) return _leagueSpartan;
 
-                FontCollection.AddFontFile(leaguespartan);
+                string path = Path.GetFullPath(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"..\..\..\Resources\Fonts\LeagueSpartan-Bold.ttf"));
+                byte[] data = File.ReadAllBytes(path);
+                IntPtr ptr = Marshal.AllocCoTaskMem(data.Length);
+                Marshal.Copy(data, 0, ptr, data.Length);
+                _fontCollection.AddMemoryFont(ptr, data.Length);
+                Marshal.FreeCoTaskMem(ptr);
+                _leagueSpartan = _fontCollection.Families[0];
+                return _leagueSpartan;
+            }
 
-                if (FontCollection.Families.Length > 0)
-                {
-                    byte[] fontData = File.ReadAllBytes(leaguespartan);
-                    IntPtr fontPtr = Marshal.AllocCoTaskMem(fontData.Length);
-                    Marshal.Copy(fontData, 0, fontPtr, fontData.Length);
-                    FontCollection.AddMemoryFont(fontPtr, fontData.Length);
-                    Marshal.FreeCoTaskMem(fontPtr);
-                }
-                else
-                {
-                    MessageBox.Show("Algo inesperado ocurrio, error en FONT");
-                }
+            /// <summary>Retorna la familia DSEG7Classic (estilo 7 segmentos).</summary>
+            public static FontFamily LoadDSEG7()
+            {
+                if (_dseg7 != null) return _dseg7;
 
-                return FontCollection.Families[0];
+                string path = Path.GetFullPath(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"..\..\..\Resources\Fonts\DSEG7Classic-Regular.ttf"));
+                byte[] data = File.ReadAllBytes(path);
+                IntPtr ptr = Marshal.AllocCoTaskMem(data.Length);
+                Marshal.Copy(data, 0, ptr, data.Length);
+                _dsegCollection.AddMemoryFont(ptr, data.Length);
+                Marshal.FreeCoTaskMem(ptr);
+                _dseg7 = _dsegCollection.Families[0];
+                return _dseg7;
             }
         }
         private async Task<Image> LoadImageAsync(string path)
@@ -833,19 +963,169 @@ namespace Rockit
             pic.SizeMode = PictureBoxSizeMode.StretchImage;
         }
 
+        #endregion
+
+        #region Diseño Responsivo y Ciclo de Vida Adicional
+
         private void Form1_Load(object sender, EventArgs e)
         {
-            foreach (Control ctrl in this.Controls)
+            ApplyResponsiveLayout();
+        }
+
+        protected override void OnResize(EventArgs e)
+        {
+            base.OnResize(e);
+            if (this.ClientSize.Width > 0 && this.ClientSize.Height > 0)
             {
-                if (ctrl is PictureBox pb)
+                ApplyResponsiveLayout();
+                this.Invalidate();
+                titlePanel?.Invalidate();
+            }
+        }
+
+        /// <summary>
+        /// Aplica cálculos matemáticos basados en la resolución nativa de pantalla 
+        /// para escalar dimensiones, fuentes y márgenes dinámicamente.
+        /// </summary>
+        private void ApplyResponsiveLayout()
+        {
+            float scaleX = (float)this.ClientSize.Width / 1600f;
+            float scaleY = (float)this.ClientSize.Height / 900f;
+            float scale = Math.Min(scaleX, scaleY);
+
+            FontFamily lf = FontLoader.LoadFont();
+            FontFamily dseg = FontLoader.LoadDSEG7();
+
+            // --- HEADER ---
+            // keylabel con fuente DSEG7 (estilo display 7-segmentos)
+            keylabel.Font = new Font(dseg, Math.Max(24f, 85f * scale), FontStyle.Regular);
+            keylabel.ForeColor = Color.White;
+            keylabel.TextAlign = ContentAlignment.MiddleCenter;
+
+            // pagelabel, navlabel, player
+            pagelabel.Font = new Font(lf, Math.Max(6f, 12f * scale));
+            navlabel.Font = new Font(lf, Math.Max(8f, 38f * scale));
+            ANameLabel.Font = new Font(lf, Math.Max(6f, 12f * scale));
+            LegendLabel.Font = new Font(lf, Math.Max(6f, 16f * scale));
+
+            int navSize = Math.Max(40, (int)(80 * scale));
+            navlabel.Size = new Size(navSize, navSize);
+
+            // creditslabel: compacto estilo "17 creditos" alineado top-right
+            creditslabel.Font = new Font(lf, Math.Max(12f, 22f * scale), FontStyle.Bold);
+            creditslabel.TextAlign = ContentAlignment.MiddleRight;
+            creditslabel.Text = $"{Properties.Settings.Default.Credits} creditos";
+            creditslabel.Padding = new Padding(0, 0, (int)(40 * scaleX), 0);
+
+            // Padding del keylabel (centrado verticalmente en el panel)
+            int hPad = Math.Max(10, (int)(240 * scaleX));
+            int vPad = Math.Max(5, (int)(50 * scaleY));
+            flowLayoutPanel1.Padding = new Padding(hPad, vPad, hPad, (int)(40 * scaleY));
+
+            // --- BOTONES NEXT/PREV ---
+            int btnSize = Math.Max(32, (int)(64 * scale));
+            int midY = (int)(this.ClientSize.Height * 0.55f);
+            pictureNext.Size = new Size(btnSize, btnSize);
+            picturePrev.Size = new Size(btnSize, btnSize);
+            pictureNext.Location = new Point(this.ClientSize.Width - btnSize - 4, midY - btnSize / 2);
+            picturePrev.Location = new Point(4, midY - btnSize / 2);
+            pictureNext.BringToFront();
+            picturePrev.BringToFront();
+
+            // --- TARJETAS DE ARTISTAS ---
+            var pictureBoxes = new List<PictureBox> { picArtist1, picArtist2, picArtist3, picArtist4, picArtist5, picArtist6, picArtist7, picArtist8 };
+            var labels = new List<Label> { label1, label2, label3, label4, label5, label6, label7, label8 };
+            var idlabels = new List<Label> { idlabel1, idlabel2, idlabel3, idlabel4, idlabel5, idlabel6, idlabel7, idlabel8 };
+
+            int artistMargin = (int)(85 * scaleX);
+            int picRadius = Math.Max(8, (int)(20 * scale));
+            int badgeSize = Math.Max(32, (int)(48 * scale));
+            float badgeFontSize = Math.Max(8f, 13f * scale);
+
+            for (int i = 0; i < pictureBoxes.Count; i++)
+            {
+                var pb = pictureBoxes[i];
+                pb.Margin = new Padding(artistMargin, 0, artistMargin, 0);
+                SetRoundedPictureBox(pb, picRadius);
+
+                // Nombre de artista: LeagueSpartan Bold centrado
+                labels[i].Font = new Font(lf, Math.Max(6f, 12f * scale), FontStyle.Bold);
+                labels[i].Margin = new Padding(artistMargin + 5, 0, artistMargin + 5, 0);
+                SetRoundedLabel(labels[i], Math.Max(8, (int)(20 * scale)));
+
+                // --- BADGE ID FLOTANTE sobre la imagen (Custom Paint) ---
+                var badge = idlabels[i];
+                badge.Visible = false; // Ocultamos el label real porque lo dibujaremos manualmente
+
+                pb.Tag = badge; // Guardamos la referencia para el evento Paint
+
+                // Asegurar un solo handler
+                pb.Paint -= Pb_Paint_Badge;
+                pb.Paint += Pb_Paint_Badge;
+            }
+
+            SetRoundedPictureBox(playerPic1, Math.Max(8, (int)(32 * scale)));
+            SetRoundedLabel(navlabel, Math.Max(4, (int)(8 * scale)));
+            // El redondeo de tableLayoutPanel3 ahora se hace nativamente en su evento Paint
+        }
+
+        private void TableLayoutPanel3_Paint(object sender, PaintEventArgs e)
+        {
+            float scaleX = (float)this.ClientSize.Width / 1600f;
+            float scaleY = (float)this.ClientSize.Height / 900f;
+            float scale = Math.Min(scaleX, scaleY);
+            int radius = Math.Max(8, (int)(32 * scale));
+
+            e.Graphics.SmoothingMode = SmoothingMode.AntiAlias;
+            using (GraphicsPath path = new GraphicsPath())
+            {
+                int d = radius * 2;
+                Rectangle rect = tableLayoutPanel3.ClientRectangle;
+                // Arriba izquierda
+                path.AddArc(rect.X, rect.Y, d, d, 180, 90);
+                // Arriba derecha
+                path.AddArc(rect.Right - d - 1, rect.Y, d, d, 270, 90);
+                // Abajo derecha
+                path.AddLine(rect.Right - 1, rect.Y + radius, rect.Right - 1, rect.Bottom);
+                // Abajo izquierda
+                path.AddLine(rect.Right - 1, rect.Bottom, rect.X, rect.Bottom);
+                path.AddLine(rect.X, rect.Bottom, rect.X, rect.Y + radius);
+                path.CloseFigure();
+
+                using (SolidBrush brush = new SolidBrush(Color.FromArgb(20, 0, 0, 0)))
                 {
-                    pb.Resize += (s, ev) => SetRoundedPictureBox(pb, 20);
-                    SetRoundedPictureBox(pb, 20);
+                    e.Graphics.FillPath(brush, path);
                 }
-                else if (ctrl is Label lbl)
+            }
+        }
+
+        private void Pb_Paint_Badge(object sender, PaintEventArgs e)
+        {
+            if (sender is PictureBox pb && pb.Tag is Label badgeLbl && !string.IsNullOrEmpty(badgeLbl.Text))
+            {
+                e.Graphics.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
+
+                float scaleX = (float)this.ClientSize.Width / 1600f;
+                float scale = Math.Min(scaleX, (float)this.ClientSize.Height / 900f);
+
+                int badgeSize = Math.Max(32, (int)(48 * scale));
+                float badgeFontSize = Math.Max(8f, 13f * scale);
+                int offset = (int)(8 * scaleX);
+
+                Rectangle rect = new Rectangle(offset, offset, badgeSize, badgeSize);
+
+                // Fondo circular dorado semitransparente
+                using (SolidBrush bgBrush = new SolidBrush(Color.FromArgb(200, 180, 145, 40)))
                 {
-                    lbl.Resize += (s, ev) => SetRoundedLabel(lbl, 10);
-                    SetRoundedLabel(lbl, 10);
+                    e.Graphics.FillEllipse(bgBrush, rect);
+                }
+
+                // Texto centrado
+                using (Font font = new Font(FontLoader.LoadFont(), badgeFontSize, FontStyle.Bold))
+                using (SolidBrush textBrush = new SolidBrush(Color.White))
+                using (StringFormat sf = new StringFormat() { Alignment = StringAlignment.Center, LineAlignment = StringAlignment.Center })
+                {
+                    e.Graphics.DrawString(badgeLbl.Text, font, textBrush, rect, sf);
                 }
             }
         }
@@ -857,5 +1137,7 @@ namespace Rockit
                 creditPressed = false;
             }
         }
+
+        #endregion
     }
 }

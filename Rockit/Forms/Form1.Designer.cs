@@ -1,4 +1,4 @@
-﻿namespace Rockit
+namespace Rockit
 {
     partial class Form1
     {
@@ -448,7 +448,6 @@
             pictureNext.BackColor = Color.Transparent;
             pictureNext.BackgroundImage = (Image)resources.GetObject("pictureNext.BackgroundImage");
             pictureNext.BackgroundImageLayout = ImageLayout.Stretch;
-            pictureNext.Location = new Point(0, 511);
             pictureNext.Name = "pictureNext";
             pictureNext.Size = new Size(64, 64);
             pictureNext.TabIndex = 30;
@@ -459,7 +458,6 @@
             picturePrev.BackColor = Color.Transparent;
             picturePrev.BackgroundImage = (Image)resources.GetObject("picturePrev.BackgroundImage");
             picturePrev.BackgroundImageLayout = ImageLayout.Stretch;
-            picturePrev.Location = new Point(48, 464);
             picturePrev.Name = "picturePrev";
             picturePrev.Size = new Size(64, 64);
             picturePrev.TabIndex = 31;
@@ -594,7 +592,7 @@
             flowLayoutPanel1.Dock = DockStyle.Fill;
             flowLayoutPanel1.Location = new Point(348, 3);
             flowLayoutPanel1.Name = "flowLayoutPanel1";
-            flowLayoutPanel1.Padding = new Padding(335, 65, 335, 60);
+            flowLayoutPanel1.Padding = new Padding(0);
             flowLayoutPanel1.Size = new Size(684, 185);
             flowLayoutPanel1.TabIndex = 37;
             // 
