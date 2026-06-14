@@ -998,13 +998,13 @@ namespace Rockit
 
             // --- HEADER ---
             // keylabel con fuente DSEG7 (estilo display 7-segmentos)
-            keylabel.Font = new Font(dseg, Math.Max(24f, 85f * scale), FontStyle.Regular);
+            keylabel.Font = new Font(dseg, Math.Max(24f, 64f * scale), FontStyle.Regular);
             keylabel.ForeColor = Color.White;
             keylabel.TextAlign = ContentAlignment.MiddleCenter;
 
             // pagelabel, navlabel, player
             pagelabel.Font = new Font(lf, Math.Max(6f, 12f * scale));
-            navlabel.Font = new Font(lf, Math.Max(8f, 38f * scale));
+            navlabel.Font = new Font(lf, Math.Max(24f, 38f * scale));
             ANameLabel.Font = new Font(lf, Math.Max(6f, 12f * scale));
             LegendLabel.Font = new Font(lf, Math.Max(6f, 16f * scale));
 
