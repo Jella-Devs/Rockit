@@ -22,11 +22,28 @@ namespace Rockit.Forms
         }
         private void btnCargar_Click(object sender, EventArgs e)
         {
-            SelectSongsFolder();
+            LoadSongs(false);
+        }
+        private void btnCargaRapida_Click(object sender, EventArgs e)
+        {
+            LoadSongs(true);
+        }
+        private void LoadSongs(bool quickLoad)
+        {
+            if (!SelectSongsFolder())
+                return;
+
             string pathFiles = Properties.Settings.Default.SongsFolderPath;
             try
             {
                 var directories = Directory.GetDirectories(pathFiles);
+                if (!quickLoad)
+                {
+                    var repo = new MusicRepository();
+                    ArtistStore.ListOfArtist.Clear();
+                    SongStore.ListOfSongs.Clear();
+                    repo.ClearCatalog();
+                }
                 getRawSongs(directories);
             }
             catch (Exception ex) { MessageBox.Show("Ocurrió algo inesperado: " + ex); }
@@ -195,23 +212,45 @@ namespace Rockit.Forms
                 })
             );
 
-            // 2. Eliminar artistas obsoletos de la memoria (ArtistStore)
+            // 2. Obtener las canciones que existen actualmente en las carpetas
+            var currentSongKeys = new HashSet<string>(
+                directories.SelectMany(dir =>
+                {
+                    var directoryInfo = new DirectoryInfo(dir);
+                    var artistName = directoryInfo.Name;
+                    if (artistName.Contains(" - "))
+                        artistName = artistName.Split(" -")[0];
+
+                    return directoryInfo.GetFiles("*.mp3")
+                        .Select(file => $"{artistName}|{file.Name}");
+                })
+            );
+
+            // 3. Eliminar artistas obsoletos de la memoria (ArtistStore)
             var removedArtists = ArtistStore.ListOfArtist
                 .Where(a => !currentArtistNames.Contains(a.Name))
                 .ToList();
 
             ArtistStore.ListOfArtist.RemoveAll(a => !currentArtistNames.Contains(a.Name));
 
-            // 3. Eliminar canciones de artistas obsoletos de la memoria (SongStore)
+            // 4. Eliminar canciones obsoletas de la memoria (SongStore)
             var removedArtistNames = removedArtists.Select(a => a.Name).ToHashSet();
-            SongStore.ListOfSongs.RemoveAll(s => removedArtistNames.Contains(s.ArtistName));
+            var removedSongs = SongStore.ListOfSongs
+                .Where(s => removedArtistNames.Contains(s.ArtistName)
+                    || !currentSongKeys.Contains($"{s.ArtistName}|{s.Name}"))
+                .ToList();
 
-            // 4. Eliminar de base de datos (Artistas y Canciones)
+            SongStore.ListOfSongs.RemoveAll(s => removedSongs.Contains(s));
+
+            // 5. Eliminar de base de datos (Artistas y Canciones)
             var dbArtists = repo.GetAllArtists();
             var dbSongs = repo.GetAllSongs();
 
             var artistsToDelete = dbArtists.Where(a => removedArtistNames.Contains(a.Name)).ToList();
-            var songsToDelete = dbSongs.Where(s => removedArtistNames.Contains(s.ArtistName)).ToList();
+            var songsToDelete = dbSongs
+                .Where(s => removedArtistNames.Contains(s.ArtistName)
+                    || !currentSongKeys.Contains($"{s.ArtistName}|{s.Name}"))
+                .ToList();
 
             foreach (var artist in artistsToDelete)
                 repo.DeleteArtist(artist);
@@ -221,7 +260,7 @@ namespace Rockit.Forms
 
             repo.SaveChanges();
 
-            // 5. Reescribir archivos de texto limpios
+            // 6. Reescribir archivos de texto limpios
             using var artistWriter = new StreamWriter(pathFinderResultArtist, append: false);
             foreach (var artist in ArtistStore.ListOfArtist)
             {
@@ -234,7 +273,7 @@ namespace Rockit.Forms
                 songWriter.WriteLine($"{song.SongId}|{song.Path}${song.Name}%{song.ArtistName}");
             }
         }
-        private void SelectSongsFolder()
+        private bool SelectSongsFolder()
         {
             string folderPath = Properties.Settings.Default.SongsFolderPath;
             using (var dialog = new FolderBrowserDialog())
@@ -245,8 +284,11 @@ namespace Rockit.Forms
                 {
                     Properties.Settings.Default.SongsFolderPath = dialog.SelectedPath;
                     Properties.Settings.Default.Save();
+                    return true;
                 }
             }
+
+            return false;
         }
         private void Feeder_KeyDown(object sender, KeyEventArgs e)
         {

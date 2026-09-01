@@ -29,6 +29,7 @@
         private void InitializeComponent()
         {
             btnCargar = new Button();
+            btnCargaRapida = new Button();
             progressBar1 = new ProgressBar();
             SuspendLayout();
             // 
@@ -41,6 +42,16 @@
             btnCargar.Text = "Cargar";
             btnCargar.UseVisualStyleBackColor = true;
             btnCargar.Click += btnCargar_Click;
+            // 
+            // btnCargaRapida
+            // 
+            btnCargaRapida.Location = new Point(247, 489);
+            btnCargaRapida.Name = "btnCargaRapida";
+            btnCargaRapida.Size = new Size(102, 60);
+            btnCargaRapida.TabIndex = 2;
+            btnCargaRapida.Text = "Carga rápida";
+            btnCargaRapida.UseVisualStyleBackColor = true;
+            btnCargaRapida.Click += btnCargaRapida_Click;
             // 
             // progressBar1
             // 
@@ -55,6 +66,7 @@
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(384, 561);
             Controls.Add(progressBar1);
+            Controls.Add(btnCargaRapida);
             Controls.Add(btnCargar);
             Name = "Feeder";
             Text = "Feeder";
@@ -65,6 +77,7 @@
         #endregion
 
         private Button btnCargar;
+        private Button btnCargaRapida;
         private ProgressBar progressBar1;
     }
 }

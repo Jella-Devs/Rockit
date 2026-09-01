@@ -136,6 +136,13 @@ namespace Rockit.Repositories
 
         public void SaveChanges() => _context.SaveChanges();
 
+        public void ClearCatalog()
+        {
+            _context.Songs.RemoveRange(_context.Songs);
+            _context.Artists.RemoveRange(_context.Artists);
+            _context.SaveChanges();
+        }
+
         public void AddToPlaylist(string name, string path)
         {
             var item = new PlayListItem
